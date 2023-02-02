@@ -1,7 +1,10 @@
 name: Test, Build, and Deploy via GameCI and Butler  🎮
 
-on: 
-  workflow_dispatch
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - release
 
 env:
   UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
