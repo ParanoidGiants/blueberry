@@ -1,0 +1,133 @@
+name: Test, Build, and Deploy via GameCI and Butler  🎮
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - release
+
+env:
+  UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+
+jobs:
+  checkLicense:
+    name: Check for the Unity license ☑️
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fail - No license ☠️
+        if: ${{ !startsWith(env.UNITY_LICENSE, '<') }}
+        run: exit 1
+
+  testRunner:
+    needs: checkLicense
+    name: Test all modes 📝
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Create LFS file list
+        run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-assets-id
+
+      - name: Restore LFS cache
+        uses: actions/cache@v2
+        id: lfs-cache
+        with:
+          path: .git/lfs
+          key: ${{ runner.os }}-lfs-${{ hashFiles('.lfs-assets-id') }}
+
+      - name: Git LFS Pull
+        run: |
+          git lfs pull
+          git add .
+          git reset --hard
+
+      - name: Restore Library cache
+        uses: actions/cache@v2
+        with:
+          path: Library
+          key: Library-test-project
+          restore-keys: |
+            Library-test-project-
+            Library-
+
+      - uses: webbertakken/unity-test-runner@v2
+        id: testRunner
+        with:
+          testMode: all
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: Test results (all modes)
+          path: ${{ steps.testRunner.outputs.artifactsPath }}
+
+  buildWebGL:
+    needs: testRunner
+    name: Build for WebGL 🖥️ and Deploy to Itch.io 🚀
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Create LFS file list
+        run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-assets-id
+
+      - name: Restore LFS cache
+        uses: actions/cache@v2
+        id: lfs-cache
+        with:
+          path: .git/lfs
+          key: ${{ runner.os }}-lfs-${{ hashFiles('.lfs-assets-id') }}
+
+      - name: Git LFS Pull
+        run: |
+          git lfs pull
+          git add .
+          git reset --hard
+
+      - name: Restore Library cache
+        uses: actions/cache@v2
+        with:
+          path: Library
+          key: Library-build-WebGL
+          restore-keys: |
+            Library-build-
+            Library-
+
+      - uses: webbertakken/unity-builder@v2
+        with:
+          targetPlatform: WebGL
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: build-WebGL
+          path: build/WebGL
+
+      - name: Install Butler, zip the build and push it to itch.io
+        shell: bash
+        env:
+          BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
+          PROJECT_NAME: ${{ secrets.PROJECT_NAME }}
+        run: |
+          cd ~
+          echo ------------------------------------------------------------------------
+          echo Downloading Butler....
+          echo ------------------------------------------------------------------------
+          curl -L -o butler.zip https://broth.itch.ovh/butler/linux-amd64/LATEST/archive/default
+          echo ------------------------------------------------------------------------
+          echo Unzipping Butler....
+          echo ------------------------------------------------------------------------
+          unzip butler.zip
+          chmod +x butler
+          echo ------------------------------------------------------------------------
+          echo packaging WebGL build into current-build.zip
+          echo ------------------------------------------------------------------------
+          cd work/$PROJECT_NAME/$PROJECT_NAME/build/WebGL/WebGL
+          zip -r ~/current-build.zip .
+          chmod +x ~/butler
+          echo ------------------------------------------------------------------------
+          echo Pushing current-build.zip to itch.io 
+          echo ------------------------------------------------------------------------
+          ~/butler push ~/current-build.zip frobros/$PROJECT_NAME:html5
