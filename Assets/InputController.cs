@@ -19,6 +19,11 @@ namespace Creeper
                     direction.Normalize();
                 }
                 Head.UpdateHead(direction);
+                Head.IsMoving = true;
+            }
+            else
+            {
+                Head.IsMoving = false;
             }
         }
     }
