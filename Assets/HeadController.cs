@@ -26,14 +26,21 @@ namespace Creeper
         public bool IsFalling;
 
         public RaycastDirection CurrentGround;
+        public RaycastDirection CurrentForward;
+        public Vector3 lastPosition;
         public List<RaycastDirection> raycastDirections;
         private Rigidbody rigidbody;
+        public FollowTarget Cam;
+
+        public Vector3 v_currentForward;
+        public Vector3 v_currentRight;
 
         private void Start()
         {
             CurrentGround = new RaycastDirection(Vector3.down);
+            CurrentForward = new RaycastDirection(Vector3.forward);
             raycastDirections = new List<RaycastDirection>() {
-                new RaycastDirection(Vector3.forward),
+                CurrentForward,
                 new RaycastDirection(Vector3.back),
                 new RaycastDirection(Vector3.up),
                 CurrentGround,
@@ -42,25 +49,29 @@ namespace Creeper
             };
             rigidbody = GetComponent<Rigidbody>();
             UpdateRaycasts();
+            v_currentForward = Vector3.forward;
+            v_currentRight = Vector3.right;
         }
 
         public void UpdateHead(Vector3 directionLocalSpace)
         {
-            if (IsFalling) return;
+            if (IsFalling || Cam.IsRotating) return;
 
-            var directionWorldSpace = transform.right * directionLocalSpace.x + transform.forward * directionLocalSpace.z;
+            var directionWorldSpace = v_currentRight * directionLocalSpace.x + v_currentForward * directionLocalSpace.z;
             moveDirection = directionWorldSpace;
             transform.position += MoveSpeed * directionWorldSpace;
         }
 
         private void Update()
         {
+
             IsFalling = CurrentGround == null || CurrentGround.Other == null;
 
 
             if (IsFalling)
             {
                 rigidbody.MovePosition(transform.position + 10f * MoveSpeed * CurrentGround.Direction);
+                CurrentForward = CurrentGround;
                 FindNewGround();
             }
 
@@ -69,17 +80,16 @@ namespace Creeper
 
         private void FindNewGround()
         {
-            Debug.Log("Seraching new ground!");
             foreach (var raycastDirection in raycastDirections)
             {
                 RaycastHit hit;
                 if (Physics.Raycast(transform.position, raycastDirection.Direction, out hit, 1f, WhatIsClimbable))
                 {
                     raycastDirection.Other = hit.transform;
-
                     CurrentGround = raycastDirection;
                     transform.up = -CurrentGround.Direction;
                     IsFalling = false;
+                    Rotate();
                     return;
                 }
             }
@@ -114,8 +124,8 @@ namespace Creeper
 
             Vector3 objectDirection = (collision.GetContact(0).point - transform.position).normalized;
             float dotProduct = Vector3.Dot(objectDirection, moveDirection.normalized);
-            Debug.Log(dotProduct);
-            Debug.Log(objectDirection + " " + moveDirection);
+            //Debug.Log(dotProduct);
+            //Debug.Log(objectDirection + " " + moveDirection);
 
             bool canClimb = 
                 // Is Object climbable
@@ -132,6 +142,59 @@ namespace Creeper
                 transform.up = -objectDirection;
                 CurrentGround = raycastDirections.FirstOrDefault(x => Vector3.Dot(x.Direction, -transform.up) > 0.1f);
             }
+        }
+
+        private void Rotate()
+        {
+            Quaternion targetRotation;
+            var currentForward = CurrentForward.Direction;
+            var currentUp = transform.up;
+            Debug.Log("CurrForward: " + currentForward);
+            Debug.Log("CurrUp: " + currentUp);
+            if (currentForward.y < 0f && currentUp.z > 0f)
+            {
+                targetRotation = Quaternion.LookRotation(-transform.up, Vector3.down);;
+            }
+            else if (currentForward.x > 0f && currentUp.z > 0f)
+            {
+                targetRotation = Quaternion.LookRotation(-transform.up, Vector3.right);
+            }
+            else if (currentForward.x < 0f && currentUp.z > 0f)
+            {
+                targetRotation = Quaternion.LookRotation(-transform.up, Vector3.left);
+            }
+            else if (currentForward.y > 0f && currentUp.z > 0f)
+            {
+                targetRotation = Quaternion.LookRotation(-transform.up, Vector3.up);
+            }
+            else if (currentForward.y < 0f && currentUp.z < 0f)
+            {
+                targetRotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
+            }
+            //else if (currentForward.x > 0f && currentUp.z > 0f)
+            //{
+            //    targetRotation = Quaternion.LookRotation(-transform.up, Vector3.right);
+            //    FindObjectOfType<FollowTarget>().InitRotate(targetRotation);
+            //}
+            //else if (currentForward.x < 0f && currentUp.z > 0f)
+            //{
+            //    targetRotation = Quaternion.LookRotation(-transform.up, Vector3.left);
+            //    FindObjectOfType<FollowTarget>().InitRotate(targetRotation);
+            //}
+            //else if (currentForward.y > 0f && currentUp.z > 0f)
+            //{
+            //    targetRotation = Quaternion.LookRotation(-transform.up, Vector3.up);
+            //    FindObjectOfType<FollowTarget>().InitRotate(targetRotation);
+            //}
+            /// 
+            else
+            {
+                targetRotation = Quaternion.LookRotation(-transform.up, Vector3.forward);
+                FindObjectOfType<FollowTarget>().InitRotate(targetRotation);
+            }
+            v_currentForward = targetRotation * Vector3.up;
+            v_currentRight = targetRotation * Vector3.right;
+            FindObjectOfType<FollowTarget>().InitRotate(targetRotation);
         }
     }
 }

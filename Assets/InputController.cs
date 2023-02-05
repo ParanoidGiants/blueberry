@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Creeper
 {
@@ -24,6 +25,11 @@ namespace Creeper
             else
             {
                 Head.IsMoving = false;
+            }
+
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                SceneManager.LoadScene(0);
             }
         }
     }
