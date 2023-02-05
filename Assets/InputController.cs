@@ -6,6 +6,7 @@ namespace Creeper
     public class InputController : MonoBehaviour
     {
         public HeadController Head;
+        public BranchController Branch;
 
         private void Update()
         {
@@ -20,6 +21,10 @@ namespace Creeper
                     direction.Normalize();
                 }
                 Head.UpdateHead(direction);
+                if (!Head.IsRotating)
+                {
+                    Branch.UpdateBranch();
+                }
                 Head.IsMoving = true;
             }
             else

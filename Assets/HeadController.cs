@@ -28,6 +28,15 @@ namespace Creeper
         public RaycastDirection CurrentGround;
         public RaycastDirection CurrentForward;
         public Vector3 lastPosition;
+        public bool IsRotating { get { return Cam.IsRotating; } }
+        public Plane GetXZPlane()
+        {
+            var a = transform.position;
+            var b = transform.position + v_currentForward;
+            var c = transform.position - v_currentRight;
+            return new Plane(a, b, c);
+        }
+
         public List<RaycastDirection> raycastDirections;
         private Rigidbody rigidbody;
         public FollowTarget Cam;
