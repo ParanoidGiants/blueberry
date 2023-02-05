@@ -555,7 +555,7 @@ GameObject:
   - component: {fileID: 799493231}
   - component: {fileID: 799493230}
   - component: {fileID: 799493229}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1154,7 +1154,7 @@ LineRenderer:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 0.21249998
+        value: 0.5000061
         inSlope: 0
         outSlope: 0
         tangentMode: 0
