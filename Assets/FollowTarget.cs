@@ -25,13 +25,9 @@ public class FollowTarget : MonoBehaviour
     public IEnumerator Rotate(Quaternion targetRotation)
     {
         IsRotating = true;
-        if (targetRotation == Quaternion.identity)
-        {
-            targetRotation = transform.rotation;
-        }
         var currentRotation = transform.rotation;
-        Debug.Log("Rotate From: " + currentRotation.eulerAngles);
-        Debug.Log("Rotate To: " + targetRotation.eulerAngles);
+        //Debug.Log("Rotate From: " + currentRotation.eulerAngles);
+        //Debug.Log("Rotate To: " + targetRotation.eulerAngles);
         float rotateTime = 0f;
         float rotateIn = 1f;
 

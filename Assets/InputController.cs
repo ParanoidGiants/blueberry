@@ -12,9 +12,9 @@ namespace Creeper
         {
             var inpuHorizontal = Input.GetAxis("Horizontal");
             var inputVertical = Input.GetAxis("Vertical");
-            var direction = new Vector3(inpuHorizontal, 0, inputVertical);
+            var direction = new Vector2(inpuHorizontal, inputVertical);
 
-            if (Mathf.Abs(direction.x) > 0 || Mathf.Abs(direction.z) > 0)
+            if (Mathf.Abs(direction.x) > 0 || Mathf.Abs(direction.y) > 0)
             {
                 if (direction.magnitude > 1f)
                 {

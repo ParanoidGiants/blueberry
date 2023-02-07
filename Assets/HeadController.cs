@@ -5,22 +5,10 @@ using UnityEngine;
 
 namespace Creeper
 {
-    [Serializable]
-    public class RaycastDirection
-    {
-        public Vector3 Direction;
-        public bool IsGrounded;
-        public Transform Other;
-
-        public RaycastDirection(Vector3 _dircetion)
-        {
-            Direction = _dircetion;
-            IsGrounded = false;
-        }
-    }
     public class HeadController : MonoBehaviour
     {
         public float MoveSpeed;
+        public float FallSpeed;
         public LayerMask WhatIsClimbable;
         public bool IsMoving;
         public bool IsFalling;
@@ -32,17 +20,20 @@ namespace Creeper
         public Plane GetXZPlane()
         {
             var a = transform.position;
-            var b = transform.position + v_currentForward;
-            var c = transform.position - v_currentRight;
+            var b = transform.position + cameraForward;
+            var c = transform.position - cameraRight;
             return new Plane(a, b, c);
         }
 
         public List<RaycastDirection> raycastDirections;
-        private Rigidbody rigidbody;
-        public FollowTarget Cam;
+        private new Rigidbody rigidbody;
 
-        public Vector3 v_currentForward;
-        public Vector3 v_currentRight;
+        public FollowTarget Cam;
+        public Vector3 cameraForward;
+        public Vector3 cameraRight;
+
+        private const float moveDirectionThreshold = -0.7f;
+        private Vector3 moveDirection;
 
         private void Start()
         {
@@ -58,37 +49,73 @@ namespace Creeper
             };
             rigidbody = GetComponent<Rigidbody>();
             UpdateRaycasts();
-            v_currentForward = Vector3.forward;
-            v_currentRight = Vector3.right;
-        }
-
-        public void UpdateHead(Vector3 directionLocalSpace)
-        {
-            if (IsFalling || Cam.IsRotating) return;
-
-            var directionWorldSpace = v_currentRight * directionLocalSpace.x + v_currentForward * directionLocalSpace.z;
-            moveDirection = directionWorldSpace;
-            transform.position += MoveSpeed * directionWorldSpace;
+            cameraForward = Vector3.forward;
+            cameraRight = Vector3.right;
         }
 
         private void Update()
         {
-
-            IsFalling = CurrentGround == null || CurrentGround.Other == null;
-
-
-            if (IsFalling)
-            {
-                rigidbody.MovePosition(transform.position + 10f * MoveSpeed * CurrentGround.Direction);
-                CurrentForward = CurrentGround;
-                FindNewGround();
-            }
-
             UpdateRaycasts();
+            UpdateFall();
         }
 
-        private void FindNewGround()
+        private void OnCollisionEnter(Collision collision)
         {
+            if (IsFalling) return;
+
+            Vector3 collisionNormal = collision.GetContact(0).normal;
+            float dotProduct = Vector3.Dot(collisionNormal, moveDirection.normalized);
+            //Debug.Log(dotProduct);
+            //Debug.Log(collisionNormal + " " + moveDirection);
+
+            bool canClimb =
+                // Is Object climbable
+                ((1 << collision.gameObject.layer) & WhatIsClimbable) != 0
+                // Is Object different from current ground
+                && collision.transform != CurrentGround.Other
+                // Am I moving
+                && IsMoving
+                // Am I moving into its direction
+                && dotProduct <= moveDirectionThreshold;
+
+            if (canClimb)
+            {
+                transform.up = -collisionNormal;
+                CurrentGround = raycastDirections.FirstOrDefault(x => Vector3.Dot(x.Direction, -transform.up) > 0.1f);
+            }
+        }
+
+        public void UpdateHead(Vector2 inputDirection)
+        {
+            if (IsFalling || Cam.IsRotating) return;
+
+            var directionWorldSpace = cameraRight * inputDirection.x + cameraForward * inputDirection.y;
+            moveDirection = directionWorldSpace;
+            transform.position += MoveSpeed * directionWorldSpace;
+        }
+
+
+        private void UpdateFall()
+        {
+            rigidbody.AddForce(FallSpeed * CurrentGround.Direction, ForceMode.Force);
+            rigidbody.velocity = Vector3.ClampMagnitude(rigidbody.velocity, 2f);
+
+            bool wasFalling = IsFalling;
+            IsFalling = CurrentGround == null || CurrentGround.Other == null;
+            if (!wasFalling && IsFalling)
+            {
+                CurrentForward = CurrentGround;
+            }
+            else if (wasFalling && !IsFalling)
+            {
+                //Debug.Log("FREEZE!");
+                rigidbody.velocity = Vector3.zero;
+            }
+
+            if (!IsFalling) return;
+            
+
+            // Search for ground
             foreach (var raycastDirection in raycastDirections)
             {
                 RaycastHit hit;
@@ -96,8 +123,6 @@ namespace Creeper
                 {
                     raycastDirection.Other = hit.transform;
                     CurrentGround = raycastDirection;
-                    transform.up = -CurrentGround.Direction;
-                    IsFalling = false;
                     Rotate();
                     return;
                 }
@@ -124,86 +149,28 @@ namespace Creeper
             }
         }
 
-        private const float moveDirectionThreshold = 0.7f;
-        private Vector3 moveDirection;
-
-        private void OnCollisionEnter(Collision collision)
-        {
-            if (IsFalling) return;
-
-            Vector3 objectDirection = (collision.GetContact(0).point - transform.position).normalized;
-            float dotProduct = Vector3.Dot(objectDirection, moveDirection.normalized);
-            //Debug.Log(dotProduct);
-            //Debug.Log(objectDirection + " " + moveDirection);
-
-            bool canClimb = 
-                // Is Object climbable
-                ((1 << collision.gameObject.layer) & WhatIsClimbable) != 0
-                // Is Object different from current ground
-                && collision.transform != CurrentGround.Other
-                // Am I moving
-                && IsMoving
-                // Am I moving into its direction
-                && dotProduct >= moveDirectionThreshold;
-
-            if (canClimb)
-            {
-                transform.up = -objectDirection;
-                CurrentGround = raycastDirections.FirstOrDefault(x => Vector3.Dot(x.Direction, -transform.up) > 0.1f);
-            }
-        }
-
         private void Rotate()
         {
+            transform.up = -CurrentGround.Direction;
+
             Quaternion targetRotation;
-            var currentForward = CurrentForward.Direction;
-            var currentUp = transform.up;
-            Debug.Log("CurrForward: " + currentForward);
-            Debug.Log("CurrUp: " + currentUp);
-            if (currentForward.y < 0f && currentUp.z > 0f)
-            {
-                targetRotation = Quaternion.LookRotation(-transform.up, Vector3.down);;
-            }
-            else if (currentForward.x > 0f && currentUp.z > 0f)
-            {
-                targetRotation = Quaternion.LookRotation(-transform.up, Vector3.right);
-            }
-            else if (currentForward.x < 0f && currentUp.z > 0f)
-            {
-                targetRotation = Quaternion.LookRotation(-transform.up, Vector3.left);
-            }
-            else if (currentForward.y > 0f && currentUp.z > 0f)
-            {
-                targetRotation = Quaternion.LookRotation(-transform.up, Vector3.up);
-            }
-            else if (currentForward.y < 0f && currentUp.z < 0f)
-            {
-                targetRotation = Quaternion.LookRotation(Vector3.forward, Vector3.up);
-            }
-            //else if (currentForward.x > 0f && currentUp.z > 0f)
-            //{
-            //    targetRotation = Quaternion.LookRotation(-transform.up, Vector3.right);
-            //    FindObjectOfType<FollowTarget>().InitRotate(targetRotation);
-            //}
-            //else if (currentForward.x < 0f && currentUp.z > 0f)
-            //{
-            //    targetRotation = Quaternion.LookRotation(-transform.up, Vector3.left);
-            //    FindObjectOfType<FollowTarget>().InitRotate(targetRotation);
-            //}
-            //else if (currentForward.y > 0f && currentUp.z > 0f)
-            //{
-            //    targetRotation = Quaternion.LookRotation(-transform.up, Vector3.up);
-            //    FindObjectOfType<FollowTarget>().InitRotate(targetRotation);
-            //}
-            /// 
-            else
-            {
-                targetRotation = Quaternion.LookRotation(-transform.up, Vector3.forward);
-                FindObjectOfType<FollowTarget>().InitRotate(targetRotation);
-            }
-            v_currentForward = targetRotation * Vector3.up;
-            v_currentRight = targetRotation * Vector3.right;
+            var _cameraForward = CurrentForward.Direction;
+            _cameraForward.y = Mathf.Abs(_cameraForward.y);
+
+
+
+            var _cameraUp = transform.up;
+            targetRotation = Quaternion.LookRotation(_cameraForward, _cameraUp);
             FindObjectOfType<FollowTarget>().InitRotate(targetRotation);
+
+            var _cameraRight = Vector3.Cross(_cameraUp, _cameraForward);
+            Debug.Log("---------------------------");
+            Debug.Log("CurrRight: " + _cameraRight);
+            Debug.Log("CurrUp: " + _cameraUp);
+            Debug.Log("CurrForward: " + _cameraForward);
+
+            this.cameraForward = targetRotation * Vector3.forward;
+            this.cameraRight = targetRotation * Vector3.right;
         }
     }
 }
