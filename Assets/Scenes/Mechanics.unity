@@ -587,6 +587,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Head: {fileID: 1821568027}
   Branch: {fileID: 1821568030}
+  Camera: {fileID: 2095790893}
 --- !u!4 &497094058
 Transform:
   m_ObjectHideFlags: 0
@@ -1688,11 +1689,9 @@ MonoBehaviour:
     Direction: {x: 0, y: 0, z: 0}
     IsGrounded: 0
     Other: {fileID: 0}
-  lastPosition: {x: 0, y: 0, z: 0}
   raycastDirections: []
-  Cam: {fileID: 2095790893}
-  v_currentForward: {x: 0, y: 0, z: 0}
-  v_currentRight: {x: 0, y: 0, z: 0}
+  cameraForward: {x: 0, y: 0, z: 0}
+  cameraRight: {x: 0, y: 0, z: 0}
 --- !u!54 &1821568028
 Rigidbody:
   m_ObjectHideFlags: 0

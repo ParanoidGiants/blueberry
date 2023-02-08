@@ -1,33 +1,31 @@
+using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class FollowTarget : MonoBehaviour
 {
     public Transform Target;
     private Coroutine rotateRoutine;
-    public bool IsRotating = false;
+    public bool IsRotating;
 
     void Update()
     {
         transform.position = Target.position;
     }
 
-    public void InitRotate(Quaternion targetRotation)
+    public void InitRotate(Quaternion targetRotation, Action callback)
     {
         if (rotateRoutine != null)
         {
             StopCoroutine(rotateRoutine);
         }
-        rotateRoutine = StartCoroutine(Rotate(targetRotation));
+        IsRotating = true;
+        rotateRoutine = StartCoroutine(Rotate(targetRotation, callback));
     }
 
-    public IEnumerator Rotate(Quaternion targetRotation)
+    private IEnumerator Rotate(Quaternion targetRotation, Action callback)
     {
-        IsRotating = true;
         var currentRotation = transform.rotation;
-        //Debug.Log("Rotate From: " + currentRotation.eulerAngles);
-        //Debug.Log("Rotate To: " + targetRotation.eulerAngles);
         float rotateTime = 0f;
         float rotateIn = 1f;
 
@@ -39,5 +37,6 @@ public class FollowTarget : MonoBehaviour
         }
         transform.rotation = targetRotation;
         IsRotating = false;
+        callback();
     }
 }

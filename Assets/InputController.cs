@@ -7,6 +7,7 @@ namespace Creeper
     {
         public HeadController Head;
         public BranchController Branch;
+        public FollowTarget Camera;
 
         private void Update()
         {
@@ -20,9 +21,9 @@ namespace Creeper
                 {
                     direction.Normalize();
                 }
-                Head.UpdateHead(direction);
-                if (!Head.IsRotating)
+                if (!Camera.IsRotating)
                 {
+                    Head.UpdateHead(direction);
                     Branch.UpdateBranch();
                 }
                 Head.IsMoving = true;
