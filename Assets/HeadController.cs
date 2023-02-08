@@ -68,8 +68,10 @@ namespace Creeper
 
             if (canClimb)
             {
-                transform.up = -collisionNormal;
-                CurrentGround = raycastDirections.FirstOrDefault(x => Vector3.Dot(x.Direction, -transform.up) > 0.1f);
+                Debug.Log(-collisionNormal);
+                CurrentGround = raycastDirections.FirstOrDefault(x => x.Direction == -collisionNormal);
+                CurrentForward = raycastDirections.FirstOrDefault(x => x.Direction == transform.up);
+                RotatePlayerAndCamera();
             }
         }
 
