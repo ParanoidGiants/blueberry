@@ -18,12 +18,13 @@ namespace Creeper
         private float currentBackReference = 0f;
         public List<RaycastDirection> raycastDirections;
 
-
         private const float MOVE_DIRECTION_THRESHOLD = -0.7f;
         private new Rigidbody rigidbody;
         private Vector3 moveDirection;
         private Vector3 cameraHandleForward;
         private Vector3 cameraHandleRight;
+        public float FallFor = 2f;
+        public float FallTime = 0f;
 
         private void Start()
         {
@@ -85,94 +86,42 @@ namespace Creeper
 
         private void UpdateFall()
         {
-            rigidbody.AddForce(FallSpeed * CurrentGround.Direction, ForceMode.Force);
-            rigidbody.velocity = Vector3.ClampMagnitude(rigidbody.velocity, 2f);
-
             bool wasFalling = IsFalling;
             IsFalling = CurrentGround == null || CurrentGround.Other == null;
             if (!wasFalling && IsFalling)
             {
-                CurrentForward = CurrentGround;
-                Debug.Log("FALL DIR: " + CurrentForward.Direction);
-                currentBackReference = 0f;
+                UpdateBackDirection();
             }
             else if (wasFalling && !IsFalling)
             {
                 FreezeRigidbody();
             }
 
-            if (!IsFalling) return;
-
-            UpdateBackDirection();
-            
-
-            // Search for ground
-            RaycastHit hit;
-            if (Physics.Raycast(transform.position, CurrentBack.Direction, out hit, 1f, WhatIsClimbable))
+            var velocity = FallSpeed * CurrentGround.Direction;
+            if (IsFalling)
             {
-                CurrentBack.Other = hit.transform;
-                CurrentGround = CurrentBack;
-                RotatePlayerAndCamera(true);
-                return;
+                // Search for ground
+                RaycastHit hit;
+                if (Physics.Raycast(transform.position, CurrentBack.Direction, out hit, 1f, WhatIsClimbable))
+                {
+                    CurrentBack.Other = hit.transform;
+                    CurrentGround = CurrentBack;
+                    RotatePlayerAndCamera(true);
+                    FallTime = 0f;
+                }
+                else if (Physics.Raycast(transform.position, -moveDirection, out hit, 1f, WhatIsClimbable))
+                {
+                    velocity -= 4f * FallSpeed * moveDirection;
+                    Debug.Log("Got something");
+                }
             }
+
+            rigidbody.AddForce(velocity, ForceMode.Force);
+            rigidbody.velocity = Vector3.ClampMagnitude(rigidbody.velocity, 2f);
+
         }
 
-        private void UpdateBackDirection()
-        {
-            Debug.Log("Velocity: " + rigidbody.velocity);
-            var fallingDirection = CurrentForward.Direction;
-            Vector3 backDirection = Vector3.zero;
-            if (fallingDirection.x != 0f)
-            {
-                var y = Mathf.Abs(rigidbody.velocity.y);
-                var z = Mathf.Abs(rigidbody.velocity.z);
-                if (y > z && y > currentBackReference)
-                {
-                    currentBackReference = rigidbody.velocity.y;
-                    backDirection = -Mathf.Sign(rigidbody.velocity.y) * Vector3.up;
-                }
-                else if (z > y && z > currentBackReference)
-                {
-                    currentBackReference = rigidbody.velocity.z;
-                    backDirection = -Mathf.Sign(rigidbody.velocity.z) * Vector3.forward;
-                }
-            }
-            else if (fallingDirection.y != 0f)
-            {
-                var x = Mathf.Abs(rigidbody.velocity.x);
-                var z = Mathf.Abs(rigidbody.velocity.z);
-                if (x > z && x > currentBackReference)
-                {
-                    currentBackReference = rigidbody.velocity.x;
-                    backDirection = -Mathf.Sign(rigidbody.velocity.x) * Vector3.right;
-                }
-                else if (z > x && z > currentBackReference)
-                {
-                    currentBackReference = rigidbody.velocity.z;
-                    backDirection = -Mathf.Sign(rigidbody.velocity.z) * Vector3.forward;
-                }
-            }
-            else if (fallingDirection.z != 0f)
-            {
-                var y = Mathf.Abs(rigidbody.velocity.y);
-                var x = Mathf.Abs(rigidbody.velocity.x);
-                if (y > x && y > currentBackReference)
-                {
-                    currentBackReference = rigidbody.velocity.y;
-                    backDirection = -Mathf.Sign(rigidbody.velocity.y) * Vector3.up;
-                }
-                else if (x > y && x > currentBackReference)
-                {
-                    currentBackReference = rigidbody.velocity.x;
-                    backDirection = -Mathf.Sign(rigidbody.velocity.x) * Vector3.right;
-                }
-            }
-            Debug.Log("Back: " + CurrentBack.Direction);
-            if (backDirection == Vector3.zero) return;
-
-            CurrentBack = raycastDirections.FirstOrDefault(x => x.Direction == backDirection);
-        }
-
+        
         private void FreezeRigidbody()
         {
             rigidbody.velocity = Vector3.zero;
@@ -233,6 +182,63 @@ namespace Creeper
             FindObjectOfType<FollowTarget>().InitRotate(targetRotation, FreezeRigidbody);
             this.cameraHandleForward = targetRotation * Vector3.forward;
             this.cameraHandleRight = targetRotation * Vector3.right;
+        }
+
+        private void UpdateBackDirection()
+        {
+            currentBackReference = 0f;
+            var fallingDirection = CurrentGround.Direction;
+            Vector3 backDirection = Vector3.zero;
+            if (fallingDirection.x != 0f)
+            {
+                var y = Mathf.Abs(rigidbody.velocity.y);
+                var z = Mathf.Abs(rigidbody.velocity.z);
+                if (y > z && y > currentBackReference)
+                {
+                    currentBackReference = rigidbody.velocity.y;
+                    backDirection = -Mathf.Sign(rigidbody.velocity.y) * Vector3.up;
+                }
+                else if (z > y && z > currentBackReference)
+                {
+                    currentBackReference = rigidbody.velocity.z;
+                    backDirection = -Mathf.Sign(rigidbody.velocity.z) * Vector3.forward;
+                }
+            }
+            else if (fallingDirection.y != 0f)
+            {
+                var x = Mathf.Abs(rigidbody.velocity.x);
+                var z = Mathf.Abs(rigidbody.velocity.z);
+                if (x > z && x > currentBackReference)
+                {
+                    currentBackReference = rigidbody.velocity.x;
+                    backDirection = -Mathf.Sign(rigidbody.velocity.x) * Vector3.right;
+                }
+                else if (z > x && z > currentBackReference)
+                {
+                    currentBackReference = rigidbody.velocity.z;
+                    backDirection = -Mathf.Sign(rigidbody.velocity.z) * Vector3.forward;
+                }
+            }
+            else if (fallingDirection.z != 0f)
+            {
+                var y = Mathf.Abs(rigidbody.velocity.y);
+                var x = Mathf.Abs(rigidbody.velocity.x);
+                if (y > x && y > currentBackReference)
+                {
+                    currentBackReference = rigidbody.velocity.y;
+                    backDirection = -Mathf.Sign(rigidbody.velocity.y) * Vector3.up;
+                }
+                else if (x > y && x > currentBackReference)
+                {
+                    currentBackReference = rigidbody.velocity.x;
+                    backDirection = -Mathf.Sign(rigidbody.velocity.x) * Vector3.right;
+                }
+            }
+            //Debug.Log("Back: " + CurrentBack.Direction);
+            if (backDirection == Vector3.zero) return;
+
+            CurrentBack = raycastDirections.FirstOrDefault(x => x.Direction == backDirection);
+            CurrentForward = CurrentGround;
         }
     }
 }

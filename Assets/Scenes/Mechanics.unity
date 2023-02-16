@@ -333,7 +333,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &443130846
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -601,7 +601,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &661367120
 PrefabInstance:
@@ -1083,7 +1083,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1338564491
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1693,7 +1693,7 @@ Transform:
   m_Children:
   - {fileID: 1726199479}
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1821568027
 MonoBehaviour:
@@ -1708,8 +1708,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MoveSpeed: 0.1
-  MaxSpeed: 0
-  FallSpeed: 27
+  FallSpeed: 50
   WhatIsClimbable:
     serializedVersion: 2
     m_Bits: 64
@@ -1723,7 +1722,21 @@ MonoBehaviour:
     Direction: {x: 0, y: 0, z: 0}
     IsGrounded: 0
     Other: {fileID: 0}
+  CurrentBack:
+    Direction: {x: 0, y: 0, z: 0}
+    IsGrounded: 0
+    Other: {fileID: 0}
+  CurrentRight:
+    Direction: {x: 0, y: 0, z: 0}
+    IsGrounded: 0
+    Other: {fileID: 0}
+  CurrentLeft:
+    Direction: {x: 0, y: 0, z: 0}
+    IsGrounded: 0
+    Other: {fileID: 0}
   raycastDirections: []
+  FallFor: 2
+  FallTime: 0
 --- !u!54 &1821568028
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1747,7 +1760,7 @@ LineRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1821568022}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -1911,14 +1924,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2095790891}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -1, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -8.49, y: -0.71, z: 11.57}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 963194228}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2095790893
 MonoBehaviour:

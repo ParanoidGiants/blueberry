@@ -33,7 +33,7 @@ public class FollowTarget : MonoBehaviour
         {
             transform.rotation = Quaternion.Lerp(currentRotation, targetRotation, rotateTime/rotateIn);
             rotateTime += Time.deltaTime;
-            yield return null;
+            yield return new WaitForEndOfFrame();
         }
         transform.rotation = targetRotation;
         IsRotating = false;
