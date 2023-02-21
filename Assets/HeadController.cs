@@ -39,15 +39,61 @@ namespace Creeper
                 new RaycastDirection(Vector3.right)
             };
             rigidbody = GetComponent<Rigidbody>();
-            UpdateRaycasts();
             cameraHandleForward = Vector3.forward;
             cameraHandleRight = Vector3.right;
         }
 
-        private void Update()
+        private void FixedUpdate()
         {
-            UpdateRaycasts();
-            UpdateFall();
+            bool wasFalling = IsFalling;
+            IsFalling = CurrentGround == null || CurrentGround.Other == null;
+            if (!wasFalling && IsFalling)
+            {
+                UpdateBackDirection();
+            }
+            else if (wasFalling && !IsFalling)
+            {
+                FreezeRigidbody();
+            }
+            var velocity = FallSpeed * CurrentGround.Direction;
+            if (IsFalling)
+            {
+                // Search for ground
+                RaycastHit hit;
+                if (Physics.Raycast(transform.position, CurrentBack.Direction, out hit, 1f, WhatIsClimbable))
+                {
+                    CurrentBack.Other = hit.transform;
+                    CurrentGround = CurrentBack;
+                    RotatePlayerAndCamera(true);
+                    FallTime = 0f;
+                }
+                else if (Physics.Raycast(transform.position, -moveDirection, out hit, 1f, WhatIsClimbable))
+                {
+                    velocity -= 4f * FallSpeed * moveDirection;
+                    Debug.Log("Got something");
+                }
+            }
+
+            rigidbody.AddForce(velocity, ForceMode.Force);
+            rigidbody.velocity = Vector3.ClampMagnitude(rigidbody.velocity, 2f);
+
+            // UpdateRaycasts();
+            foreach (var raycastDirection in raycastDirections)
+            {
+                RaycastHit hit;
+                Color color;
+                if (Physics.Raycast(transform.position, raycastDirection.Direction, out hit, 1f, WhatIsClimbable))
+                {
+                    color = Color.green;
+                    raycastDirection.Other = hit.transform;
+                }
+                else
+                {
+                    color = Color.red;
+                    raycastDirection.Other = null;
+                }
+                Debug.DrawRay(transform.position, raycastDirection.Direction, color);
+            }
         }
 
         private void OnCollisionEnter(Collision collision)
@@ -84,67 +130,9 @@ namespace Creeper
             rigidbody.MovePosition(transform.position + MoveSpeed * directionWorldSpace);
         }
 
-        private void UpdateFall()
-        {
-            bool wasFalling = IsFalling;
-            IsFalling = CurrentGround == null || CurrentGround.Other == null;
-            if (!wasFalling && IsFalling)
-            {
-                UpdateBackDirection();
-            }
-            else if (wasFalling && !IsFalling)
-            {
-                FreezeRigidbody();
-            }
-
-            var velocity = FallSpeed * CurrentGround.Direction;
-            if (IsFalling)
-            {
-                // Search for ground
-                RaycastHit hit;
-                if (Physics.Raycast(transform.position, CurrentBack.Direction, out hit, 1f, WhatIsClimbable))
-                {
-                    CurrentBack.Other = hit.transform;
-                    CurrentGround = CurrentBack;
-                    RotatePlayerAndCamera(true);
-                    FallTime = 0f;
-                }
-                else if (Physics.Raycast(transform.position, -moveDirection, out hit, 1f, WhatIsClimbable))
-                {
-                    velocity -= 4f * FallSpeed * moveDirection;
-                    Debug.Log("Got something");
-                }
-            }
-
-            rigidbody.AddForce(velocity, ForceMode.Force);
-            rigidbody.velocity = Vector3.ClampMagnitude(rigidbody.velocity, 2f);
-
-        }
-
-        
         private void FreezeRigidbody()
         {
             rigidbody.velocity = Vector3.zero;
-        }
-
-        private void UpdateRaycasts()
-        {
-            foreach (var raycastDirection in raycastDirections)
-            {
-                RaycastHit hit;
-                Color color;
-                if (Physics.Raycast(transform.position, raycastDirection.Direction, out hit, 1f, WhatIsClimbable))
-                {
-                    color = Color.green;
-                    raycastDirection.Other = hit.transform;
-                }
-                else
-                {
-                    color = Color.red;
-                    raycastDirection.Other = null;
-                }
-                Debug.DrawRay(transform.position, raycastDirection.Direction, color);
-            }
         }
 
         private void RotatePlayerAndCamera(bool isFalling)
@@ -234,7 +222,6 @@ namespace Creeper
                     backDirection = -Mathf.Sign(rigidbody.velocity.x) * Vector3.right;
                 }
             }
-            //Debug.Log("Back: " + CurrentBack.Direction);
             if (backDirection == Vector3.zero) return;
 
             CurrentBack = raycastDirections.FirstOrDefault(x => x.Direction == backDirection);
