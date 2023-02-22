@@ -10,9 +10,9 @@ namespace Creeper
         public bool IsGrounded;
         public Transform Other;
 
-        public RaycastDirection(Vector3 _dircetion)
+        public RaycastDirection(Vector3 _direction)
         {
-            Direction = _dircetion;
+            Direction = _direction;
             IsGrounded = false;
         }
     }

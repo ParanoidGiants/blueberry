@@ -11,9 +11,9 @@ namespace Creeper
 
         private void Update()
         {
-            var inpuHorizontal = Input.GetAxis("Horizontal");
+            var inputHorizontal = Input.GetAxis("Horizontal");
             var inputVertical = Input.GetAxis("Vertical");
-            var direction = new Vector2(inpuHorizontal, inputVertical);
+            var direction = new Vector2(inputHorizontal, inputVertical);
 
             if (Mathf.Abs(direction.x) > 0 || Mathf.Abs(direction.y) > 0)
             {
