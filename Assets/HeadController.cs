@@ -6,44 +6,61 @@ namespace Creeper
 {
     public class HeadController : MonoBehaviour
     {
-        public float MoveSpeed;
-        public float FallSpeed;
-        public LayerMask WhatIsClimbable;
-        public bool IsMoving;
-        public bool IsFalling;
+        private const float MOVE_DIRECTION_THRESHOLD = -0.7f;
 
+        public float MoveSpeed;
+        public bool IsMoving;
+
+        public float FallSpeed;
+        public bool IsFalling;
+        public float FallFor = 2f;
+        public float FallTime = 0f;
+
+        public LayerMask WhatIsClimbable;
         public RaycastDirection CurrentGround;
         public RaycastDirection CurrentForward;
         public RaycastDirection CurrentBack;
         private float currentBackReference = 0f;
-        public List<RaycastDirection> raycastDirections;
 
-        private const float MOVE_DIRECTION_THRESHOLD = -0.7f;
         private new Rigidbody rigidbody;
-        private Vector3 moveDirection;
+        private Vector3 currentMoveDirection;
         private Vector3 cameraHandleForward;
         private Vector3 cameraHandleRight;
-        public float FallFor = 2f;
-        public float FallTime = 0f;
 
         private void Start()
         {
             CurrentGround = new RaycastDirection(Vector3.down);
             CurrentForward = new RaycastDirection(Vector3.forward);
-            raycastDirections = new List<RaycastDirection>() {
-                CurrentForward,
-                new RaycastDirection(Vector3.back),
-                new RaycastDirection(Vector3.up),
-                CurrentGround,
-                new RaycastDirection(Vector3.left),
-                new RaycastDirection(Vector3.right)
-            };
+
             rigidbody = GetComponent<Rigidbody>();
             cameraHandleForward = Vector3.forward;
             cameraHandleRight = Vector3.right;
         }
 
         private void FixedUpdate()
+        {
+            CheckForGround();
+            UpdateFall();
+        }
+
+        private void CheckForGround()
+        {
+            RaycastHit hit;
+            Color color;
+            if (Physics.Raycast(transform.position, CurrentGround.Direction, out hit, 1f, WhatIsClimbable))
+            {
+                color = Color.green;
+                CurrentGround.Other = hit.transform;
+            }
+            else
+            {
+                color = Color.red;
+                CurrentGround.Other = null;
+            }
+            Debug.DrawRay(transform.position, CurrentGround.Direction, color);
+        }
+
+        private void UpdateFall()
         {
             bool wasFalling = IsFalling;
             IsFalling = CurrentGround == null || CurrentGround.Other == null;
@@ -67,33 +84,14 @@ namespace Creeper
                     RotatePlayerAndCamera(true);
                     FallTime = 0f;
                 }
-                else if (Physics.Raycast(transform.position, -moveDirection, out hit, 1f, WhatIsClimbable))
+                else if (Physics.Raycast(transform.position, -currentMoveDirection, out hit, 1f, WhatIsClimbable))
                 {
-                    velocity -= 4f * FallSpeed * moveDirection;
-                    Debug.Log("Got something");
+                    velocity -= 4f * FallSpeed * currentMoveDirection;
                 }
             }
 
             rigidbody.AddForce(velocity, ForceMode.Force);
             rigidbody.velocity = Vector3.ClampMagnitude(rigidbody.velocity, 2f);
-
-            // UpdateRaycasts();
-            foreach (var raycastDirection in raycastDirections)
-            {
-                RaycastHit hit;
-                Color color;
-                if (Physics.Raycast(transform.position, raycastDirection.Direction, out hit, 1f, WhatIsClimbable))
-                {
-                    color = Color.green;
-                    raycastDirection.Other = hit.transform;
-                }
-                else
-                {
-                    color = Color.red;
-                    raycastDirection.Other = null;
-                }
-                Debug.DrawRay(transform.position, raycastDirection.Direction, color);
-            }
         }
 
         private void OnCollisionEnter(Collision collision)
@@ -101,7 +99,7 @@ namespace Creeper
             if (IsFalling) return;
 
             Vector3 collisionNormal = collision.GetContact(0).normal;
-            float dotProduct = Vector3.Dot(collisionNormal, moveDirection.normalized);
+            float dotProduct = Vector3.Dot(collisionNormal, currentMoveDirection.normalized);
 
             bool canClimb =
                 // Is Object climbable
@@ -115,8 +113,8 @@ namespace Creeper
 
             if (canClimb)
             {
-                CurrentGround = raycastDirections.FirstOrDefault(x => x.Direction == -collisionNormal);
-                CurrentForward = raycastDirections.FirstOrDefault(x => x.Direction == transform.up);
+                CurrentGround = new RaycastDirection(-collisionNormal);
+                CurrentForward = new RaycastDirection(transform.up);
                 RotatePlayerAndCamera(false);
             }
         }
@@ -126,7 +124,7 @@ namespace Creeper
             if (IsFalling) return;
 
             var directionWorldSpace = cameraHandleRight * inputDirection.x + cameraHandleForward * inputDirection.y;
-            moveDirection = directionWorldSpace;
+            currentMoveDirection = directionWorldSpace;
             rigidbody.MovePosition(transform.position + MoveSpeed * directionWorldSpace);
         }
 
@@ -224,7 +222,7 @@ namespace Creeper
             }
             if (backDirection == Vector3.zero) return;
 
-            CurrentBack = raycastDirections.FirstOrDefault(x => x.Direction == backDirection);
+            CurrentBack = new RaycastDirection(backDirection);
             CurrentForward = CurrentGround;
         }
     }
