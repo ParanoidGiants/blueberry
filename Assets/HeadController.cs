@@ -63,7 +63,7 @@ namespace Creeper
         private void UpdateFall()
         {
             bool wasFalling = IsFalling;
-            IsFalling = CurrentGround == null || CurrentGround.Other == null;
+            IsFalling = CurrentGround.Other == null;
             if (!wasFalling && IsFalling)
             {
                 UpdateBackDirection();
