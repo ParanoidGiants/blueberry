@@ -84,7 +84,7 @@ namespace Creeper
                     RotatePlayerAndCamera(true);
                     FallTime = 0f;
                 }
-                else if (Physics.Raycast(transform.position, -currentMoveDirection, out hit, 1f, WhatIsClimbable))
+                else if (Physics.Raycast(transform.position, -currentMoveDirection, out hit, 10f, WhatIsClimbable))
                 {
                     velocity -= 4f * FallSpeed * currentMoveDirection;
                 }
