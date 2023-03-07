@@ -22,7 +22,7 @@ public class BranchController : MonoBehaviour
         AddBranch();
     }
 
-    public void UpdateBranch()
+    public void UpdateBranch(Vector3 _directionWorldSpace)
     {
         branchTime += Time.deltaTime;
 
@@ -40,9 +40,9 @@ public class BranchController : MonoBehaviour
         branchTime = 0f;
         lastPosition = branch.GetPosition(NumberOfBranches-1);
         branch.positionCount = ++NumberOfBranches;
-        var random = Random.Range(0f, 2f * Mathf.PI);
+        var random = Random.Range(0, Mathf.PI);
         TargetDeltaX = Mathf.Sin(random);
-        random = Random.Range(0f, 2f * Mathf.PI);
+        random = Random.Range(0, -Mathf.PI);
         TargetDeltaZ = Mathf.Sin(random);
     }
 }

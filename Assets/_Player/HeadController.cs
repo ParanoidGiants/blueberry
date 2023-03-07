@@ -119,13 +119,17 @@ namespace Creeper
             }
         }
 
-        public void UpdateHead(Vector2 inputDirection)
+        public Vector3 GetWorldDirection(Vector2 _inputDirection)
+        {
+            var directionWorldSpace = cameraHandleRight * _inputDirection.x + cameraHandleForward * _inputDirection.y;
+            return directionWorldSpace;
+        }
+
+        public void UpdateHead(Vector3 _directionWorldSpace)
         {
             if (IsFalling) return;
-
-            var directionWorldSpace = cameraHandleRight * inputDirection.x + cameraHandleForward * inputDirection.y;
-            currentMoveDirection = directionWorldSpace;
-            rigidbody.MovePosition(transform.position + MoveSpeed * directionWorldSpace);
+            currentMoveDirection = _directionWorldSpace;
+            rigidbody.MovePosition(transform.position + MoveSpeed * currentMoveDirection);
         }
 
         private void FreezeRigidbody()

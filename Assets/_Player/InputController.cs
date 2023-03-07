@@ -23,8 +23,9 @@ namespace Creeper
                 }
                 if (!Camera.IsRotating)
                 {
-                    Head.UpdateHead(direction);
-                    Branch.UpdateBranch();
+                    Vector3 directionWorldSpace = Head.GetWorldDirection(direction);
+                    Head.UpdateHead(directionWorldSpace);
+                    Branch.UpdateBranch(directionWorldSpace);
                 }
                 Head.IsMoving = true;
             }
