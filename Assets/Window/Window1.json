@@ -1,0 +1,24 @@
+{
+  "Items" : [
+    {
+      "text": "I don't understand why you won't try this new restaurant with me.",
+      "participant": "Male3",
+      "length": "L"
+    },
+    {
+      "text": "I don't like that kind of food. I've told you that before.",
+      "participant": "Female1",
+      "length": "L"
+    },
+    {
+      "text": "But you always say that. Can't we just try something new for once?",
+      "participant": "Male3",
+      "length": "L"
+    },
+    {
+      "text": "I guess we could try it, but I'm not making any promises.",
+      "participant": "Female1",
+      "length": "S"
+    }
+  ]
+}
