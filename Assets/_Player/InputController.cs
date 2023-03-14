@@ -7,7 +7,7 @@ namespace Creeper
     {
         public HeadController Head;
         public BranchController Branch;
-        public FollowTarget Camera;
+        public CameraController Camera;
 
         private void Update()
         {
@@ -21,17 +21,8 @@ namespace Creeper
                 {
                     direction.Normalize();
                 }
-                if (!Camera.IsRotating)
-                {
-                    Vector3 directionWorldSpace = Head.GetWorldDirection(direction);
-                    Head.UpdateHead(directionWorldSpace);
-                    Branch.UpdateBranch(directionWorldSpace);
-                }
-                Head.IsMoving = true;
-            }
-            else
-            {
-                Head.IsMoving = false;
+
+                Head.UpdateHeadMovement(direction);
             }
 
             if (Input.GetKeyDown(KeyCode.R))
