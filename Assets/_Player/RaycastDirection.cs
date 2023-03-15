@@ -24,7 +24,8 @@ namespace Creeper
         {
             RaycastHit hit;
             Color color;
-            if (Physics.Raycast(this.source.position, Direction, out hit, 1f, ClimbablePhysicsLayer))
+            IsGrounded = Physics.Raycast(this.source.position, Direction, out hit, 1f, ClimbablePhysicsLayer);
+            if (IsGrounded)
             {
                 color = Color.green;
                 Other = hit.transform;

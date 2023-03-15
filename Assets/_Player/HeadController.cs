@@ -17,6 +17,9 @@ namespace Creeper
         public LayerMask WhatIsClimbable;
         public RaycastDirection CurrentGround;
         public RaycastDirection CurrentBack;
+        public RaycastDirection CurrentRight;
+        public RaycastDirection CurrentLeft;
+
         public Vector3 GroundNormal;
         public RaycastDirection CurrentForward;
 
@@ -25,6 +28,7 @@ namespace Creeper
         private Camera cam;
         private new Rigidbody rigidbody;
         private Vector3 projectedUp;
+        private Vector3 projectedForward;
         private Vector3 projectedRight;
 
         public bool IsGrounded { get; private set; }
@@ -45,14 +49,19 @@ namespace Creeper
 
 
             projectedUp = Vector3.ProjectOnPlane(cam.transform.up, CurrentGround.Direction).normalized;
-            projectedRight = Vector3.ProjectOnPlane(cam.transform.right, CurrentGround.Direction).normalized;
             Debug.DrawRay(transform.position, projectedUp, Color.green);
-            Debug.DrawRay(transform.position, projectedRight, Color.blue);
+            
+            projectedForward = Vector3.ProjectOnPlane(cam.transform.forward, CurrentGround.Direction).normalized;
+            Debug.DrawRay(transform.position, projectedForward, Color.blue);
+            
+            projectedRight = Vector3.ProjectOnPlane(cam.transform.right, CurrentGround.Direction).normalized;
+            Debug.DrawRay(transform.position, projectedRight, Color.red);
         }
 
         private void FixedUpdate()
         {
             CurrentGround.CheckForGround();
+
             UpdateFall();
         }
 
@@ -71,13 +80,29 @@ namespace Creeper
 
         private void UpdateFall()
         {
+            if (!IsGrounded)
+            {
+                CurrentBack.CheckForGround();
+                CurrentLeft.CheckForGround();
+                CurrentRight.CheckForGround();
+
+                if (CurrentBack.IsGrounded)
+                {
+                    rigidbody.AddForce(HookSpeed * CurrentBack.Direction * Time.deltaTime, ForceMode.Acceleration);
+                }
+                if (CurrentLeft.IsGrounded)
+                {
+                    rigidbody.AddForce(HookSpeed * CurrentLeft.Direction * Time.deltaTime, ForceMode.Acceleration);
+                }
+                if (CurrentRight.IsGrounded)
+                {
+                    rigidbody.AddForce(HookSpeed * CurrentRight.Direction * Time.deltaTime, ForceMode.Acceleration);
+                }
+            }
+
             // TODO: Check FallSpeed again, when input vector can be projected on ground surface
             rigidbody.AddForce(FallSpeed * CurrentGround.Direction * Time.deltaTime, ForceMode.Acceleration);
 
-            if (!IsGrounded)
-            {
-                rigidbody.AddForce(HookSpeed * CurrentBack.Direction * Time.deltaTime, ForceMode.Acceleration);
-            }
         }
 
         private void OnCollisionEnter(Collision collision)
@@ -85,6 +110,7 @@ namespace Creeper
             if (((1 << collision.gameObject.layer) & WhatIsClimbable) != 0)
             {
                 var collisionNormal = collision.contacts[0].normal;
+                Debug.DrawRay(collision.contacts[0].point, collisionNormal, Color.magenta, 5f);
                 CurrentGround.Direction = -collisionNormal;
                 CurrentGround.Other = collision.transform;
                 currentContacts.Add(collision.collider);
