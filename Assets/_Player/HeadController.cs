@@ -37,24 +37,27 @@ namespace Creeper
         {
             CurrentGround = new RaycastDirection(transform, Vector3.down);
             CurrentForward = new RaycastDirection(transform, Vector3.forward);
-            
+            CurrentRight = new RaycastDirection(transform, Vector3.right);
+            CurrentLeft = new RaycastDirection(transform, Vector3.left);
+            CurrentBack = new RaycastDirection(transform, Vector3.back);
+
             cam = FindObjectOfType<Camera>();
             rigidbody = GetComponent<Rigidbody>();
         }
 
         private void Update()
         {
+            var playerPosition = transform.position;
+            var cameraPosition = cam.transform.position;
+            var collisionNormal = CurrentGround.Direction;
+            var cameraRight = cam.transform.position + cam.transform.right;
+            this.projectedRight = ChatGPT.IntersectingLine(playerPosition, cameraRight, cameraPosition, collisionNormal);
+            var cameraUp = cam.transform.position + cam.transform.up;
+            this.projectedUp = ChatGPT.IntersectingLine(playerPosition, cameraUp, cameraPosition, collisionNormal);
+
             Debug.DrawRay(transform.position, cam.transform.up, Color.cyan);
             Debug.DrawRay(transform.position, cam.transform.right, Color.red);
-
-
-            projectedUp = Vector3.ProjectOnPlane(cam.transform.up, CurrentGround.Direction).normalized;
             Debug.DrawRay(transform.position, projectedUp, Color.green);
-
-            projectedForward = Vector3.ProjectOnPlane(cam.transform.forward, CurrentGround.Direction).normalized;
-            Debug.DrawRay(transform.position, projectedForward, Color.blue);
-
-            projectedRight = Vector3.ProjectOnPlane(cam.transform.right, CurrentGround.Direction).normalized;
             Debug.DrawRay(transform.position, projectedRight, Color.magenta);
         }
 
@@ -82,22 +85,22 @@ namespace Creeper
         {
             if (!IsGrounded)
             {
-                //    CurrentBack.CheckForGround();
-                //    CurrentLeft.CheckForGround();
-                //    CurrentRight.CheckForGround();
+                CurrentBack.CheckForGround();
 
-                //    if (CurrentBack.IsGrounded)
-                //    {
-                //        rigidbody.AddForce(HookSpeed * CurrentBack.Direction * Time.deltaTime, ForceMode.Acceleration);
-                //    }
-                //    if (CurrentLeft.IsGrounded)
-                //    {
-                //        rigidbody.AddForce(HookSpeed * CurrentLeft.Direction * Time.deltaTime, ForceMode.Acceleration);
-                //    }
-                //    if (CurrentRight.IsGrounded)
-                //    {
-                //        rigidbody.AddForce(HookSpeed * CurrentRight.Direction * Time.deltaTime, ForceMode.Acceleration);
-                //    }
+                if (CurrentBack.IsGrounded)
+                {
+                    rigidbody.AddForce(HookSpeed * CurrentBack.Direction * Time.deltaTime, ForceMode.Acceleration);
+                }
+                //CurrentLeft.CheckForGround();
+                //CurrentRight.CheckForGround();
+                //if (CurrentLeft.IsGrounded)
+                //{
+                //    rigidbody.AddForce(HookSpeed * CurrentLeft.Direction * Time.deltaTime, ForceMode.Acceleration);
+                //}
+                //if (CurrentRight.IsGrounded)
+                //{
+                //    rigidbody.AddForce(HookSpeed * CurrentRight.Direction * Time.deltaTime, ForceMode.Acceleration);
+                //}
             }
 
             // TODO: Check FallSpeed again, when input vector can be projected on ground surface
