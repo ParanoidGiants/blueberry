@@ -50,12 +50,12 @@ namespace Creeper
 
             projectedUp = Vector3.ProjectOnPlane(cam.transform.up, CurrentGround.Direction).normalized;
             Debug.DrawRay(transform.position, projectedUp, Color.green);
-            
+
             projectedForward = Vector3.ProjectOnPlane(cam.transform.forward, CurrentGround.Direction).normalized;
             Debug.DrawRay(transform.position, projectedForward, Color.blue);
-            
+
             projectedRight = Vector3.ProjectOnPlane(cam.transform.right, CurrentGround.Direction).normalized;
-            Debug.DrawRay(transform.position, projectedRight, Color.red);
+            Debug.DrawRay(transform.position, projectedRight, Color.magenta);
         }
 
         private void FixedUpdate()
@@ -82,22 +82,22 @@ namespace Creeper
         {
             if (!IsGrounded)
             {
-                CurrentBack.CheckForGround();
-                CurrentLeft.CheckForGround();
-                CurrentRight.CheckForGround();
+                //    CurrentBack.CheckForGround();
+                //    CurrentLeft.CheckForGround();
+                //    CurrentRight.CheckForGround();
 
-                if (CurrentBack.IsGrounded)
-                {
-                    rigidbody.AddForce(HookSpeed * CurrentBack.Direction * Time.deltaTime, ForceMode.Acceleration);
-                }
-                if (CurrentLeft.IsGrounded)
-                {
-                    rigidbody.AddForce(HookSpeed * CurrentLeft.Direction * Time.deltaTime, ForceMode.Acceleration);
-                }
-                if (CurrentRight.IsGrounded)
-                {
-                    rigidbody.AddForce(HookSpeed * CurrentRight.Direction * Time.deltaTime, ForceMode.Acceleration);
-                }
+                //    if (CurrentBack.IsGrounded)
+                //    {
+                //        rigidbody.AddForce(HookSpeed * CurrentBack.Direction * Time.deltaTime, ForceMode.Acceleration);
+                //    }
+                //    if (CurrentLeft.IsGrounded)
+                //    {
+                //        rigidbody.AddForce(HookSpeed * CurrentLeft.Direction * Time.deltaTime, ForceMode.Acceleration);
+                //    }
+                //    if (CurrentRight.IsGrounded)
+                //    {
+                //        rigidbody.AddForce(HookSpeed * CurrentRight.Direction * Time.deltaTime, ForceMode.Acceleration);
+                //    }
             }
 
             // TODO: Check FallSpeed again, when input vector can be projected on ground surface
