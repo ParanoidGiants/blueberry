@@ -4,50 +4,38 @@ using UnityEngine;
 namespace Creeper
 {
     [Serializable]
-    public class RaycastDirections
+    public class RaycastController
     {
-        public RaycastDirection CurrentUp;
-        public RaycastDirection CurrentDown;
-        public RaycastDirection CurrentLeft;
-        public RaycastDirection CurrentRight;
-        public RaycastDirection CurrentForward;
-        public RaycastDirection CurrentBack;
+        private RaycastDirection ground;
+        private RaycastDirection behind;
 
-        public RaycastDirections(Transform source)
+        public bool IsGrounded { get { return ground.isDetecting; } }
+        public bool IsSomethingBehind { get { return behind.isDetecting; } }
+        public Vector3 UpDirection { get { return -ground.Direction; } }
+        public Vector3 BehindDirection { get { return behind.Direction; } }
+
+        public RaycastController(Transform source)
         {
-            CurrentUp = new RaycastDirection(source, Vector3.up);
-            CurrentDown = new RaycastDirection(source, Vector3.down);
-            CurrentLeft = new RaycastDirection(source, Vector3.left);
-            CurrentRight = new RaycastDirection(source, Vector3.right);
-            CurrentForward = new RaycastDirection(source, Vector3.forward);
-            CurrentBack = new RaycastDirection(source, Vector3.back);
+            ground = new RaycastDirection(source, Vector3.down);
+            behind = new RaycastDirection(source, Vector3.back);
         }
 
-        public void UpdateMoveDirection(Vector3 moveDirection)
+        public void UpdateBehind(Vector3 _behindDirection)
         {
-            CurrentForward.Direction = moveDirection;
-            CurrentBack.Direction = -moveDirection;
-            CurrentLeft.Direction = Vector3.Cross(CurrentForward.Direction, CurrentDown.Direction);
+            behind.Direction = _behindDirection;
         }
 
-        public void UpdateDownDirection(Vector3 downDirection)
+        public void UpdateDownDirection(Vector3 _downDirection)
         {
-            CurrentDown.Direction = downDirection;
-            CurrentUp.Direction = -downDirection;
+            ground.Direction = _downDirection;
         }
+
+        public Vector3 GroundDirection { get { return ground.Direction; } }
 
         public void Update()
         {
-            CurrentDown.Update();
-            CurrentLeft.Update();
-            CurrentRight.Update();
-            CurrentForward.Update();
-            CurrentBack.Update();
-        }
-
-        public bool IsGrounded()
-        {
-            return CurrentDown.IsDetecting;
+            ground.Update();
+            behind.Update();
         }
     }
 
@@ -56,36 +44,31 @@ namespace Creeper
     public class RaycastDirection
     {
         public Vector3 Direction;
-        public bool IsDetecting;
-        public float Distance;
-        public Transform Other;
+        public bool isDetecting;
+        public bool IsDetecting { get { return isDetecting; } }
 
         private Transform source;
-        private int ClimbablePhysicsLayer = LayerMask.GetMask("Climbable");
+        private int whatIsClimbable = HeadController.WHAT_IS_CLIMBABLE;
 
         public RaycastDirection(Transform _source, Vector3 _direction)
         {
             this.source = _source;
+            this.isDetecting = false;
             Direction = _direction;
-            IsDetecting = false;
         }
 
-        internal void Update()
+        public void Update()
         {
             RaycastHit hit;
             Color color;
-            IsDetecting = Physics.Raycast(this.source.position, Direction, out hit, 1f, ClimbablePhysicsLayer);
-            if (IsDetecting)
+            this.isDetecting = Physics.Raycast(this.source.position, Direction, out hit, 1f, whatIsClimbable);
+            if (this.isDetecting)
             {
                 color = Color.green;
-                Other = hit.transform;
-                Distance = hit.distance;
             }
             else
             {
                 color = Color.red;
-                Other = null;
-                Distance = 0f;
             }
             Debug.DrawRay(this.source.position, Direction, color);
         }
