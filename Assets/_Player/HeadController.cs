@@ -1,4 +1,3 @@
-using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,7 +5,7 @@ namespace Creeper
 {
     public class HeadController : MonoBehaviour
     {
-        public static int WHAT_IS_CLIMBABLE = LayerMask.GetMask("Climbable");
+        public static int WHAT_IS_CLIMBABLE;
 
         public float MoveSpeed;
         public float FallSpeed;
@@ -23,8 +22,9 @@ namespace Creeper
 
         private void Start()
         {
-            this.raycastController = new RaycastController(transform);
+            WHAT_IS_CLIMBABLE = LayerMask.GetMask("Climbable");
 
+            this.raycastController = new RaycastController(transform);
             this.cam = FindObjectOfType<Camera>();
             this.rigidbody = GetComponent<Rigidbody>();
         }
@@ -33,17 +33,12 @@ namespace Creeper
         {
             var playerPosition = transform.position;
             var cameraPosition = this.cam.transform.position;
-            var currentGroundDirection = this.raycastController.GroundDirection;
+            var wallDirection = this.raycastController.GroundDirection;
 
             var cameraRight = this.cam.transform.position + this.cam.transform.right;
-            this.projectedRight = ChatGPT.IntersectingLine(playerPosition, cameraRight, cameraPosition, currentGroundDirection);
+            this.projectedRight = ChatGPT.IntersectingLine(playerPosition, cameraRight, cameraPosition, wallDirection);
             var cameraUp = this.cam.transform.position + this.cam.transform.up;
-            this.projectedUp = ChatGPT.IntersectingLine(playerPosition, cameraUp, cameraPosition, currentGroundDirection);
-
-            //Debug.DrawRay(transform.position, this.cam.transform.up, Color.cyan);
-            //Debug.DrawRay(transform.position, this.cam.transform.right, Color.red);
-            //Debug.DrawRay(transform.position, this.projectedUp, Color.green);
-            //Debug.DrawRay(transform.position, this.projectedRight, Color.magenta);
+            this.projectedUp = ChatGPT.IntersectingLine(playerPosition, cameraUp, cameraPosition, wallDirection);
         }
 
         private void FixedUpdate()

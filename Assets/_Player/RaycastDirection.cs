@@ -6,13 +6,14 @@ namespace Creeper
     [Serializable]
     public class RaycastController
     {
-        private RaycastDirection ground;
-        private RaycastDirection behind;
 
         public bool IsGrounded { get { return ground.isDetecting; } }
         public bool IsSomethingBehind { get { return behind.isDetecting; } }
         public Vector3 UpDirection { get { return -ground.Direction; } }
         public Vector3 BehindDirection { get { return behind.Direction; } }
+
+        private RaycastDirection ground;
+        private RaycastDirection behind;
 
         public RaycastController(Transform source)
         {
@@ -48,12 +49,13 @@ namespace Creeper
         public bool IsDetecting { get { return isDetecting; } }
 
         private Transform source;
-        private int whatIsClimbable = HeadController.WHAT_IS_CLIMBABLE;
+        private int whatIsClimbable;
 
         public RaycastDirection(Transform _source, Vector3 _direction)
         {
             this.source = _source;
             this.isDetecting = false;
+            this.whatIsClimbable = HeadController.WHAT_IS_CLIMBABLE;
             Direction = _direction;
         }
 
