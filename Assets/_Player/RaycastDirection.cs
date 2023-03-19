@@ -38,7 +38,6 @@ namespace Creeper
 
         public void Update()
         {
-            CurrentUp.Update();
             CurrentDown.Update();
             CurrentLeft.Update();
             CurrentRight.Update();

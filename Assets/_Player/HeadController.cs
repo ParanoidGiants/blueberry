@@ -47,10 +47,10 @@ namespace Creeper
             var cameraUp = cam.transform.position + cam.transform.up;
             this.projectedUp = ChatGPT.IntersectingLine(playerPosition, cameraUp, cameraPosition, collisionNormal);
 
-            Debug.DrawRay(transform.position, cam.transform.up, Color.cyan);
-            Debug.DrawRay(transform.position, cam.transform.right, Color.red);
-            Debug.DrawRay(transform.position, projectedUp, Color.green);
-            Debug.DrawRay(transform.position, projectedRight, Color.magenta);
+            //Debug.DrawRay(transform.position, cam.transform.up, Color.cyan);
+            //Debug.DrawRay(transform.position, cam.transform.right, Color.red);
+            //Debug.DrawRay(transform.position, projectedUp, Color.green);
+            //Debug.DrawRay(transform.position, projectedRight, Color.magenta);
         }
 
         private void FixedUpdate()
@@ -76,19 +76,18 @@ namespace Creeper
         private void UpdateFall()
         {
             // TODO: Check FallSpeed again, when input vector can be projected on ground surface
+            if (IsGrounded) return;
+
             RaycastDirections.Update();
-            var isGroundedNow = RaycastDirections.IsGrounded();
-
-
-            rigidbody.AddForce(FallSpeed * RaycastDirections.CurrentDown.Direction * Time.deltaTime, ForceMode.Acceleration);
-
-            if (!IsGrounded)
+            if (RaycastDirections.CurrentBack.IsDetecting)
             {
-                if (RaycastDirections.CurrentBack.IsDetecting)
-                {
-                    rigidbody.AddForce(HookSpeed * RaycastDirections.CurrentBack.Direction * Time.deltaTime, ForceMode.Acceleration);
-                }
+                rigidbody.MovePosition(transform.position + FallSpeed * RaycastDirections.CurrentBack.Direction);
             }
+            else
+            {
+                rigidbody.MovePosition(transform.position + FallSpeed * RaycastDirections.CurrentDown.Direction);
+            }
+
         }
 
         private void OnCollisionEnter(Collision collision)
