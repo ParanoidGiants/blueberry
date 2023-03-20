@@ -1,34 +1,73 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 namespace Creeper
 {
     public class InputController : MonoBehaviour
     {
+        #region PlayerInputBinding
+        private PlayerInputs input = null;
+
+        private void Awake()
+        {
+            input = new PlayerInputs();
+        }
+
+        private void OnEnable()
+        {
+            input.Enable();
+            input.PlayerInput.Move.performed += OnMove;
+            input.PlayerInput.Move.canceled += OnMove;
+            input.PlayerInput.Rotate.performed += OnRotate;
+            input.PlayerInput.Rotate.canceled += OnCancelRotate;
+        }
+
+        private void OnDisable()
+        {
+            input.Disable();
+            input.PlayerInput.Move.performed -= OnMove;
+            input.PlayerInput.Move.canceled -= OnMove;
+            input.PlayerInput.Rotate.performed -= OnRotate;
+            input.PlayerInput.Rotate.canceled -= OnCancelRotate;
+        }
+        #endregion PlayerInputBinding
+
+        #region PlayerInputReferences
         public HeadController Head;
         public BranchController Branch;
         public CameraController Camera;
+        #endregion PlayerInputReferences
 
-        private void Update()
+        #region PlayerParameters
+        public float PlayerMoveSpeed = 0.1f;
+        public float CameraRotateSpeed = 0.1f;
+        #endregion PlayerInputReferences
+
+        public void OnMove(InputAction.CallbackContext _directionCallback)
         {
-            var inputHorizontal = Input.GetAxis("Horizontal");
-            var inputVertical = Input.GetAxis("Vertical");
-            var direction = new Vector2(inputHorizontal, inputVertical);
-
-            if (Mathf.Abs(direction.x) > 0 || Mathf.Abs(direction.y) > 0)
+            var direction = _directionCallback.ReadValue<Vector2>();
+            if (direction.magnitude > 1f)
             {
-                if (direction.magnitude > 1f)
-                {
-                    direction.Normalize();
-                }
-
-                Head.UpdateHeadMovement(direction);
+                direction.Normalize();
             }
+            Head.SetMovementDirection(direction);
+        }
 
-            if (Input.GetKeyDown(KeyCode.R))
+        public void OnRotate(InputAction.CallbackContext _directionCallback)
+        {
+            var direction = _directionCallback.ReadValue<Vector2>();
+            if (direction.Equals(Vector3.zero)) return;
+            if (direction.magnitude > 1f)
             {
-                SceneManager.LoadScene(0);
+                direction.Normalize();
             }
+            Camera.SetRotateDirection(direction * CameraRotateSpeed);
+        }
+
+        public void OnCancelRotate(InputAction.CallbackContext _directionCallback)
+        {
+            Camera.SetRotateDirection(Vector3.zero);
         }
     }
 }

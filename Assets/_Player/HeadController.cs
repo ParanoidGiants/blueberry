@@ -8,57 +8,47 @@ namespace Creeper
         public static int WHAT_IS_CLIMBABLE;
 
         public float MoveSpeed;
-        public float FallSpeed;
+        public Vector3 inputDirection;
+        public Vector3 projectedRight;
+        public Vector3 projectedUp;
+        public RaycastController raycastController;
 
         private List<Collider> currentContacts = new List<Collider>();
-
-        private RaycastController raycastController;
-        private Camera cam;
         private new Rigidbody rigidbody;
-        private Vector3 projectedUp;
-        private Vector3 projectedRight;
 
         public bool IsGrounded { get; private set; }
+        public Vector3 GroundDirection { get { return raycastController.GroundDirection; } }
 
         private void Start()
         {
             WHAT_IS_CLIMBABLE = LayerMask.GetMask("Climbable");
 
             this.raycastController = new RaycastController(transform);
-            this.cam = FindObjectOfType<Camera>();
             this.rigidbody = GetComponent<Rigidbody>();
-        }
-
-        private void Update()
-        {
-            var playerPosition = transform.position;
-            var cameraPosition = this.cam.transform.position;
-            var wallDirection = this.raycastController.GroundDirection;
-
-            var cameraRight = this.cam.transform.position + this.cam.transform.right;
-            this.projectedRight = ChatGPT.IntersectingLine(playerPosition, cameraRight, cameraPosition, wallDirection);
-            var cameraUp = this.cam.transform.position + this.cam.transform.up;
-            this.projectedUp = ChatGPT.IntersectingLine(playerPosition, cameraUp, cameraPosition, wallDirection);
         }
 
         private void FixedUpdate()
         {
-            this.raycastController.Update();
-
             UpdateFall();
+            UpdateMovement();
         }
-
-        public void UpdateHeadMovement(Vector3 _playerInput)
+        private void UpdateMovement()
         {
             if (!IsGrounded) return;
 
-            var currentMoveDirection = this.projectedUp * _playerInput.y + this.projectedRight * _playerInput.x;
-            if (currentMoveDirection.magnitude > 0.1f)
+            (this.projectedRight, this.projectedUp) = GetMovementAxese();
+            var moveDirection = this.projectedRight * this.inputDirection.x + this.projectedUp * this.inputDirection.y;
+            if (this.inputDirection.magnitude > 0.01f)
             {
-                transform.rotation = Quaternion.LookRotation(currentMoveDirection, this.raycastController.UpDirection);
+                transform.rotation = Quaternion.LookRotation(moveDirection, this.raycastController.UpDirection);
             }
-            this.rigidbody.MovePosition(transform.position + MoveSpeed * currentMoveDirection.normalized);
-            this.raycastController.UpdateBehind(currentMoveDirection);
+            this.rigidbody.MovePosition(transform.position + MoveSpeed * moveDirection);
+            this.raycastController.UpdateBehind(-moveDirection);
+        }
+
+        public void SetMovementDirection(Vector3 _inputDirection)
+        {
+            this.inputDirection = _inputDirection;
         }
 
         private void UpdateFall()
@@ -68,19 +58,17 @@ namespace Creeper
             this.raycastController.Update();
             if (this.raycastController.IsSomethingBehind)
             {
-                this.rigidbody.MovePosition(transform.position + FallSpeed * this.raycastController.BehindDirection);
+                this.rigidbody.MovePosition(transform.position + MoveSpeed * this.raycastController.BehindDirection);
             }
             else
             {
-                this.rigidbody.MovePosition(transform.position + FallSpeed * this.raycastController.GroundDirection);
+                this.rigidbody.MovePosition(transform.position + MoveSpeed * this.raycastController.GroundDirection);
             }
-
         }
 
         private void OnCollisionEnter(Collision collision)
         {
-            bool isCollisionObjectClimbable = ((1 << collision.gameObject.layer) & WHAT_IS_CLIMBABLE) != 0;
-            if (!isCollisionObjectClimbable) return;
+            if (!IsLayerClimbable(collision.gameObject.layer)) return;
 
             this.currentContacts.Add(collision.collider);
 
@@ -95,11 +83,25 @@ namespace Creeper
 
         private void OnCollisionExit(Collision collision)
         {
-            bool isCollisionObjectClimbable = ((1 << collision.gameObject.layer) & WHAT_IS_CLIMBABLE) != 0;
-            if (!isCollisionObjectClimbable) return;
+            if (!IsLayerClimbable(collision.gameObject.layer)) return;
 
             this.currentContacts.Remove(collision.collider);
             IsGrounded = this.currentContacts.Count != 0;
+        }
+
+        private bool IsLayerClimbable(int _layer)
+        {
+            return ((1 << _layer) & WHAT_IS_CLIMBABLE) != 0;
+        }
+
+        public (Vector3, Vector3) GetMovementAxese()
+        {
+            var camera = Camera.main.transform;
+            var wallDirection = GroundDirection;
+            return (
+                ChatGPT.IntersectingLine(transform.position, camera.right, camera.position, wallDirection),
+                ChatGPT.IntersectingLine(transform.position, camera.up, camera.position, wallDirection)
+            );
         }
     }
 }

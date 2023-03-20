@@ -6,13 +6,16 @@ public static class ChatGPT
 {
     public static Vector3 IntersectingLine(
         Vector3 playerPosition,
-        Vector3 cameraRight,
+        Vector3 cameraOffset,
         Vector3 cameraPosition,
         Vector3 collisionNormal
         )
     {
+        var cameraWithOffset = cameraPosition + cameraOffset;
+        var v = cameraWithOffset - playerPosition;
+        var w = cameraPosition - playerPosition;
         // Calculate the normal vector of plane "T"
-        Vector3 normalT = Vector3.Cross(cameraRight - playerPosition, cameraPosition - playerPosition).normalized;
+        Vector3 normalT = Vector3.Cross(v, w).normalized;
 
         // Calculate the direction vector of the intersecting line
         Vector3 direction = Vector3.Cross(normalT, collisionNormal);

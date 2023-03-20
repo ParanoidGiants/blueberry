@@ -783,6 +783,8 @@ MonoBehaviour:
   Head: {fileID: 1821568027}
   Branch: {fileID: 1821568030}
   Camera: {fileID: 2095790893}
+  PlayerMoveSpeed: 0.1
+  CameraRotateSpeed: 0.01
 --- !u!4 &497094058
 Transform:
   m_ObjectHideFlags: 0
@@ -790,13 +792,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 497094056}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 1, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &661367120
 PrefabInstance:
@@ -2240,11 +2242,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5470295772608336504, guid: 257cd7876e4b6da43b92681f37c57bfa, type: 3}
       propertyPath: FallSpeed
-      value: 0.1
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 5470295772608336505, guid: 257cd7876e4b6da43b92681f37c57bfa, type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 5470295772608336505, guid: 257cd7876e4b6da43b92681f37c57bfa, type: 3}
       propertyPath: m_LocalPosition.x
