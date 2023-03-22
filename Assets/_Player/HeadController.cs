@@ -5,14 +5,13 @@ namespace Creeper
 {
     public class HeadController : MonoBehaviour
     {
+        public float MoveSpeed;
         public static int WHAT_IS_CLIMBABLE;
 
-        public float MoveSpeed;
-        public Vector3 inputDirection;
-        public Vector3 projectedRight;
-        public Vector3 projectedUp;
-        public RaycastController raycastController;
-
+        private Vector3 inputDirection;
+        private Vector3 projectedRight;
+        private Vector3 projectedUp;
+        private RaycastController raycastController;
         private List<Collider> currentContacts = new List<Collider>();
         private new Rigidbody rigidbody;
 
@@ -38,12 +37,11 @@ namespace Creeper
 
             (this.projectedRight, this.projectedUp) = GetMovementAxese();
             var moveDirection = this.projectedRight * this.inputDirection.x + this.projectedUp * this.inputDirection.y;
-            if (this.inputDirection.magnitude > 0.01f)
-            {
-                transform.rotation = Quaternion.LookRotation(moveDirection, this.raycastController.UpDirection);
-            }
+            moveDirection = moveDirection.normalized;
             this.rigidbody.MovePosition(transform.position + MoveSpeed * moveDirection);
             this.raycastController.UpdateBehind(-moveDirection);
+
+            transform.rotation = Quaternion.LookRotation(moveDirection, this.raycastController.UpDirection);
         }
 
         public void SetMovementDirection(Vector3 _inputDirection)

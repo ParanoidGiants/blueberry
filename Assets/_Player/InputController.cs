@@ -35,13 +35,7 @@ namespace Creeper
 
         #region PlayerInputReferences
         public HeadController Head;
-        public BranchController Branch;
         public CameraController Camera;
-        #endregion PlayerInputReferences
-
-        #region PlayerParameters
-        public float PlayerMoveSpeed = 0.1f;
-        public float CameraRotateSpeed = 0.1f;
         #endregion PlayerInputReferences
 
         public void OnMove(InputAction.CallbackContext _directionCallback)
@@ -62,7 +56,7 @@ namespace Creeper
             {
                 direction.Normalize();
             }
-            Camera.SetRotateDirection(direction * CameraRotateSpeed);
+            Camera.SetRotateDirection(direction );
         }
 
         public void OnCancelRotate(InputAction.CallbackContext _directionCallback)

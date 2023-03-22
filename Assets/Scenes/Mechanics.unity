@@ -784,7 +784,7 @@ MonoBehaviour:
   Branch: {fileID: 1821568030}
   Camera: {fileID: 2095790893}
   PlayerMoveSpeed: 0.1
-  CameraRotateSpeed: 0.01
+  CameraRotateSpeed: 1
 --- !u!4 &497094058
 Transform:
   m_ObjectHideFlags: 0

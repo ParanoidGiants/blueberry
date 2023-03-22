@@ -5,11 +5,12 @@ using UnityEngine;
 public class CameraController : MonoBehaviour
 {
     public Transform Target;
-    private Coroutine rotateRoutine;
+    public float RotateSpeed = 0.1f;
     private Camera cam;
     public Camera Cam { get { return cam; } }
     public bool IsRotating;
     private Vector2 rotateDirection;
+
 
     private void Start()
     {
@@ -39,6 +40,6 @@ public class CameraController : MonoBehaviour
 
     public void SetRotateDirection(Vector2 _direction)
     {
-        this.rotateDirection = _direction;
+        this.rotateDirection = RotateSpeed * _direction;
     }
 }
