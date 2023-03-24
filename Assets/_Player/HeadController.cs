@@ -1,59 +1,66 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace Creeper
 {
+    [Serializable]
+    public class Axis
+    {
+        public Vector3 up;
+        public Vector3 right;
+    }
     public class HeadController : MonoBehaviour
     {
         public float MoveSpeed;
         public static int WHAT_IS_CLIMBABLE;
 
         private Vector3 inputDirection;
-        private Vector3 projectedRight;
-        private Vector3 projectedUp;
+
+        [SerializeField]
+        private Axis projectedAxis;
         private RaycastController raycastController;
-        private List<Collider> currentContacts = new List<Collider>();
         private new Rigidbody rigidbody;
 
-        public bool IsGrounded { get; private set; }
+        [SerializeField]
+        private bool isGrounded = false;
         public Vector3 GroundDirection { get { return raycastController.GroundDirection; } }
 
         private void Start()
         {
             WHAT_IS_CLIMBABLE = LayerMask.GetMask("Climbable");
-
             this.raycastController = new RaycastController(transform);
             this.rigidbody = GetComponent<Rigidbody>();
         }
 
         private void FixedUpdate()
         {
+            this.rigidbody.velocity = Vector3.zero;
+            this.raycastController.Update();
             UpdateFall();
             UpdateMovement();
         }
+
         private void UpdateMovement()
         {
-            if (!IsGrounded) return;
+            if (!isGrounded) return;
 
-            (this.projectedRight, this.projectedUp) = GetMovementAxese();
-            var moveDirection = this.projectedRight * this.inputDirection.x + this.projectedUp * this.inputDirection.y;
-            moveDirection = moveDirection.normalized;
-            this.rigidbody.MovePosition(transform.position + MoveSpeed * moveDirection);
+            this.projectedAxis = GetMovementAxese();
+            var moveDirection = Vector3.Normalize(
+                this.projectedAxis.right * this.inputDirection.x
+                + this.projectedAxis.up * this.inputDirection.y
+            );
             this.raycastController.UpdateBehind(-moveDirection);
-
-            transform.rotation = Quaternion.LookRotation(moveDirection, this.raycastController.UpDirection);
-        }
-
-        public void SetMovementDirection(Vector3 _inputDirection)
-        {
-            this.inputDirection = _inputDirection;
+            this.rigidbody.MovePosition(transform.position + MoveSpeed * moveDirection);
+            if (this.inputDirection.magnitude > 0.1f)
+            {
+                transform.rotation = Quaternion.LookRotation(moveDirection, this.raycastController.UpDirection);
+            }
         }
 
         private void UpdateFall()
         {
-            if (IsGrounded) return;
-
-            this.raycastController.Update();
+            if (isGrounded) return;
             if (this.raycastController.IsSomethingBehind)
             {
                 this.rigidbody.MovePosition(transform.position + MoveSpeed * this.raycastController.BehindDirection);
@@ -64,42 +71,52 @@ namespace Creeper
             }
         }
 
-        private void OnCollisionEnter(Collision collision)
+        public void SetMovementDirection(Vector3 _inputDirection) { this.inputDirection = _inputDirection; }
+
+        int numberOfContacts = 0;
+        private void CheckCollisions(Collision _collision)
         {
-            if (!IsLayerClimbable(collision.gameObject.layer)) return;
+            // Check if gameObject is climbable
+            if (((1 << _collision.gameObject.layer) & WHAT_IS_CLIMBABLE) != 0) return;
 
-            this.currentContacts.Add(collision.collider);
+            ContactPoint[] _contacts = _collision.contacts;
+            var contactCount = _contacts.Length;
+            if (contactCount == 0)
+            {
+                isGrounded = false;
+                Debug.Log("SEARCH!");
+            }
+            else if (numberOfContacts != contactCount)
+            {
+                var contactPoint = _contacts[contactCount - 1];
+                isGrounded = true;
+                Debug.Log("CONTACT!");
+                var collisionNormal = contactPoint.normal;
+                this.raycastController.UpdateDownDirection(-collisionNormal);
+                Debug.DrawRay(contactPoint.point, collisionNormal, Color.magenta, 5f);
+                transform.up = this.raycastController.UpDirection;
+            }
 
-            var collisionNormal = collision.contacts[0].normal;
-            this.raycastController.UpdateDownDirection(-collisionNormal);
-            Debug.DrawRay(collision.contacts[0].point, collisionNormal, Color.magenta, 5f);
-
-            transform.up = this.raycastController.UpDirection;
-            this.rigidbody.velocity = Vector3.zero;
-            IsGrounded = true;
+            numberOfContacts = contactCount;
         }
 
-        private void OnCollisionExit(Collision collision)
-        {
-            if (!IsLayerClimbable(collision.gameObject.layer)) return;
+        private void OnCollisionEnter(Collision _collision) { CheckCollisions(_collision); }
 
-            this.currentContacts.Remove(collision.collider);
-            IsGrounded = this.currentContacts.Count != 0;
-        }
+        private void OnCollisionStay(Collision _collision) { CheckCollisions(_collision); }
 
-        private bool IsLayerClimbable(int _layer)
-        {
-            return ((1 << _layer) & WHAT_IS_CLIMBABLE) != 0;
-        }
+        private void OnCollisionExit(Collision _collision) { CheckCollisions(_collision); }
 
-        public (Vector3, Vector3) GetMovementAxese()
+        public Axis GetMovementAxese()
         {
             var camera = Camera.main.transform;
             var wallDirection = GroundDirection;
-            return (
-                ChatGPT.IntersectingLine(transform.position, camera.right, camera.position, wallDirection),
-                ChatGPT.IntersectingLine(transform.position, camera.up, camera.position, wallDirection)
-            );
+            var axis = new Axis()
+            {
+                right = ChatGPT.IntersectingLine(transform.position, camera.right, camera.position, wallDirection),
+                up = ChatGPT.IntersectingLine(transform.position, camera.up, camera.position, wallDirection)
+            };
+            return axis;
         }
+
     }
 }

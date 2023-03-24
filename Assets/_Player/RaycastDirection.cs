@@ -18,6 +18,8 @@ namespace Creeper
         {
             ground = new RaycastDirection(source, Vector3.down);
             behind = new RaycastDirection(source, Vector3.back);
+            ground.DebugColor = Color.green;
+            behind.DebugColor = Color.red;
         }
 
         public void UpdateBehind(Vector3 _behindDirection)
@@ -46,6 +48,7 @@ namespace Creeper
         public Vector3 Direction;
         public bool isDetecting;
         public bool IsDetecting { get { return isDetecting; } }
+        public Color DebugColor;
 
         private Transform source;
         private int whatIsClimbable;
@@ -61,17 +64,12 @@ namespace Creeper
         public void Update()
         {
             RaycastHit hit;
-            Color color;
-            this.isDetecting = Physics.Raycast(this.source.position, Direction, out hit, 1f, whatIsClimbable);
-            if (this.isDetecting)
+            this.isDetecting = Physics.Raycast(this.source.position, Direction, out hit, 100f, whatIsClimbable);
+            if (this.isDetecting && Direction != hit.normal)
             {
-                color = Color.green;
+                Direction = -hit.normal;
             }
-            else
-            {
-                color = Color.red;
-            }
-            Debug.DrawRay(this.source.position, Direction, color);
+            Debug.DrawRay(this.source.position, Direction, DebugColor, 5f);
         }
     }
 }
