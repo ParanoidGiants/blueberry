@@ -9,7 +9,7 @@ public class CameraController : MonoBehaviour
     private Camera cam;
     public Camera Cam { get { return cam; } }
     public bool IsRotating;
-    private Vector2 rotateDirection;
+    private Vector3 rotateDirection;
 
 
     private void Start()
@@ -35,11 +35,12 @@ public class CameraController : MonoBehaviour
 
     private void Rotate()
     {
-        transform.rotation *= Quaternion.Euler(this.rotateDirection.y, 0f, -this.rotateDirection.x); 
+        transform.rotation *= Quaternion.Euler(this.rotateDirection.y, this.rotateDirection.z, -this.rotateDirection.x); 
     }
 
-    public void SetRotateDirection(Vector2 _direction)
+    public void SetRotateDirection(Vector3 _direction)
     {
+        Debug.Log("RotateDir: " + _direction);
         this.rotateDirection = RotateSpeed * _direction;
     }
 }

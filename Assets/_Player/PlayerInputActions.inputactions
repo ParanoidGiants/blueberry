@@ -18,7 +18,7 @@
                     "name": "Rotate",
                     "type": "Value",
                     "id": "9201fda4-cc06-46bb-9087-f0f4e61b4704",
-                    "expectedControlType": "Vector2",
+                    "expectedControlType": "Vector3",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
@@ -83,7 +83,7 @@
                 {
                     "name": "Arrows",
                     "id": "493ef030-b988-457b-a8e2-60c6e8c90f99",
-                    "path": "2DVector",
+                    "path": "3DVector",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -92,7 +92,7 @@
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "up",
+                    "name": "Up",
                     "id": "c84f3e66-7bba-43ce-8776-c7330ea70aa9",
                     "path": "<Keyboard>/upArrow",
                     "interactions": "",
@@ -103,7 +103,7 @@
                     "isPartOfComposite": true
                 },
                 {
-                    "name": "down",
+                    "name": "Down",
                     "id": "f492ccfa-299d-4f9e-94eb-56bda35589d9",
                     "path": "<Keyboard>/downArrow",
                     "interactions": "",
@@ -114,7 +114,7 @@
                     "isPartOfComposite": true
                 },
                 {
-                    "name": "left",
+                    "name": "Left",
                     "id": "3bd47a74-5eda-4c0e-93be-af417b402a7b",
                     "path": "<Keyboard>/leftArrow",
                     "interactions": "",
@@ -125,9 +125,31 @@
                     "isPartOfComposite": true
                 },
                 {
-                    "name": "right",
+                    "name": "Right",
                     "id": "e13ac607-3afd-4e0e-b845-32025b7f9369",
                     "path": "<Keyboard>/rightArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Rotate",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "Forward",
+                    "id": "fdb0000a-87bb-4e0b-846c-8d06168e3c65",
+                    "path": "<Keyboard>/p",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Rotate",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "Backward",
+                    "id": "2a524b9c-69b8-4b6a-aea7-45abe9170d3d",
+                    "path": "<Keyboard>/o",
                     "interactions": "",
                     "processors": "",
                     "groups": "",

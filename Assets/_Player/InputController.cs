@@ -8,7 +8,6 @@ namespace Creeper
     {
         #region PlayerInputBinding
         private PlayerInputs input = null;
-
         private void Awake()
         {
             input = new PlayerInputs();
@@ -18,8 +17,9 @@ namespace Creeper
         {
             input.Enable();
             input.PlayerInput.Move.performed += OnMove;
-            input.PlayerInput.Move.canceled += OnMove;
             input.PlayerInput.Rotate.performed += OnRotate;
+
+            input.PlayerInput.Move.canceled += OnCancelMove;
             input.PlayerInput.Rotate.canceled += OnCancelRotate;
         }
 
@@ -27,8 +27,9 @@ namespace Creeper
         {
             input.Disable();
             input.PlayerInput.Move.performed -= OnMove;
-            input.PlayerInput.Move.canceled -= OnMove;
             input.PlayerInput.Rotate.performed -= OnRotate;
+
+            input.PlayerInput.Move.canceled -= OnCancelMove;
             input.PlayerInput.Rotate.canceled -= OnCancelRotate;
         }
         #endregion PlayerInputBinding
@@ -48,15 +49,19 @@ namespace Creeper
             Head.SetMovementDirection(direction);
         }
 
+        public void OnCancelMove(InputAction.CallbackContext _directionCallback)
+        {
+            Head.SetMovementDirection(Vector3.zero);
+        }
+
         public void OnRotate(InputAction.CallbackContext _directionCallback)
         {
-            var direction = _directionCallback.ReadValue<Vector2>();
-            if (direction.Equals(Vector3.zero)) return;
+            var direction = _directionCallback.ReadValue<Vector3>();
             if (direction.magnitude > 1f)
             {
                 direction.Normalize();
             }
-            Camera.SetRotateDirection(direction );
+            Camera.SetRotateDirection(direction);
         }
 
         public void OnCancelRotate(InputAction.CallbackContext _directionCallback)
