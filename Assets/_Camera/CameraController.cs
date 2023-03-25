@@ -40,7 +40,6 @@ public class CameraController : MonoBehaviour
 
     public void SetRotateDirection(Vector3 _direction)
     {
-        Debug.Log("RotateDir: " + _direction);
         this.rotateDirection = RotateSpeed * _direction;
     }
 }

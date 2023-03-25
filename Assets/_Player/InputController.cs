@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -8,8 +9,11 @@ namespace Creeper
     {
         #region PlayerInputBinding
         private PlayerInputs input = null;
+        private bool IsReloadingScene = false;
+
         private void Awake()
         {
+            IsReloadingScene = false;
             input = new PlayerInputs();
         }
 
@@ -18,6 +22,7 @@ namespace Creeper
             input.Enable();
             input.PlayerInput.Move.performed += OnMove;
             input.PlayerInput.Rotate.performed += OnRotate;
+            input.PlayerInput.Reset.performed += OnReset;
 
             input.PlayerInput.Move.canceled += OnCancelMove;
             input.PlayerInput.Rotate.canceled += OnCancelRotate;
@@ -28,6 +33,7 @@ namespace Creeper
             input.Disable();
             input.PlayerInput.Move.performed -= OnMove;
             input.PlayerInput.Rotate.performed -= OnRotate;
+            input.PlayerInput.Reset.performed -= OnReset;
 
             input.PlayerInput.Move.canceled -= OnCancelMove;
             input.PlayerInput.Rotate.canceled -= OnCancelRotate;
@@ -67,6 +73,14 @@ namespace Creeper
         public void OnCancelRotate(InputAction.CallbackContext _directionCallback)
         {
             Camera.SetRotateDirection(Vector3.zero);
+        }
+
+        public void OnReset(InputAction.CallbackContext _directionCallback)
+        {
+            if (IsReloadingScene) return;
+
+            IsReloadingScene = true;
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
     }
 }

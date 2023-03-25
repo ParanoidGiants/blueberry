@@ -46,6 +46,15 @@ namespace Creeper
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Reset"",
+                    ""type"": ""Button"",
+                    ""id"": ""2273bc7a-3344-4a3a-ba35-b1602a80c803"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -180,6 +189,17 @@ namespace Creeper
                     ""action"": ""Rotate"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d227fd16-50bc-4c44-9119-46ef67f4517c"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Reset"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -190,6 +210,7 @@ namespace Creeper
             m_PlayerInput = asset.FindActionMap("PlayerInput", throwIfNotFound: true);
             m_PlayerInput_Move = m_PlayerInput.FindAction("Move", throwIfNotFound: true);
             m_PlayerInput_Rotate = m_PlayerInput.FindAction("Rotate", throwIfNotFound: true);
+            m_PlayerInput_Reset = m_PlayerInput.FindAction("Reset", throwIfNotFound: true);
         }
 
         public void Dispose()
@@ -251,12 +272,14 @@ namespace Creeper
         private IPlayerInputActions m_PlayerInputActionsCallbackInterface;
         private readonly InputAction m_PlayerInput_Move;
         private readonly InputAction m_PlayerInput_Rotate;
+        private readonly InputAction m_PlayerInput_Reset;
         public struct PlayerInputActions
         {
             private @PlayerInputs m_Wrapper;
             public PlayerInputActions(@PlayerInputs wrapper) { m_Wrapper = wrapper; }
             public InputAction @Move => m_Wrapper.m_PlayerInput_Move;
             public InputAction @Rotate => m_Wrapper.m_PlayerInput_Rotate;
+            public InputAction @Reset => m_Wrapper.m_PlayerInput_Reset;
             public InputActionMap Get() { return m_Wrapper.m_PlayerInput; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -272,6 +295,9 @@ namespace Creeper
                     @Rotate.started -= m_Wrapper.m_PlayerInputActionsCallbackInterface.OnRotate;
                     @Rotate.performed -= m_Wrapper.m_PlayerInputActionsCallbackInterface.OnRotate;
                     @Rotate.canceled -= m_Wrapper.m_PlayerInputActionsCallbackInterface.OnRotate;
+                    @Reset.started -= m_Wrapper.m_PlayerInputActionsCallbackInterface.OnReset;
+                    @Reset.performed -= m_Wrapper.m_PlayerInputActionsCallbackInterface.OnReset;
+                    @Reset.canceled -= m_Wrapper.m_PlayerInputActionsCallbackInterface.OnReset;
                 }
                 m_Wrapper.m_PlayerInputActionsCallbackInterface = instance;
                 if (instance != null)
@@ -282,6 +308,9 @@ namespace Creeper
                     @Rotate.started += instance.OnRotate;
                     @Rotate.performed += instance.OnRotate;
                     @Rotate.canceled += instance.OnRotate;
+                    @Reset.started += instance.OnReset;
+                    @Reset.performed += instance.OnReset;
+                    @Reset.canceled += instance.OnReset;
                 }
             }
         }
@@ -290,6 +319,7 @@ namespace Creeper
         {
             void OnMove(InputAction.CallbackContext context);
             void OnRotate(InputAction.CallbackContext context);
+            void OnReset(InputAction.CallbackContext context);
         }
     }
 }
