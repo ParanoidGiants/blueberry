@@ -6,6 +6,7 @@ public class CameraController : MonoBehaviour
 {
     public Transform Target;
     public float RotateSpeed = 0.1f;
+    public float MoveSpeed = 0.1f;
     private Camera cam;
     public Camera Cam { get { return cam; } }
     public bool IsRotating;
@@ -25,7 +26,7 @@ public class CameraController : MonoBehaviour
 
     private void FollowWithHandle()
     {
-        transform.position = Target.position;
+        transform.position = Vector3.Lerp(transform.position, Target.position, Time.deltaTime * MoveSpeed);
     }
 
     private void MoveOnXZPlane()
