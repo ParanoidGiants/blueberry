@@ -1,48 +1,63 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using Creeper;
 
-public class BranchController : MonoBehaviour
+namespace Branches
 {
-    private LineRenderer branch;
-
-    public float BranchAfter = 1f;
-    public float branchTime = 0f;
-    private int NumberOfBranches = 1;
-    public float TargetDeltaX = 0f;
-    public float TargetDeltaZ = 0f;
-    public Vector3 lastPosition;
-
-    void Start()
+    public class BranchController : MonoBehaviour
     {
-        branch = GetComponent<LineRenderer>();
-        branch.positionCount = 1;
-        branch.SetPosition(NumberOfBranches-1, transform.position);
-        lastPosition = transform.position;
-        AddBranch();
-    }
 
-    public void UpdateBranch(Vector3 _directionWorldSpace)
-    {
-        branchTime += Time.deltaTime;
+        public float BranchAfter = 1f;
+        public float BranchStrength = 1f;
 
-        if (branchTime > BranchAfter)
+        private float targetDeltaX = 0f;
+        private float branchTime = 0f;
+        private int branchesCount = 1;
+
+        private LineRenderer branch;
+        private HeadController headController;
+        private Vector3 targetPosition;
+        private float oldDeltaX = 0f;
+
+        private void Start()
         {
+            this.branch = GetComponent<LineRenderer>();
+            this.branch.positionCount = 1;
+            this.branch.SetPosition(branchesCount-1, transform.position);
+            this.headController = FindObjectOfType<HeadController>();
+            this.targetPosition = transform.position;
             AddBranch();
         }
-        var targetPosition = transform.position + TargetDeltaX * transform.right + TargetDeltaZ * transform.forward;
-        var newPosition = Vector3.Lerp(lastPosition, targetPosition, branchTime / BranchAfter);
-        branch.SetPosition(NumberOfBranches-1, newPosition);
-    }
 
-    private void AddBranch()
-    {
-        branchTime = 0f;
-        lastPosition = branch.GetPosition(NumberOfBranches-1);
-        branch.positionCount = ++NumberOfBranches;
-        var random = Random.Range(0, Mathf.PI);
-        TargetDeltaX = Mathf.Sin(random);
-        random = Random.Range(0, -Mathf.PI);
-        TargetDeltaZ = Mathf.Sin(random);
+        private void Update()
+        {
+            UpdateBranch();
+        }
+
+        private void UpdateBranch()
+        {
+            var directionWorldSpace = this.headController.MovementDirection;
+            if (directionWorldSpace.magnitude < 0.1f) return;
+
+            var targetDeltaX = Mathf.Lerp(this.oldDeltaX, this.targetDeltaX, this.branchTime / BranchAfter);
+            this.targetPosition = transform.position + targetDeltaX * transform.parent.right;
+            this.branch.SetPosition(this.branchesCount - 1, this.targetPosition);
+
+
+            this.branchTime += Time.deltaTime;
+            if (this.branchTime > BranchAfter)
+            {
+                AddBranch();
+            }
+        }
+
+        public void AddBranch()
+        {
+            this.branchTime = 0f;
+            this.branch.positionCount = ++branchesCount;
+            var halfPi = Mathf.PI / 2f;
+            var random = Random.Range(-halfPi, halfPi);
+            this.oldDeltaX = this.targetDeltaX;
+            this.targetDeltaX = Mathf.Sin(random) * BranchStrength;
+        }
     }
 }

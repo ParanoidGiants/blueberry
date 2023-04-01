@@ -36,17 +36,25 @@ namespace Creeper
         #region Movement
         [SerializeField] private float moveSpeed;
         private Vector3 inputDirection;
+        public Vector3 MovementDirection { 
+            get {
+                return projectedAxis == null 
+                    ? Vector3.zero
+                    : Vector3.Normalize(this.projectedAxis.right * this.inputDirection.x + this.projectedAxis.up * this.inputDirection.y);
+            }
+        }
         private Axis projectedAxis;
-        private Axis GetMovementAxese()
+        public Axis ProjectedAxis { get { return projectedAxis; } }
+
+        private Axis CreateMovementAxis()
         {
             var camera = Camera.main.transform;
             var wallDirection = this.groundDirection;
-            var axis = new Axis()
+            return new Axis()
             {
                 right = ChatGPT.IntersectingLine(transform.position, camera.right, camera.position, wallDirection),
                 up = ChatGPT.IntersectingLine(transform.position, camera.up, camera.position, wallDirection)
             };
-            return axis;
         }
 
         public void SetMovementDirection(Vector3 _inputDirection)
@@ -58,8 +66,7 @@ namespace Creeper
         {
             if (!isGrounded) return;
 
-            this.projectedAxis = GetMovementAxese();
-            var moveDirection = Vector3.Normalize(this.projectedAxis.right * this.inputDirection.x + this.projectedAxis.up * this.inputDirection.y);
+            var moveDirection = MovementDirection;
             this.behindDirection = -moveDirection;
             this.rigidbody.MovePosition(transform.position + moveSpeed * moveDirection);
             if (this.inputDirection.magnitude > 0.1f)
@@ -136,7 +143,9 @@ namespace Creeper
             Debug.DrawRay(transform.position, _groundNormal, Color.gray, 1f);
             this.isGrounded = true;
             this.groundDirection = -_groundNormal;
+            this.projectedAxis = CreateMovementAxis();
             transform.up = _groundNormal;
+            FindObjectOfType<Branches.BranchController>().AddBranch();
         }
         
         public List<ContactNormal> CurrentNormals = new List<ContactNormal>();
@@ -159,7 +168,7 @@ namespace Creeper
             {
                 CurrentNormals.Add(new ContactNormal(instanceId, normal));
             }
-            else if (!IsConsideredEqual(currentNormal.Normal, normal))
+            else if (!RMath.AreDirectíonsConsideredEqual(currentNormal.Normal, normal))
             {
                 currentNormal.Normal = normal;
                 currentObjectIndex = instanceId;
@@ -179,12 +188,6 @@ namespace Creeper
                 SetNewGround(CurrentNormals[CurrentNormals.Count - 1].Normal);
             }
         }
-
-        private bool IsConsideredEqual(Vector3 _direction1, Vector3 _direction2)
-        {
-            return Vector3.Dot(_direction1, _direction2) > 0.99f;
-        }
-
         #endregion Climbing
     }
 }
