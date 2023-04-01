@@ -1,28 +1,14 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using RootMath;
-using System.Collections;
 
 namespace Creeper
 {
-    [Serializable]
-    public class CNormal
-    {
-        public int GameObjectId;
-        public Vector3 Normal;
-
-        public CNormal(int _gameObjectId, Vector3 _normal)
-        {
-            GameObjectId = _gameObjectId;
-            Normal = _normal;
-        }
-    }
-
     public class HeadController : MonoBehaviour
     {
-        public static int WHAT_IS_CLIMBABLE;
+        #region Essentials
+        private static int WHAT_IS_CLIMBABLE;
         private void Start()
         {
             WHAT_IS_CLIMBABLE = LayerMask.GetMask("Climbable");
@@ -32,16 +18,26 @@ namespace Creeper
         private void FixedUpdate()
         {
             this.rigidbody.velocity = Vector3.zero;
-            DebugLog();
+            DebugDrawNormal();
             UpdateFall();
             UpdateMovement();
         }
+
+        private void DebugDrawNormal()
+        {
+            var currentNormal = CurrentNormals.FirstOrDefault(x => x.GameObjectId == currentObjectIndex);
+            if (isGrounded && currentNormal != null)
+            {
+                Debug.DrawRay(transform.position, currentNormal.Normal, Color.green);
+            }
+        }
+        #endregion Essentials
 
         #region Movement
         [SerializeField] private float moveSpeed;
         private Vector3 inputDirection;
         private Axis projectedAxis;
-        public Axis GetMovementAxese()
+        private Axis GetMovementAxese()
         {
             var camera = Camera.main.transform;
             var wallDirection = this.groundDirection;
@@ -73,11 +69,12 @@ namespace Creeper
         }
         #endregion Movement
 
-        #region Falling
+        #region Climbing
         private Vector3 groundDirection;
         private Vector3 behindDirection;
         [SerializeField] private bool isGrounded = false;
         [SerializeField] private float raycastLength = 0.5f;
+        [SerializeField] private int currentObjectIndex = -1;
         private new Rigidbody rigidbody;
         private void UpdateFall()
         {
@@ -90,7 +87,6 @@ namespace Creeper
             var hasFoundNewGround = Physics.Raycast(position, direction, out hit, this.raycastLength, WHAT_IS_CLIMBABLE);
             if (hasFoundNewGround)
             {
-                Debug.Log("Got it!");
                 SetNewGround(hit.point, hit.normal);
                 return;
             }
@@ -101,7 +97,6 @@ namespace Creeper
             hasFoundNewGround = Physics.Raycast(position, direction, out hit, this.raycastLength, WHAT_IS_CLIMBABLE);
             if (hasFoundNewGround)
             {
-                Debug.Log("Got it!");
                 SetNewGround(hit.point, hit.normal);
                 return;
             }
@@ -112,7 +107,6 @@ namespace Creeper
             hasFoundNewGround = Physics.Raycast(position, direction, out hit, this.raycastLength, WHAT_IS_CLIMBABLE);
             if (hasFoundNewGround)
             {
-                Debug.Log("Got it!");
                 SetNewGround(hit.point, hit.normal);
                 return;
             }
@@ -123,7 +117,6 @@ namespace Creeper
             hasFoundNewGround = Physics.Raycast(position, direction, out hit, this.raycastLength, WHAT_IS_CLIMBABLE);
             if (hasFoundNewGround)
             {
-                Debug.Log("Got it!");
                 SetNewGround(hit.point, hit.normal);
                 return;
             }
@@ -145,16 +138,14 @@ namespace Creeper
             this.groundDirection = -_groundNormal;
             transform.up = _groundNormal;
         }
-
-        public int CurrentObjectIndex = -1;
         
-        public List<CNormal> CurrentNormals = new List<CNormal>();
+        public List<ContactNormal> CurrentNormals = new List<ContactNormal>();
         private void OnCollisionEnter(Collision _collision)
         {
             var normal = _collision.GetContact(_collision.contactCount - 1).normal;
             var instanceId = _collision.gameObject.GetInstanceID();
-            CurrentNormals.Add(new CNormal(instanceId, normal));
-            CurrentObjectIndex = instanceId;
+            CurrentNormals.Add(new ContactNormal(instanceId, normal));
+            currentObjectIndex = instanceId;
             SetNewGround(normal);
         }
 
@@ -166,12 +157,12 @@ namespace Creeper
             var currentNormal = CurrentNormals.FirstOrDefault(x => x.GameObjectId == instanceId);
             if (currentNormal == null)
             {
-                CurrentNormals.Add(new CNormal(instanceId, normal));
+                CurrentNormals.Add(new ContactNormal(instanceId, normal));
             }
             else if (!IsConsideredEqual(currentNormal.Normal, normal))
             {
                 currentNormal.Normal = normal;
-                CurrentObjectIndex = instanceId;
+                currentObjectIndex = instanceId;
                 SetNewGround(currentNormal.Normal);
             }
         }
@@ -194,15 +185,6 @@ namespace Creeper
             return Vector3.Dot(_direction1, _direction2) > 0.99f;
         }
 
-        private void DebugLog()
-        {
-            var currentNormal = CurrentNormals.FirstOrDefault(x => x.GameObjectId == CurrentObjectIndex);
-            if (isGrounded && currentNormal != null)
-            {
-                Debug.DrawRay(transform.position, currentNormal.Normal, Color.green);
-            }
-        }
-
-        #endregion Falling
+        #endregion Climbing
     }
 }
