@@ -5,27 +5,25 @@ namespace Branches
 {
     public class BranchController : MonoBehaviour
     {
+        [SerializeField] private float _branchAfter = 1f;
+        [SerializeField] private float _branchStrength = 1f;
+        [SerializeField] private float _branchTime = 0f;
+        [SerializeField] private int _currentSegmentIndex = 0;
 
-        public float BranchAfter = 1f;
-        public float BranchStrength = 1f;
+        private float _targetDeltaX = 0f;
 
-        private float targetDeltaX = 0f;
-        private float branchTime = 0f;
-        private int branchesCount = 1;
-
-        private LineRenderer branch;
-        private HeadController headController;
-        private Vector3 targetPosition;
-        private float oldDeltaX = 0f;
+        private LineRenderer _branch;
+        private HeadController _headController;
+        private Vector3 _branchPosition;
+        private float _oldDeltaX = 0f;
 
         private void Start()
         {
-            this.branch = GetComponent<LineRenderer>();
-            this.branch.positionCount = 1;
-            this.branch.SetPosition(branchesCount-1, transform.position);
-            this.headController = FindObjectOfType<HeadController>();
-            this.targetPosition = transform.position;
-            AddBranch();
+            _branch = GetComponent<LineRenderer>();
+            _branch.positionCount = 1;
+            _branchPosition = transform.position;
+            _branch.SetPosition(_currentSegmentIndex, _branchPosition);
+            _headController = FindObjectOfType<HeadController>();
         }
 
         private void Update()
@@ -35,29 +33,35 @@ namespace Branches
 
         private void UpdateBranch()
         {
-            var directionWorldSpace = this.headController.MovementDirection;
+            var directionWorldSpace = _headController.MovementDirection;
             if (directionWorldSpace.magnitude < 0.1f) return;
 
-            var targetDeltaX = Mathf.Lerp(this.oldDeltaX, this.targetDeltaX, this.branchTime / BranchAfter);
-            this.targetPosition = transform.position + targetDeltaX * transform.parent.right;
-            this.branch.SetPosition(this.branchesCount - 1, this.targetPosition);
-
-
-            this.branchTime += Time.deltaTime;
-            if (this.branchTime > BranchAfter)
+            _branchTime += Time.deltaTime;
+            if (_branchTime >= _branchAfter)
             {
+                _branchTime = 0f;
                 AddBranch();
             }
+
+            UpdateSegmentPosition();
+        }
+
+        private void UpdateSegmentPosition()
+        {
+            var currentDeltaX = Mathf.Lerp(_oldDeltaX, _targetDeltaX, _branchTime / _branchAfter);
+            _branchPosition = transform.position + currentDeltaX * transform.parent.right;
+            _branch.SetPosition(_currentSegmentIndex, _branchPosition);
         }
 
         public void AddBranch()
         {
-            this.branchTime = 0f;
-            this.branch.positionCount = ++branchesCount;
             var halfPi = Mathf.PI / 2f;
             var random = Random.Range(-halfPi, halfPi);
-            this.oldDeltaX = this.targetDeltaX;
-            this.targetDeltaX = Mathf.Sin(random) * BranchStrength;
+            _oldDeltaX = Mathf.Lerp(_oldDeltaX, _targetDeltaX, _branchTime / _branchAfter);
+            _targetDeltaX = Mathf.Sin(random) * _branchStrength;
+            _currentSegmentIndex++;
+            _branch.positionCount = _currentSegmentIndex + 1;
+            UpdateSegmentPosition();
         }
     }
 }

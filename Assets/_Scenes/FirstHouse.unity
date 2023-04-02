@@ -3459,7 +3459,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cam: {fileID: 963194227}
   Target: {fileID: 1821568026}
-  RotateSpeed: 0.8
+  RotateSpeed: 3
   MoveSpeed: 3
 --- !u!64 &2096506660
 MeshCollider:
@@ -3496,53 +3496,13 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 33961406, guid: 257cd7876e4b6da43b92681f37c57bfa, type: 3}
-      propertyPath: BranchAfter
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 33961406, guid: 257cd7876e4b6da43b92681f37c57bfa, type: 3}
-      propertyPath: BranchStrength
-      value: 0.3
-      objectReference: {fileID: 0}
-    - target: {fileID: 33961407, guid: 257cd7876e4b6da43b92681f37c57bfa, type: 3}
-      propertyPath: m_Parameters.alignment
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 33961407, guid: 257cd7876e4b6da43b92681f37c57bfa, type: 3}
-      propertyPath: m_Parameters.textureMode
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 33961407, guid: 257cd7876e4b6da43b92681f37c57bfa, type: 3}
-      propertyPath: m_Parameters.widthCurve.m_Curve.Array.data[0].value
-      value: 0.29932022
-      objectReference: {fileID: 0}
     - target: {fileID: 5470295772608336501, guid: 257cd7876e4b6da43b92681f37c57bfa, type: 3}
       propertyPath: m_Name
       value: Creeper
       objectReference: {fileID: 0}
-    - target: {fileID: 5470295772608336504, guid: 257cd7876e4b6da43b92681f37c57bfa, type: 3}
-      propertyPath: moveSpeed
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5470295772608336504, guid: 257cd7876e4b6da43b92681f37c57bfa, type: 3}
-      propertyPath: raycastLength
-      value: 0.5
-      objectReference: {fileID: 0}
     - target: {fileID: 5470295772608336505, guid: 257cd7876e4b6da43b92681f37c57bfa, type: 3}
       propertyPath: m_RootOrder
       value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 5470295772608336505, guid: 257cd7876e4b6da43b92681f37c57bfa, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5470295772608336505, guid: 257cd7876e4b6da43b92681f37c57bfa, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5470295772608336505, guid: 257cd7876e4b6da43b92681f37c57bfa, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5470295772608336505, guid: 257cd7876e4b6da43b92681f37c57bfa, type: 3}
       propertyPath: m_LocalPosition.x

@@ -145,7 +145,6 @@ namespace Creeper
             this.groundDirection = -_groundNormal;
             this.projectedAxis = CreateMovementAxis();
             transform.up = _groundNormal;
-            FindObjectOfType<Branches.BranchController>().AddBranch();
         }
         
         public List<ContactNormal> CurrentNormals = new List<ContactNormal>();
@@ -164,9 +163,12 @@ namespace Creeper
             var instanceId = _collision.gameObject.GetInstanceID();
 
             var currentNormal = CurrentNormals.FirstOrDefault(x => x.GameObjectId == instanceId);
+            var currentNewNormals = new List<ContactNormal>();
             if (currentNormal == null)
             {
-                CurrentNormals.Add(new ContactNormal(instanceId, normal));
+                var contactNormal = new ContactNormal(instanceId, normal);
+                CurrentNormals.Add(contactNormal);
+                currentNewNormals.Add(contactNormal);
             }
             else if (!RMath.AreDirectíonsConsideredEqual(currentNormal.Normal, normal))
             {
