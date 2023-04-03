@@ -12,33 +12,29 @@ namespace Creeper
         private void Start()
         {
             WHAT_IS_CLIMBABLE = LayerMask.GetMask("Climbable");
-            this.rigidbody = GetComponent<Rigidbody>();
+            rigidbody = GetComponent<Rigidbody>();
+        }
+
+        private void Update()
+        {
+            _projectedAxis = CreateMovementAxis();
         }
 
         private void FixedUpdate()
         {
-            this.rigidbody.velocity = Vector3.zero;
+            rigidbody.velocity = Vector3.zero;
             DebugDrawNormal();
 
-            if (!_isGrounded)
-            {
-                var hasFoundGround = false;
-                for (int i = -3; i < 0 && !hasFoundGround; i++)
-                {
-                    var raycastLength = Mathf.Pow(2f, i);
-                    hasFoundGround = FindGround(raycastLength);
-                }
-            }
-
-            UpdateMovement();
+            if (!_isGrounded) FindGround();
+            else UpdateMovement();
         }
 
         private void DebugDrawNormal()
         {
-            var currentNormal = CurrentNormals.FirstOrDefault(x => x.GameObjectId == _currentObjectIndex);
-            if (_isGrounded && currentNormal != null)
+            var currentNormal = -_groundDirection;
+            if (_isGrounded)
             {
-                Debug.DrawRay(transform.position, currentNormal.Normal, Color.green);
+                Debug.DrawRay(transform.position, currentNormal, Color.green);
             }
         }
         #endregion Essentials
@@ -48,13 +44,13 @@ namespace Creeper
         private Vector3 inputDirection;
         public Vector3 MovementDirection { 
             get {
-                return projectedAxis == null 
+                return _projectedAxis == null 
                     ? Vector3.zero
-                    : Vector3.Normalize(this.projectedAxis.right * this.inputDirection.x + this.projectedAxis.up * this.inputDirection.y);
+                    : Vector3.Normalize(this._projectedAxis.right * this.inputDirection.x + this._projectedAxis.up * this.inputDirection.y);
             }
         }
-        private Axis projectedAxis;
-        public Axis ProjectedAxis { get { return projectedAxis; } }
+        private Axis _projectedAxis;
+        public Axis ProjectedAxis { get { return _projectedAxis; } }
 
         private Axis CreateMovementAxis()
         {
@@ -74,11 +70,10 @@ namespace Creeper
 
         private void UpdateMovement()
         {
-            if (!_isGrounded) return;
-
             var moveDirection = MovementDirection;
             _behindDirection = -moveDirection;
-            this.rigidbody.MovePosition(transform.position + moveSpeed * moveDirection);
+            rigidbody.MovePosition(transform.position + moveSpeed * moveDirection);
+            _lastGroundedPosition = transform.position;
             if (this.inputDirection.magnitude > 0.1f)
             {
                 transform.rotation = Quaternion.LookRotation(moveDirection, transform.up);
@@ -90,113 +85,123 @@ namespace Creeper
         private Vector3 _groundDirection;
         private Vector3 _behindDirection;
         [SerializeField] private bool _isGrounded = false;
-        [SerializeField] private float _raycastLength = 0.5f;
         [SerializeField] private int _currentObjectIndex = -1;
         private new Rigidbody rigidbody;
-        private bool FindGround(float raycastLength)
+        Vector3 _lastGroundedPosition = Vector3.zero;
+
+        private void FindGround()
         {
-            RaycastHit hit;
-            var direction = _groundDirection;
-            var position = transform.position + 0.5f * transform.localScale.z * direction;
-            Debug.DrawRay(position, raycastLength * direction, Color.red, 5f);
-            var hasFoundNewGround = Physics.Raycast(position, direction, out hit, raycastLength, WHAT_IS_CLIMBABLE);
-            if (hasFoundNewGround)
+            for (int i = -3; i < 0; i++)
             {
-                SetNewGround(hit.point, hit.normal);
-                return true;
-            }
+                var raycastLength = Mathf.Pow(2f, i);
 
-            position += raycastLength * direction;
-            direction = _behindDirection;
-            Debug.DrawRay(position, raycastLength * direction, Color.green, 5f);
-            hasFoundNewGround = Physics.Raycast(position, direction, out hit, raycastLength, WHAT_IS_CLIMBABLE);
-            if (hasFoundNewGround)
-            {
-                SetNewGround(hit.point, hit.normal);
-                return true;
-            }
+                RaycastHit hit;
+                var direction = _groundDirection;
+                var position = _lastGroundedPosition + 0.5f * transform.localScale.z * direction;
+                Debug.DrawRay(position, raycastLength * direction, Color.red, 5f);
+                var hasFoundNewGround = Physics.Raycast(position, direction, out hit, raycastLength, WHAT_IS_CLIMBABLE);
+                if (hasFoundNewGround)
+                {
+                    SetPositionToHitPoint(hit.point, hit.normal);
+                    return;
+                }
 
-            position += raycastLength * direction;
-            direction = -_groundDirection;
-            Debug.DrawRay(position, raycastLength * direction, Color.blue, 5f);
-            hasFoundNewGround = Physics.Raycast(position, direction, out hit, raycastLength, WHAT_IS_CLIMBABLE);
-            if (hasFoundNewGround)
-            {
-                SetNewGround(hit.point, hit.normal);
-                return true;
-            }
+                position += raycastLength * direction;
+                direction = _behindDirection;
+                Debug.DrawRay(position, raycastLength * direction, Color.green, 5f);
+                hasFoundNewGround = Physics.Raycast(position, direction, out hit, raycastLength, WHAT_IS_CLIMBABLE);
+                if (hasFoundNewGround)
+                {
+                    SetPositionToHitPoint(hit.point, hit.normal);
+                    return;
+                }
 
-            position += raycastLength * direction;
-            direction = -_behindDirection;
-            Debug.DrawRay(position, raycastLength * direction, Color.blue, 5f);
-            hasFoundNewGround = Physics.Raycast(position, direction, out hit, raycastLength, WHAT_IS_CLIMBABLE);
-            if (hasFoundNewGround)
-            {
-                SetNewGround(hit.point, hit.normal);
-                return true;
+                position += raycastLength * direction;
+                direction = -_groundDirection;
+                Debug.DrawRay(position, raycastLength * direction, Color.blue, 5f);
+                hasFoundNewGround = Physics.Raycast(position, direction, out hit, raycastLength, WHAT_IS_CLIMBABLE);
+                if (hasFoundNewGround)
+                {
+                    SetPositionToHitPoint(hit.point, hit.normal);
+                    return;
+                }
+
+                position += raycastLength * direction;
+                direction = -_behindDirection;
+                Debug.DrawRay(position, raycastLength * direction, Color.blue, 5f);
+                hasFoundNewGround = Physics.Raycast(position, direction, out hit, raycastLength, WHAT_IS_CLIMBABLE);
+                if (hasFoundNewGround)
+                {
+                    SetPositionToHitPoint(hit.point, hit.normal);
+                }
             }
-            return false;
         }
-
-        private void SetNewGround(Vector3 _position, Vector3 _groundNormal)
+        private void SetPositionToHitPoint(Vector3 _position, Vector3 _groundNormal)
         {
             Debug.DrawRay(_position, _groundNormal, Color.magenta, 1f);
-            _isGrounded = true;
-            _groundDirection = -_groundNormal;
             transform.position = _position + 0.5f * transform.localScale.z * _groundNormal;
             transform.up = _groundNormal;
         }
 
-        private void SetNewGround(Vector3 _groundNormal)
+        private void RecalculateGroundDirection()
         {
-            Debug.DrawRay(transform.position, _groundNormal, Color.gray, 1f);
+            var newGroundDirection = Vector3.zero;
+            foreach (var contactNormal in CurrentContactNormals)
+            {
+                newGroundDirection += contactNormal.Normal;
+            }
+
+            if (newGroundDirection.magnitude == 0f)
+            {
+                int index = Random.Range(0, CurrentContactNormals.Count);
+                newGroundDirection = CurrentContactNormals[index].Normal;
+            }
+            else
+            {
+                newGroundDirection.Normalize();
+            }
+
+            Debug.DrawRay(transform.position, newGroundDirection, Color.gray, 1f);
             _isGrounded = true;
-            _groundDirection = -_groundNormal;
-            this.projectedAxis = CreateMovementAxis();
-            transform.up = _groundNormal;
+            _groundDirection = -newGroundDirection;
+            _projectedAxis = CreateMovementAxis();
+            transform.up = newGroundDirection;
         }
         
-        public List<ContactNormal> CurrentNormals = new List<ContactNormal>();
-        private void OnCollisionEnter(Collision _collision)
+        public List<ContactNormal> CurrentContactNormals = new List<ContactNormal>();
+        private void OnCollisionEnter(Collision collision)
         {
-            var normal = _collision.GetContact(_collision.contactCount - 1).normal;
-            var instanceId = _collision.gameObject.GetInstanceID();
-            CurrentNormals.Add(new ContactNormal(instanceId, normal));
+            var normal = collision.GetContact(collision.contactCount - 1).normal;
+            var instanceId = collision.gameObject.GetInstanceID();
+            CurrentContactNormals.Add(new ContactNormal(instanceId, normal));
             _currentObjectIndex = instanceId;
-            SetNewGround(normal);
+            RecalculateGroundDirection();
         }
 
-        private void OnCollisionStay(Collision _collision)
+        private void OnCollisionStay(Collision collision)
         {
-            var normal = _collision.GetContact(_collision.contactCount-1).normal;
-            var instanceId = _collision.gameObject.GetInstanceID();
+            var collisionNormal = collision.GetContact(collision.contactCount-1).normal;
+            var collisionInstanceId = collision.gameObject.GetInstanceID();
 
-            var currentNormal = CurrentNormals.FirstOrDefault(x => x.GameObjectId == instanceId);
-            var currentNewNormals = new List<ContactNormal>();
-            if (currentNormal == null)
-            {
-                var contactNormal = new ContactNormal(instanceId, normal);
-                CurrentNormals.Add(contactNormal);
-                currentNewNormals.Add(contactNormal);
-            }
-            else if (!RMath.AreDirectíonsConsideredEqual(currentNormal.Normal, normal))
-            {
-                currentNormal.Normal = normal;
-                _currentObjectIndex = instanceId;
-                SetNewGround(currentNormal.Normal);
-            }
+            if (!IsNewContact(collisionInstanceId, collisionNormal)) return;
+
+            var newContact = new ContactNormal(collisionInstanceId, collisionNormal);
+            CurrentContactNormals.Add(newContact);
+            RecalculateGroundDirection();
         }
 
-        private void OnCollisionExit(Collision _collision)
+        private bool IsNewContact(int collisionInstanceId, Vector3 collisionNormal)
         {
-            var instanceId = _collision.gameObject.GetInstanceID();
-            var normal = CurrentNormals.FirstOrDefault(x => x.GameObjectId == instanceId);
-            CurrentNormals.Remove(normal);
-            _isGrounded = CurrentNormals.Count != 0;
+            return !CurrentContactNormals.Any(x => x.GameObjectId == collisionInstanceId && RMath.AreDirectíonsConsideredEqual(x.Normal, collisionNormal));
+        }
+        private void OnCollisionExit(Collision collision)
+        {
+            CurrentContactNormals.RemoveAll(x => x.GameObjectId == collision.gameObject.GetInstanceID());
+            _isGrounded = CurrentContactNormals.Count != 0;
 
             if (_isGrounded)
             {
-                SetNewGround(CurrentNormals[CurrentNormals.Count - 1].Normal);
+                RecalculateGroundDirection();
             }
         }
         #endregion Climbing

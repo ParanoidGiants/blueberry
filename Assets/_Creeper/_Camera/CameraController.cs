@@ -8,7 +8,7 @@ namespace Creeper
         [SerializeField] private Transform Target;
         [SerializeField] private float RotateSpeed = 0.1f;
         [SerializeField] private float MoveSpeed = 0.1f;
-        private Vector3 rotateDirection;
+        private Vector3 _rotateDirection;
 
 
         private void Start()
@@ -34,12 +34,13 @@ namespace Creeper
 
         private void Rotate()
         {
-            transform.rotation *= Quaternion.Euler(this.rotateDirection.y, this.rotateDirection.z, -this.rotateDirection.x);
+            var rotateDirection = _rotateDirection * Time.deltaTime;
+            transform.rotation *= Quaternion.Euler(rotateDirection.y, rotateDirection.z, -rotateDirection.x);
         }
 
         public void SetRotateDirection(Vector3 _direction)
         {
-            this.rotateDirection = RotateSpeed * _direction;
+            _rotateDirection = RotateSpeed * _direction;
         }
     }
 }
