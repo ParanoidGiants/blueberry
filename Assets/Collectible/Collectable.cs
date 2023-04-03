@@ -10,8 +10,8 @@ public class Collectable : MonoBehaviour
         if (manager != null)
         {
             manager.CollectableCollected();
-            Debug.Log("Amount of Collectables: " + manager.CollectableAmount);
-            gameObject.SetActive(false);
+            Debug.Log("Amount of Collectables: " + manager.collectableCounter);
+            Destroy(gameObject);
         }
     }
 }

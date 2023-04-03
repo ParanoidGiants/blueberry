@@ -24,6 +24,12 @@ public class ProceduralIvy : MonoBehaviour {
 
     int ivyCount = 0;
 
+    private CollectableManager _collectableManager;
+    void Awake()
+    {
+        _collectableManager = FindObjectOfType<CollectableManager>();
+    }
+    
     void Update() {
 
         if (Input.GetKeyUp(KeyCode.Space)) {
@@ -58,7 +64,8 @@ public class ProceduralIvy : MonoBehaviour {
             List<IvyNode> nodes = createBranch(maxPointsForBranch, hit.point, hit.normal, dir);
             GameObject branch = new GameObject("Branch " + i);
             Branch b = branch.AddComponent<Branch>();
-            if (!wantBlossoms) {
+            if (!wantBlossoms || _collectableManager.collectableCounter == 0)
+            {
                 b.init(nodes, branchRadius, branchMaterial);
             } else {
                 b.init(nodes, branchRadius, branchMaterial, leafMaterial, leafPrefab, flowerMaterial, flowerPrefab, i == 0);
