@@ -183,19 +183,28 @@ namespace Creeper
 
         private void OnCollisionStay(Collision collision)
         {
-            var collisionNormal = collision.GetContact(collision.contactCount-1).normal;
+            var contactCount = collision.contactCount;
+            var contacts = new ContactPoint[contactCount];
+            collision.GetContacts(contacts);
             var collisionInstanceId = collision.gameObject.GetInstanceID();
+            var newContacts = contacts.Where(x => IsNewContact(collisionInstanceId, x.normal)).ToArray();
+            if (newContacts.Length == 0) return;
 
-            if (!IsNewContact(collisionInstanceId, collisionNormal)) return;
+            foreach (var contact in newContacts)
+            {
+                CurrentContactNormals.Add(new ContactNormal(collisionInstanceId, contact.normal));
+            }
 
-            var newContact = new ContactNormal(collisionInstanceId, collisionNormal);
-            CurrentContactNormals.Add(newContact);
+            
             RecalculateGroundDirection();
         }
 
         private bool IsNewContact(int collisionInstanceId, Vector3 collisionNormal)
         {
-            return !CurrentContactNormals.Any(x => x.GameObjectId == collisionInstanceId && RMath.AreDirectíonsConsideredEqual(x.Normal, collisionNormal));
+            return !CurrentContactNormals.Any(x => 
+                x.GameObjectId == collisionInstanceId
+                && RMath.AreDirectíonsConsideredEqual(x.Normal, collisionNormal)
+            );
         }
         private void OnCollisionExit(Collision collision)
         {
