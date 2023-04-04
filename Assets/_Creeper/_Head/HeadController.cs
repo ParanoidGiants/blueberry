@@ -17,7 +17,6 @@ namespace Creeper
 
         private void Update()
         {
-            _projectedAxis = CreateMovementAxis();
         }
 
         private void FixedUpdate()
@@ -50,7 +49,6 @@ namespace Creeper
             }
         }
         private Axis _projectedAxis;
-        public Axis ProjectedAxis { get { return _projectedAxis; } }
 
         private Axis CreateMovementAxis()
         {
@@ -79,6 +77,11 @@ namespace Creeper
                 transform.rotation = Quaternion.LookRotation(moveDirection, transform.up);
             }
         }
+
+        public void UpdateAxis()
+        {
+            _projectedAxis = CreateMovementAxis();
+        }
         #endregion Movement
 
         #region Climbing
@@ -91,7 +94,7 @@ namespace Creeper
 
         private void FindGround()
         {
-            for (int i = -3; i < 0; i++)
+            for (int i = -5; i < 0; i++)
             {
                 var raycastLength = Mathf.Pow(2f, i);
 
@@ -164,7 +167,7 @@ namespace Creeper
             Debug.DrawRay(transform.position, newGroundDirection, Color.gray, 1f);
             _isGrounded = true;
             _groundDirection = -newGroundDirection;
-            _projectedAxis = CreateMovementAxis();
+            UpdateAxis();
             transform.up = newGroundDirection;
         }
         

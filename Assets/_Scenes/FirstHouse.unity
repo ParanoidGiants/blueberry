@@ -3459,7 +3459,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cam: {fileID: 963194227}
   Target: {fileID: 1821568026}
-  RotateSpeed: 3
+  RotateSpeed: 50
   MoveSpeed: 3
 --- !u!64 &2096506660
 MeshCollider:
