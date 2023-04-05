@@ -266,8 +266,9 @@ GameObject:
   - component: {fileID: 5470295772608336511}
   - component: {fileID: 5470295772608336509}
   - component: {fileID: 5470295772608336504}
+  - component: {fileID: 1937298247}
   m_Layer: 0
-  m_Name: Creeper
+  m_Name: CollectableCreeper
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -309,7 +310,7 @@ LineRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5470295772608336501}
-  m_Enabled: 0
+  m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -429,7 +430,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59897e50bef1ebf428675700cf88f6c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BranchAfter: 0.4
+  BranchAfter: 0.05
   branchTime: 0
   TargetDeltaX: 0
   TargetDeltaZ: 0
@@ -475,6 +476,19 @@ MonoBehaviour:
     IsGrounded: 0
     Other: {fileID: 0}
   currentContacts: []
+--- !u!114 &1937298247
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5470295772608336501}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0790d372905531f4c939d41b974f5bce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  collectableCounter: 5
 --- !u!1 &8579054404222739078
 GameObject:
   m_ObjectHideFlags: 0
