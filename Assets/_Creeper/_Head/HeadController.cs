@@ -8,10 +8,11 @@ namespace Creeper
     public class HeadController : MonoBehaviour
     {
         #region Essentials
-        private static int WHAT_IS_CLIMBABLE;
+        private static int _WHAT_IS_CLIMBABLE;
+        public static int WHAT_IS_CLIMBABLE { get { return _WHAT_IS_CLIMBABLE; } }
         private void Start()
         {
-            WHAT_IS_CLIMBABLE = LayerMask.GetMask("Climbable");
+            _WHAT_IS_CLIMBABLE = LayerMask.GetMask("Climbable");
             rigidbody = GetComponent<Rigidbody>();
         }
 

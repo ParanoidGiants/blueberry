@@ -40,7 +40,7 @@ public class ProceduralIvy : MonoBehaviour {
         if (Input.GetMouseButtonDown(0)) {
             Ray ray = cam.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
-            if (Physics.Raycast(ray, out hit, 100)) {
+            if (Physics.Raycast(ray, out hit, 100, Creeper.HeadController.WHAT_IS_CLIMBABLE)) {
                 createIvy(hit);
             }
         }
