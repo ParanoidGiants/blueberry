@@ -685,7 +685,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Head: {fileID: 1937298244}
-  Branch: {fileID: 1937298245}
   Camera: {fileID: 2095790893}
 --- !u!4 &497094058
 Transform:
@@ -702,67 +701,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &580901800
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 349071064485832905, guid: ae96b0ee39860e947b0d6a67216f73a1, type: 3}
-      propertyPath: m_Name
-      value: Proceduralvy
-      objectReference: {fileID: 0}
-    - target: {fileID: 349071064485832906, guid: ae96b0ee39860e947b0d6a67216f73a1, type: 3}
-      propertyPath: cam
-      value: 
-      objectReference: {fileID: 963194227}
-    - target: {fileID: 349071064485832907, guid: ae96b0ee39860e947b0d6a67216f73a1, type: 3}
-      propertyPath: m_RootOrder
-      value: 7
-      objectReference: {fileID: 0}
-    - target: {fileID: 349071064485832907, guid: ae96b0ee39860e947b0d6a67216f73a1, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -5.719519
-      objectReference: {fileID: 0}
-    - target: {fileID: 349071064485832907, guid: ae96b0ee39860e947b0d6a67216f73a1, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 13.410665
-      objectReference: {fileID: 0}
-    - target: {fileID: 349071064485832907, guid: ae96b0ee39860e947b0d6a67216f73a1, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -2.0314612
-      objectReference: {fileID: 0}
-    - target: {fileID: 349071064485832907, guid: ae96b0ee39860e947b0d6a67216f73a1, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 349071064485832907, guid: ae96b0ee39860e947b0d6a67216f73a1, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 349071064485832907, guid: ae96b0ee39860e947b0d6a67216f73a1, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 349071064485832907, guid: ae96b0ee39860e947b0d6a67216f73a1, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 349071064485832907, guid: ae96b0ee39860e947b0d6a67216f73a1, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 349071064485832907, guid: ae96b0ee39860e947b0d6a67216f73a1, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 349071064485832907, guid: ae96b0ee39860e947b0d6a67216f73a1, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: ae96b0ee39860e947b0d6a67216f73a1, type: 3}
 --- !u!1 &705220358
 GameObject:
   m_ObjectHideFlags: 0
@@ -1370,7 +1308,7 @@ Transform:
   - {fileID: 1819663434}
   - {fileID: 1976289126}
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1338564490
 GameObject:
@@ -2293,17 +2231,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: beb269b01bf864f44a7e6fc9f7e99ef0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1937298245 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5470295772608336509, guid: 257cd7876e4b6da43b92681f37c57bfa, type: 3}
-  m_PrefabInstance: {fileID: 1937298242}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59897e50bef1ebf428675700cf88f6c9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1976289125
 GameObject:
   m_ObjectHideFlags: 0
@@ -2453,4 +2380,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Target: {fileID: 1937298243}
-  IsRotating: 0
+  RotateSpeed: 0.1
+  MoveSpeed: 0.1
