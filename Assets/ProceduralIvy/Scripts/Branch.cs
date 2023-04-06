@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Branch : MonoBehaviour {
@@ -27,6 +28,9 @@ public class Branch : MonoBehaviour {
     float growthSpeed = 2;
     float currentAmount = -1;
 
+    CollectableManager manager;
+    int blossomCounter = 0;
+    
     public void init(List<IvyNode> branchNodes, float branchRadius, Material material) {
         this.branchNodes = branchNodes;
         this.branchRadius = branchRadius;
@@ -45,6 +49,10 @@ public class Branch : MonoBehaviour {
         this.leafPrefab = leafPrefab;
         this.flowerPrefab = flowerPrefab;
         this.wantBlossoms = true;
+
+        this.manager = FindObjectOfType<CollectableManager>();
+        this.blossomCounter = manager.collectableCounter;
+
         blossoms = createBlossoms(branchNodes, isFirst);
     }
 
@@ -72,9 +80,9 @@ public class Branch : MonoBehaviour {
             material.SetFloat(AMOUNT, currentAmount);
 
             if (wantBlossoms) {
-                var estimateNodeID = (int)remap(currentAmount, -.5f, .5f, 0, branchNodes.Count - 1);
-
-                if (blossoms.ContainsKey(estimateNodeID)) {
+                if (blossoms.Count > 0) {
+                    var keys = blossoms.Keys.ToArray();
+                    var estimateNodeID = keys[Random.Range(0, keys.Length)];
                     Blossom b = blossoms[estimateNodeID];
                     if (!b.isGrowing()) {
                         b.grow(growthSpeed);
@@ -163,9 +171,14 @@ public class Branch : MonoBehaviour {
 
         Dictionary<int, Blossom> bls = new Dictionary<int, Blossom>();
         for (int i = 0; i < nodes.Count; i++) {
-
             var r = Random.Range(0, 10);
-            if (i > 0 || isFirst) {
+            if (i > 0 
+                || 
+                isFirst
+                &&
+                blossomCounter != 0
+                ) 
+            {
 
                 if (r > 2) {
                     Vector3 n = nodes[i].getNormal();
@@ -178,19 +191,27 @@ public class Branch : MonoBehaviour {
                         fw = nodes[i].getPosition() - nodes[i + 1].getPosition();
                         otherNormal = nodes[i + 1].getNormal();
                     }
-
+                    // ísFlower
                     var isFlower = (r == 3) && Vector3.Dot(n, otherNormal) >= .95f;
 
                     var prefab = leafPrefab;
-                    if (isFlower) {
+                    var material = leafMaterial;
+                    if (isFlower 
+                        &&
+                        blossomCounter != 0
+                        ) {
+                        Debug.Log("Before: " + blossomCounter);
                         prefab = flowerPrefab;
+                        material = flowerMaterial;
+                        blossomCounter--;
+                        Debug.Log("After: " + blossomCounter);
                     }
 
                     Quaternion rotation = Quaternion.LookRotation((fw).normalized, n);
                     float flowerOffset = isFlower ? 0.02f : 0;
                     float uvID = remap(i, 0, nodes.Count - 1, 0, 1);
                     Blossom b = Instantiate(prefab, nodes[i].getPosition() + nodes[i].getNormal() * (branchRadius + flowerOffset), rotation);
-                    b.init(isFlower ? flowerMaterial : leafMaterial);
+                    b.init(material);
                     b.transform.SetParent(transform);
                     bls.Add(i, b);
                 }

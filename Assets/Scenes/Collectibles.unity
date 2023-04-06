@@ -1616,16 +1616,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cam: {fileID: 963194227}
   recycleInterval: 2
-  branches: 3
-  maxPointsForBranch: 100
-  segmentLength: 0.1
-  branchRadius: 0.3
+  branches: 5
+  maxPointsForBranch: 80
+  segmentLength: 0.06
+  branchRadius: 0.1
   branchMaterial: {fileID: 2100000, guid: 56b47004a97f4f748b47a6db6898b6ae, type: 2}
   leafMaterial: {fileID: 2100000, guid: e581d5b5f0340bc49b2fce7d57f8bbe1, type: 2}
   flowerMaterial: {fileID: 2100000, guid: 7b5d18c4c78b6764584e27e98d70516f, type: 2}
   leafPrefab: {fileID: 2503682686998312604, guid: fb6de8fca1ef3ec4f92cb3f74dec135c, type: 3}
   flowerPrefab: {fileID: 2435367529418233688, guid: cb549a15fb3c67a4093ac3de78c2dfb9, type: 3}
-  wantBlossoms: 0
+  wantBlossoms: 1
 --- !u!4 &1680758663
 Transform:
   m_ObjectHideFlags: 0
@@ -1688,10 +1688,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Creeper
       objectReference: {fileID: 0}
-    - target: {fileID: 5470295772608336504, guid: 257cd7876e4b6da43b92681f37c57bfa, type: 3}
-      propertyPath: MoveSpeed
-      value: 0.1
-      objectReference: {fileID: 0}
     - target: {fileID: 5470295772608336505, guid: 257cd7876e4b6da43b92681f37c57bfa, type: 3}
       propertyPath: m_RootOrder
       value: 3
@@ -1736,26 +1732,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5470295772608336509, guid: 257cd7876e4b6da43b92681f37c57bfa, type: 3}
-      propertyPath: BranchAfter
-      value: 0.05
-      objectReference: {fileID: 0}
-    - target: {fileID: 5470295772608336510, guid: 257cd7876e4b6da43b92681f37c57bfa, type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5470295772608336510, guid: 257cd7876e4b6da43b92681f37c57bfa, type: 3}
-      propertyPath: m_UseWorldSpace
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5470295772608336510, guid: 257cd7876e4b6da43b92681f37c57bfa, type: 3}
-      propertyPath: m_Parameters.alignment
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5470295772712224981, guid: 257cd7876e4b6da43b92681f37c57bfa, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 257cd7876e4b6da43b92681f37c57bfa, type: 3}
 --- !u!4 &1937298243 stripped
@@ -1768,7 +1744,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5470295772608336504, guid: 257cd7876e4b6da43b92681f37c57bfa, type: 3}
   m_PrefabInstance: {fileID: 1937298242}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1937298246}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: beb269b01bf864f44a7e6fc9f7e99ef0, type: 3}
@@ -1779,27 +1755,10 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5470295772608336509, guid: 257cd7876e4b6da43b92681f37c57bfa, type: 3}
   m_PrefabInstance: {fileID: 1937298242}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1937298246}
+  m_GameObject: {fileID: 0}
   m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 59897e50bef1ebf428675700cf88f6c9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!1 &1937298246 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5470295772608336501, guid: 257cd7876e4b6da43b92681f37c57bfa, type: 3}
-  m_PrefabInstance: {fileID: 1937298242}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1937298247
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1937298246}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0790d372905531f4c939d41b974f5bce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &2095790891
