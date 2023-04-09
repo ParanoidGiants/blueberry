@@ -50,6 +50,7 @@ namespace Creeper
                     : Vector3.Normalize(this._projectedAxis.right * this.inputDirection.x + this._projectedAxis.up * this.inputDirection.y);
             }
         }
+
         private Axis _projectedAxis;
 
         private Axis CreateMovementAxis()
@@ -151,6 +152,8 @@ namespace Creeper
             transform.up = _groundNormal;
             _branchController.AddBranch();
         }
+
+        public Vector3 GroundPosition { get { return transform.position - 0.5f * transform.up; } }
 
         private void RecalculateGroundDirection()
         {

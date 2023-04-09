@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Creeper;
 
 public class ProceduralIvy : MonoBehaviour {
 
@@ -25,24 +26,23 @@ public class ProceduralIvy : MonoBehaviour {
     int ivyCount = 0;
 
     private CollectableManager _collectableManager;
+    private HeadController _head;
     void Awake()
     {
         _collectableManager = FindObjectOfType<CollectableManager>();
+        _head = FindObjectOfType<HeadController>();
     }
+
+    float branchTime = 2f;
+    float branchAfter = 2f;
     
-    void Update() {
-
-        if (Input.GetKeyUp(KeyCode.Space)) {
-            // call this method when you are ready to group your meshes
-            combineAndClear();
-        }
-
-        if (Input.GetMouseButtonDown(0)) {
-            Ray ray = cam.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-            if (Physics.Raycast(ray, out hit, 100, Creeper.HeadController.WHAT_IS_CLIMBABLE)) {
-                createIvy(hit);
-            }
+    void Update()
+    {
+        branchTime += Time.deltaTime;
+        if (branchTime >= branchAfter)
+        {
+            createIvy();
+            branchTime = 0f;
         }
     }
 
@@ -55,25 +55,25 @@ public class ProceduralIvy : MonoBehaviour {
         return t2;
     }
 
-    public void createIvy(RaycastHit hit) {
-        Vector3 tangent = findTangentFromArbitraryNormal(hit.normal);
+    public void createIvy()
+    {
+        var normal = _head.transform.up;
+        var position = _head.GroundPosition;
+        Vector3 tangent = findTangentFromArbitraryNormal(normal);
         GameObject ivy = new GameObject("Ivy " + ivyCount);
         ivy.transform.SetParent(transform);
-        for (int i = 0; i < branches; i++) {
-            Vector3 dir = Quaternion.AngleAxis(360 / branches * i + Random.Range(0, 360 / branches), hit.normal) * tangent;
-            List<IvyNode> nodes = createBranch(maxPointsForBranch, hit.point, hit.normal, dir);
-            GameObject branch = new GameObject("Branch " + i);
-            Branch b = branch.AddComponent<Branch>();
-            if (!wantBlossoms || _collectableManager.collectableCounter == 0)
-            {
-                b.init(nodes, branchRadius, branchMaterial);
-            } else {
-                b.init(nodes, branchRadius, branchMaterial, leafMaterial, leafPrefab, flowerMaterial, flowerPrefab, i == 0);
-            }
-            branch.transform.SetParent(ivy.transform);
+        
+        Vector3 dir = _head.MovementDirection;
+        List<IvyNode> nodes = createBranch(maxPointsForBranch, position, normal, dir);
+        GameObject branch = new GameObject("Branch");
+        Branch b = branch.AddComponent<Branch>();
+        if (!wantBlossoms || _collectableManager.collectableCounter == 0)
+        {
+            b.init(nodes, branchRadius, branchMaterial);
+        } else {
+            b.init(nodes, branchRadius, branchMaterial, leafMaterial, leafPrefab, flowerMaterial, flowerPrefab, true);
         }
-
-        ivyCount++;
+        branch.transform.SetParent(ivy.transform);
     }
 
     Vector3 calculateTangent(Vector3 p0, Vector3 p1, Vector3 normal) {

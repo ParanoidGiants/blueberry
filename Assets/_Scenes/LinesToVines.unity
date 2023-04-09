@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44657737, g: 0.49641037, b: 0.574817, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657683, g: 0.4964096, b: 0.5748159, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1775,6 +1775,22 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 33961404, guid: 257cd7876e4b6da43b92681f37c57bfa, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 33961406, guid: 257cd7876e4b6da43b92681f37c57bfa, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 33961407, guid: 257cd7876e4b6da43b92681f37c57bfa, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1821568031, guid: 257cd7876e4b6da43b92681f37c57bfa, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5470295772608336501, guid: 257cd7876e4b6da43b92681f37c57bfa, type: 3}
       propertyPath: m_Name
       value: Creeper
