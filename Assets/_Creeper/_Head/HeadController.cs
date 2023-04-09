@@ -14,6 +14,7 @@ namespace Creeper
         {
             _WHAT_IS_CLIMBABLE = LayerMask.GetMask("Climbable");
             rigidbody = GetComponent<Rigidbody>();
+            _branchController = GetComponentInChildren<BranchController>();
         }
 
         private void Update()
@@ -91,7 +92,9 @@ namespace Creeper
         [SerializeField] private bool _isGrounded = false;
         [SerializeField] private int _currentObjectIndex = -1;
         private new Rigidbody rigidbody;
-        Vector3 _lastGroundedPosition = Vector3.zero;
+        private Vector3 _lastGroundedPosition = Vector3.zero;
+        private BranchController _branchController;
+
 
         private void FindGround()
         {
@@ -137,6 +140,7 @@ namespace Creeper
                 if (hasFoundNewGround)
                 {
                     SetPositionToHitPoint(hit.point, hit.normal);
+                    return;
                 }
             }
         }
@@ -145,6 +149,7 @@ namespace Creeper
             Debug.DrawRay(_position, _groundNormal, Color.magenta, 1f);
             transform.position = _position + 0.5f * transform.localScale.z * _groundNormal;
             transform.up = _groundNormal;
+            _branchController.AddBranch();
         }
 
         private void RecalculateGroundDirection()
@@ -170,6 +175,7 @@ namespace Creeper
             _groundDirection = -newGroundDirection;
             UpdateAxis();
             transform.up = newGroundDirection;
+            _branchController.AddBranch();
         }
         
         public List<ContactNormal> CurrentContactNormals = new List<ContactNormal>();

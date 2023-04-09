@@ -1,7 +1,6 @@
 using UnityEngine;
-using Creeper;
 
-namespace Branches
+namespace Creeper
 {
     public class BranchController : MonoBehaviour
     {
@@ -39,7 +38,6 @@ namespace Branches
             _branchTime += Time.deltaTime;
             if (_branchTime >= _branchAfter)
             {
-                _branchTime = 0f;
                 AddBranch();
             }
 
@@ -55,6 +53,7 @@ namespace Branches
 
         public void AddBranch()
         {
+            _branchTime = 0f;
             var halfPi = Mathf.PI / 2f;
             var random = Random.Range(-halfPi, halfPi);
             _oldDeltaX = Mathf.Lerp(_oldDeltaX, _targetDeltaX, _branchTime / _branchAfter);
