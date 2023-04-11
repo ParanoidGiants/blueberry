@@ -33,8 +33,8 @@ public class ProceduralIvy : MonoBehaviour {
         _head = FindObjectOfType<HeadController>();
     }
 
-    float branchTime = 2f;
-    float branchAfter = 2f;
+    private float branchTime = 0f;
+    public float branchAfter = 2f;
     
     void Update()
     {

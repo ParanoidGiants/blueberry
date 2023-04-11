@@ -101,7 +101,7 @@ namespace Creeper
         {
             for (int i = -5; i < 0; i++)
             {
-                var raycastLength = Mathf.Pow(2f, i);
+                var raycastLength = Mathf.Pow(2f, i) * 10f * moveSpeed;
 
                 RaycastHit hit;
                 var direction = _groundDirection;
