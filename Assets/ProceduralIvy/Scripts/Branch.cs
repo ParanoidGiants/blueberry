@@ -30,12 +30,27 @@ public class Branch : MonoBehaviour {
 
     CollectableManager manager;
     int blossomCounter = 0;
-    
-    public void init(List<IvyNode> branchNodes, float branchRadius, Material material) {
+
+    public void init(List<IvyNode> branchNodes, float branchRadius, Material material)
+    {
         this.branchNodes = branchNodes;
         this.branchRadius = branchRadius;
         this.material = new Material(material);
         mesh = createMesh(branchNodes);
+    }
+
+    public void initEmptyMesh(float branchRadius, Material material)
+    {
+        this.meshFilter = GetComponent<MeshFilter>();
+        this.branchNodes = new List<IvyNode>();
+        this.branchRadius = branchRadius;
+        this.material = material;
+        this.meshRenderer = GetComponent<MeshRenderer>();
+        this.meshRenderer.material = material;
+        this.meshFilter.mesh = new Mesh();
+
+        material.SetFloat(RADIUS, branchRadius);
+        material.SetFloat(AMOUNT, currentAmount);
     }
 
     public void init(List<IvyNode> branchNodes, float branchRadius, Material material, Material leafMaterial, Blossom leafPrefab, Material flowerMaterial, Blossom flowerPrefab, bool isFirst) {
@@ -56,45 +71,25 @@ public class Branch : MonoBehaviour {
         blossoms = createBlossoms(branchNodes, isFirst);
     }
 
-    void Start() {
-        meshFilter = gameObject.AddComponent<MeshFilter>();
-        meshRenderer = gameObject.AddComponent<MeshRenderer>();
-        if (material == null) {
-            material = new Material(Shader.Find("Specular"));
-        }
-
-        leafMaterial = material;
-        meshRenderer.material = material;
-        if (mesh != null) {
-            meshFilter.mesh = mesh;
-        }
-
-        material.SetFloat(RADIUS, branchRadius);
-        material.SetFloat(AMOUNT, currentAmount);
-        animate = true;
-    }
-
     void Update() {
         if (animate) {
-            currentAmount += Time.deltaTime * growthSpeed;
-            material.SetFloat(AMOUNT, currentAmount);
 
-            if (wantBlossoms) {
-                if (blossoms.Count > 0) {
-                    var keys = blossoms.Keys.ToArray();
-                    var estimateNodeID = keys[Random.Range(0, keys.Length)];
-                    Blossom b = blossoms[estimateNodeID];
-                    if (!b.isGrowing()) {
-                        b.grow(growthSpeed);
-                    }
-                }
-            }
+            //if (wantBlossoms) {
+            //    if (blossoms.Count > 0) {
+            //        var keys = blossoms.Keys.ToArray();
+            //        var estimateNodeID = keys[Random.Range(0, keys.Length)];
+            //        Blossom b = blossoms[estimateNodeID];
+            //        if (!b.isGrowing()) {
+            //            b.grow(growthSpeed);
+            //        }
+            //    }
+            //}
 
-            if (currentAmount >= MAX) {
-                animate = false;
-                material.SetFloat(AMOUNT, MAX);
-                MeshManager.instance.addMesh(transform, meshFilter.mesh, meshRenderer.sharedMaterial);
-            }
+            //if (currentAmount >= MAX) {
+            //    animate = false;
+            //    material.SetFloat(AMOUNT, MAX);
+            //    MeshManager.instance.addMesh(transform, meshFilter.mesh, meshRenderer.sharedMaterial);
+            //}
         }
 
     }
@@ -104,9 +99,8 @@ public class Branch : MonoBehaviour {
         return Mathf.Lerp(newLow, newHigh, t);
     }
 
-    Mesh createMesh(List<IvyNode> nodes) {
+    private Mesh createMesh(List<IvyNode> nodes) {
         Mesh branchMesh = new Mesh();
-
         Vector3[] vertices = new Vector3[(nodes.Count) * meshFaces * 4];
         Vector3[] normals = new Vector3[nodes.Count * meshFaces * 4];
         Vector2[] uv = new Vector2[nodes.Count * meshFaces * 4];
@@ -165,6 +159,99 @@ public class Branch : MonoBehaviour {
         branchMesh.normals = normals;
         branchMesh.uv = uv;
         return branchMesh;
+    }
+
+
+    public void SetIvyNode(int currentSegmentIndex, Vector3 branchPosition, float factor)
+    {
+
+        branchNodes[currentSegmentIndex].Position = branchPosition;
+        currentAmount += Time.deltaTime * growthSpeed;
+        var material = meshRenderer.sharedMaterial;
+        material.SetFloat(RADIUS, (1f-factor) * branchRadius);
+        material.SetFloat(AMOUNT, currentAmount);
+    }
+
+    public void AddIvyNode(Vector3 position, Vector3 up)
+    {
+        branchNodes.Add(new IvyNode(position, up));
+        material.SetFloat(AMOUNT, currentAmount);
+        material.SetFloat(RADIUS, branchRadius);
+        MeshManager.instance.addMesh(transform, meshFilter.mesh, material);
+    }
+
+    public bool HasPosition(Vector3 position)
+    {
+        return branchNodes.Any(x => x.getPosition() == position);
+    }
+
+    public void UpdateBranch()
+    {
+        Vector3[] vertices = new Vector3[(branchNodes.Count) * meshFaces * 4];
+        Vector3[] normals = new Vector3[branchNodes.Count * meshFaces * 4];
+        Vector2[] uv = new Vector2[branchNodes.Count * meshFaces * 4];
+        int[] triangles = new int[(branchNodes.Count - 1) * meshFaces * 6];
+        var mesh = this.meshFilter.mesh;
+
+        for (int i = 0; i < branchNodes.Count; i++)
+        {
+            float vStep = (2f * Mathf.PI) / meshFaces;
+
+            var fw = Vector3.zero;
+            if (i > 0)
+            {
+                fw = this.branchNodes[i - 1].getPosition() - this.branchNodes[i].getPosition();
+            }
+
+            if (i < this.branchNodes.Count - 1)
+            {
+                fw += this.branchNodes[i].getPosition() - this.branchNodes[i + 1].getPosition();
+            }
+
+            if (fw == Vector3.zero)
+            {
+                fw = Vector3.forward;
+            }
+
+            fw.Normalize();
+
+            var up = this.branchNodes[i].getNormal();
+            up.Normalize();
+
+            for (int v = 0; v < meshFaces; v++)
+            {
+                var orientation = Quaternion.LookRotation(fw, up);
+                Vector3 xAxis = Vector3.up;
+                Vector3 yAxis = Vector3.right;
+                Vector3 pos = this.branchNodes[i].getPosition();
+                pos += orientation * xAxis * (branchRadius * Mathf.Sin(v * vStep));
+                pos += orientation * yAxis * (branchRadius * Mathf.Cos(v * vStep));
+
+                vertices[i * meshFaces + v] = pos;
+
+                var diff = pos - this.branchNodes[i].getPosition();
+                normals[i * meshFaces + v] = diff / diff.magnitude;
+
+                float uvID = remap(i, 0, branchNodes.Count - 1, 0, 1);
+                uv[i * meshFaces + v] = new Vector2((float)v / meshFaces, uvID);
+            }
+
+            if (i + 1 < branchNodes.Count)
+            {
+                for (int v = 0; v < meshFaces; v++)
+                {
+                    triangles[i * meshFaces * 6 + v * 6] = ((v + 1) % meshFaces) + i * meshFaces;
+                    triangles[i * meshFaces * 6 + v * 6 + 1] = triangles[i * meshFaces * 6 + v * 6 + 4] = v + i * meshFaces;
+                    triangles[i * meshFaces * 6 + v * 6 + 2] = triangles[i * meshFaces * 6 + v * 6 + 3] = ((v + 1) % meshFaces + meshFaces) + i * meshFaces;
+                    triangles[i * meshFaces * 6 + v * 6 + 5] = (meshFaces + v % meshFaces) + i * meshFaces;
+                }
+            }
+        }
+
+        mesh.vertices = vertices;
+        mesh.triangles = triangles;
+        mesh.normals = normals;
+        mesh.uv = uv;
     }
 
     Dictionary<int, Blossom> createBlossoms(List<IvyNode> nodes, bool isFirst) {

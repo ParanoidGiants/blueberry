@@ -41,6 +41,7 @@ namespace Creeper
 
         #region PlayerInputReferences
         public HeadController Head;
+        public BranchController Branch;
         public CameraController Camera;
         #endregion PlayerInputReferences
 
@@ -52,11 +53,13 @@ namespace Creeper
                 direction.Normalize();
             }
             Head.SetMovementDirection(direction);
+            Branch.SetMovementDirection(direction);
         }
 
         public void OnCancelMove(InputAction.CallbackContext _directionCallback)
         {
             Head.SetMovementDirection(Vector3.zero);
+            Branch.SetMovementDirection(Vector3.zero);
         }
 
         public void OnRotate(InputAction.CallbackContext _directionCallback)

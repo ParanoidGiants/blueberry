@@ -1,5 +1,7 @@
+using System;
 using UnityEngine;
 
+// TODO: create own namespace
 public class IvyNode {
     Vector3 position;
     Vector3 normal;
@@ -12,4 +14,5 @@ public class IvyNode {
     public Vector3 getPosition() => position;
     public Vector3 getNormal() => normal;
 
+    public Vector3 Position { set { position = value; } }
 }

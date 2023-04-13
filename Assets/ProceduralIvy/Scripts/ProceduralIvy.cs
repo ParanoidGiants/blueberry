@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Creeper;
 
+// TODO: create own namespace
 public class ProceduralIvy : MonoBehaviour {
 
     public Camera cam;
@@ -31,19 +32,7 @@ public class ProceduralIvy : MonoBehaviour {
     {
         _collectableManager = FindObjectOfType<CollectableManager>();
         _head = FindObjectOfType<HeadController>();
-    }
-
-    private float branchTime = 0f;
-    public float branchAfter = 2f;
-    
-    void Update()
-    {
-        branchTime += Time.deltaTime;
-        if (branchTime >= branchAfter)
-        {
-            createIvy();
-            branchTime = 0f;
-        }
+        createIvy();
     }
 
     Vector3 findTangentFromArbitraryNormal(Vector3 normal) {

@@ -14,7 +14,6 @@ namespace Creeper
         {
             _WHAT_IS_CLIMBABLE = LayerMask.GetMask("Climbable");
             rigidbody = GetComponent<Rigidbody>();
-            _branchController = GetComponentInChildren<BranchController>();
         }
 
         private void Update()
@@ -74,7 +73,6 @@ namespace Creeper
             var moveDirection = MovementDirection;
             _behindDirection = -moveDirection;
             rigidbody.MovePosition(transform.position + moveSpeed * moveDirection);
-            _lastGroundedPosition = transform.position;
             if (this.inputDirection.magnitude > 0.1f)
             {
                 transform.rotation = Quaternion.LookRotation(moveDirection, transform.up);
@@ -93,51 +91,56 @@ namespace Creeper
         [SerializeField] private bool _isGrounded = false;
         [SerializeField] private int _currentObjectIndex = -1;
         private new Rigidbody rigidbody;
-        private Vector3 _lastGroundedPosition = Vector3.zero;
-        private BranchController _branchController;
+        [SerializeField] private BranchController _branchController;
 
 
+        [SerializeField] private float _raycastLength;
+        [SerializeField] private float _raycastLengthDown;
+        [SerializeField] private float _drawTime;
         private void FindGround()
         {
-            for (int i = -5; i < 0; i++)
+            var raycastLength = _raycastLength;
+
+            RaycastHit hit;
+            var rayDirection = _groundDirection;
+            
+            var rayOrigin = transform.position + 0.5f * transform.localScale.z * rayDirection;
+            Debug.DrawRay(rayOrigin, _raycastLengthDown * rayDirection, Color.red, _drawTime);
+            var hasFoundNewGround = Physics.Raycast(rayOrigin, rayDirection, out hit, _raycastLengthDown, WHAT_IS_CLIMBABLE);
+            if (hasFoundNewGround)
             {
-                var raycastLength = Mathf.Pow(2f, i) * 10f * moveSpeed;
+                SetPositionToHitPoint(hit.point, hit.normal);
+                return;
+            }
 
-                RaycastHit hit;
-                var direction = _groundDirection;
-                var position = _lastGroundedPosition + 0.5f * transform.localScale.z * direction;
-                Debug.DrawRay(position, raycastLength * direction, Color.red, 5f);
-                var hasFoundNewGround = Physics.Raycast(position, direction, out hit, raycastLength, WHAT_IS_CLIMBABLE);
+            for (int i = -5; i < 5; i++)
+            {
+                var rayFrom = rayOrigin + _raycastLengthDown * _groundDirection;
+
+                raycastLength = _raycastLength * Mathf.Pow(2f, i);
+                rayDirection = _behindDirection;
+                Debug.DrawRay(rayFrom, raycastLength * rayDirection, Color.green, _drawTime);
+                hasFoundNewGround = Physics.Raycast(rayFrom, rayDirection, out hit, raycastLength, WHAT_IS_CLIMBABLE);
                 if (hasFoundNewGround)
                 {
                     SetPositionToHitPoint(hit.point, hit.normal);
                     return;
                 }
 
-                position += raycastLength * direction;
-                direction = _behindDirection;
-                Debug.DrawRay(position, raycastLength * direction, Color.green, 5f);
-                hasFoundNewGround = Physics.Raycast(position, direction, out hit, raycastLength, WHAT_IS_CLIMBABLE);
+                rayFrom += raycastLength * rayDirection;
+                rayDirection = -_groundDirection;
+                Debug.DrawRay(rayFrom, raycastLength * rayDirection, Color.blue, _drawTime);
+                hasFoundNewGround = Physics.Raycast(rayFrom, rayDirection, out hit, raycastLength, WHAT_IS_CLIMBABLE);
                 if (hasFoundNewGround)
                 {
                     SetPositionToHitPoint(hit.point, hit.normal);
                     return;
                 }
 
-                position += raycastLength * direction;
-                direction = -_groundDirection;
-                Debug.DrawRay(position, raycastLength * direction, Color.blue, 5f);
-                hasFoundNewGround = Physics.Raycast(position, direction, out hit, raycastLength, WHAT_IS_CLIMBABLE);
-                if (hasFoundNewGround)
-                {
-                    SetPositionToHitPoint(hit.point, hit.normal);
-                    return;
-                }
-
-                position += raycastLength * direction;
-                direction = -_behindDirection;
-                Debug.DrawRay(position, raycastLength * direction, Color.blue, 5f);
-                hasFoundNewGround = Physics.Raycast(position, direction, out hit, raycastLength, WHAT_IS_CLIMBABLE);
+                rayFrom += raycastLength * rayDirection;
+                rayDirection = -_behindDirection;
+                Debug.DrawRay(rayFrom, raycastLength * rayDirection, Color.blue, _drawTime);
+                hasFoundNewGround = Physics.Raycast(rayFrom, rayDirection, out hit, raycastLength, WHAT_IS_CLIMBABLE);
                 if (hasFoundNewGround)
                 {
                     SetPositionToHitPoint(hit.point, hit.normal);
