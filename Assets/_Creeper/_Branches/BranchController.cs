@@ -14,29 +14,40 @@ namespace Creeper
         private float _targetDeltaX = 0f;
 
         private LineRenderer _line;
-        private Vector3 _branchPosition;
         private float _oldDeltaX = 0f;
 
         [SerializeField] private Branch _branch;
         [SerializeField] private float branchRadius;
         [SerializeField] private Material _branchMaterial;
+        [SerializeField] private Transform _head;
         private Vector2 _moveDirection;
+        private bool _isInitialized;
 
-        private void Start()
+        private void Init()
         {
             _line = GetComponent<LineRenderer>();
-            _branchPosition = transform.position;
-            _branch.initEmptyMesh(branchRadius, _branchMaterial);
-            AddBranch();
+            _branch.initBaseMesh(_head.position, _head.up, branchRadius, _branchMaterial);
+            var branchPosition = _head.position;
+            _currentSegmentIndex = 1;
+            _line.positionCount = 2;
+            _line.SetPosition(0, branchPosition);
+            _line.SetPosition(1, branchPosition);
+            _branchTime = 0f;
         }
 
         private void Update()
         {
+
             if (_moveDirection.magnitude < 0.1f) return;
 
+            if (!_isInitialized)
+            {
+                _isInitialized = true;
+                Init();
+            }
 
             UpdateBranch();
-            _branch.UpdateBranch();
+            _branch.UpdateBranchNodes();
         }
 
         #region LineRenderer
@@ -45,16 +56,15 @@ namespace Creeper
             _branchTime += Time.deltaTime;
             if (_branchTime >= _branchAfter)
             {
-                AddBranch();
+                AddBranchNode();
             }
 
             // Update Segment Position
             var factor = _branchTime / _branchAfter;
             var currentDeltaX = Mathf.Lerp(_oldDeltaX, _targetDeltaX, factor);
-            _branchPosition = transform.position + currentDeltaX * transform.parent.right;
-            _line.SetPosition(_currentSegmentIndex, _branchPosition);
-            _branch.SetIvyNode(_currentSegmentIndex, _branchPosition, factor);
-            _branch.UpdateBranch();
+            var branchPosition = _head.position + currentDeltaX * _head.right;
+            _line.SetPosition(_currentSegmentIndex, branchPosition);
+            _branch.SetIvyNode(_currentSegmentIndex, branchPosition, branchRadius);
         }
 
         public void SetMovementDirection(Vector2 direction)
@@ -62,17 +72,18 @@ namespace Creeper
             _moveDirection = direction;
         }
 
-        public void AddBranch()
+        public void AddBranchNode()
         {
-            _currentSegmentIndex++;
-            _branchTime = 0f;
             var halfPi = Mathf.PI / 2f;
             var random = Random.Range(-halfPi, halfPi);
             _oldDeltaX = Mathf.Lerp(_oldDeltaX, _targetDeltaX, _branchTime / _branchAfter);
+            var branchPosition = _head.position + _oldDeltaX * _head.right;
             _targetDeltaX = Mathf.Sin(random) * _branchStrength;
+            _currentSegmentIndex++;
             _line.positionCount = _currentSegmentIndex + 1;
-            _line.SetPosition(_currentSegmentIndex, _branchPosition);
-            _branch.AddIvyNode(_branchPosition, Vector3.up);
+            _line.SetPosition(_currentSegmentIndex, branchPosition);
+            _branch.AddIvyNode(branchPosition, Vector3.up);
+            _branchTime = 0f;
         }
         #endregion LineRenderer
     }

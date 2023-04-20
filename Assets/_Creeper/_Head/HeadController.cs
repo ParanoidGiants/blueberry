@@ -91,7 +91,6 @@ namespace Creeper
         [SerializeField] private bool _isGrounded = false;
         [SerializeField] private int _currentObjectIndex = -1;
         private new Rigidbody rigidbody;
-        [SerializeField] private BranchController _branchController;
 
 
         [SerializeField] private float _raycastLength;
@@ -153,7 +152,6 @@ namespace Creeper
             Debug.DrawRay(_position, _groundNormal, Color.magenta, 1f);
             transform.position = _position + 0.5f * transform.localScale.z * _groundNormal;
             transform.up = _groundNormal;
-            _branchController.AddBranch();
         }
 
         public Vector3 GroundPosition { get { return transform.position - 0.5f * transform.up; } }
@@ -181,7 +179,6 @@ namespace Creeper
             _groundDirection = -newGroundDirection;
             UpdateAxis();
             transform.up = newGroundDirection;
-            _branchController.AddBranch();
         }
         
         public List<ContactNormal> CurrentContactNormals = new List<ContactNormal>();
