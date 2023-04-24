@@ -17,7 +17,6 @@ namespace Creeper
         private float _oldDeltaX = 0f;
 
         [SerializeField] private Branch _branch;
-        [SerializeField] private float branchRadius;
         [SerializeField] private Material _branchMaterial;
         [SerializeField] private Transform _head;
         private Vector2 _moveDirection;
@@ -26,7 +25,7 @@ namespace Creeper
         private void Init()
         {
             _line = GetComponent<LineRenderer>();
-            _branch.initBaseMesh(_head.position, _head.up, branchRadius, _branchMaterial);
+            _branch.initBaseMesh(_head.position, _head.up, _branchMaterial);
             var branchPosition = _head.position;
             _currentSegmentIndex = 1;
             _line.positionCount = 2;
@@ -47,24 +46,24 @@ namespace Creeper
             }
 
             UpdateBranch();
-            _branch.UpdateBranchNodes();
         }
 
         #region LineRenderer
         private void UpdateBranch()
         {
-            _branchTime += Time.deltaTime;
-            if (_branchTime >= _branchAfter)
-            {
-                AddBranchNode();
-            }
+            //_branchTime += Time.deltaTime;
+            //if (_branchTime >= _branchAfter)
+            //{
+            //    AddBranchNode();
+            //}
 
             // Update Segment Position
             var factor = _branchTime / _branchAfter;
             var currentDeltaX = Mathf.Lerp(_oldDeltaX, _targetDeltaX, factor);
             var branchPosition = _head.position + currentDeltaX * _head.right;
             _line.SetPosition(_currentSegmentIndex, branchPosition);
-            _branch.SetIvyNode(_currentSegmentIndex, branchPosition, branchRadius);
+            _branch.SetIvyNode(_currentSegmentIndex, branchPosition);
+            _branch.UpdateBranchNodes();
         }
 
         public void SetMovementDirection(Vector2 direction)

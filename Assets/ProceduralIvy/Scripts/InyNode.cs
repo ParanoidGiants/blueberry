@@ -4,8 +4,8 @@ using UnityEngine;
 // TODO: create own namespace
 [Serializable]
 public class IvyNode {
-    Vector3 position;
-    Vector3 normal;
+    [SerializeField] private Vector3 position;
+    [SerializeField] private Vector3 normal;
 
     public IvyNode(Vector3 position, Vector3 normal) {
         this.position = position;
