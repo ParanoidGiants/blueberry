@@ -402,6 +402,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91cd51cc61adbc545b33e46a09a84eec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxNodeCount: 15
   branchNodes: []
   branchRadius: 1
 --- !u!4 &843430706
@@ -1081,13 +1082,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59897e50bef1ebf428675700cf88f6c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _branchAfter: 2
-  _branchStrength: 1
-  _branchTime: 0
-  _currentSegmentIndex: -1
-  _branch: {fileID: 843430705}
+  _deadBranch: {fileID: 0}
+  _livelyBranch: {fileID: 843430705}
   _branchMaterial: {fileID: 2100000, guid: 56b47004a97f4f748b47a6db6898b6ae, type: 2}
   _head: {fileID: 6049121466212368969}
+  _branchAfter: 1
+  _branchStrength: 0.05
+  _branchTime: 0
+  _currentSegmentIndex: -1
 --- !u!4 &5470295773171207134
 Transform:
   m_ObjectHideFlags: 0

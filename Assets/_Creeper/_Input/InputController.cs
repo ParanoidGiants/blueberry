@@ -52,14 +52,14 @@ namespace Creeper
             {
                 direction.Normalize();
             }
-            Head.SetMovementDirection(direction);
-            Branch.SetMovementDirection(direction);
+            Head.InputDirection = direction;
+            Branch.InputDirection = direction;
         }
 
         public void OnCancelMove(InputAction.CallbackContext _directionCallback)
         {
-            Head.SetMovementDirection(Vector3.zero);
-            Branch.SetMovementDirection(Vector3.zero);
+            Head.InputDirection = Vector3.zero;
+            Branch.InputDirection = Vector3.zero;
         }
 
         public void OnRotate(InputAction.CallbackContext _directionCallback)

@@ -42,6 +42,7 @@ namespace Creeper
         #region Movement
         [SerializeField] private float moveSpeed;
         private Vector3 inputDirection;
+        public Vector3 InputDirection { set { this.inputDirection = value; } }
         public Vector3 MovementDirection { 
             get {
                 return _projectedAxis == null 
@@ -63,10 +64,6 @@ namespace Creeper
             };
         }
 
-        public void SetMovementDirection(Vector3 _inputDirection)
-        {
-            this.inputDirection = _inputDirection;
-        }
 
         private void UpdateMovement()
         {
