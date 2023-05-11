@@ -14,14 +14,15 @@ namespace Creeper
         [SerializeField] private int _currentSegmentIndex = -1;
 
         private LineRenderer _line;
-        private Vector2 _moveDirection;
-        public Vector2 InputDirection { set { _moveDirection = value; } }
+        private Vector2 _inputDirection;
+        private Vector2 _lastInputDirection;
+        public Vector2 InputDirection { set { _inputDirection = value; } }
 
         private float _targetDeltaX = 0f;
         private float _oldDeltaX = 0f;
         private bool _isInitialized;
 
-        private void Init()
+        private void Start()
         {
             _currentSegmentIndex = 1;
             _livelyBranch.initBaseMesh(_head.position, _head.up, _branchMaterial);
@@ -37,20 +38,15 @@ namespace Creeper
 
         private void Update()
         {
-            if (_moveDirection.magnitude < 0.1f) return;
-
-            if (!_isInitialized)
-            {
-                _isInitialized = true;
-                Init();
-            }
+            if (_inputDirection.magnitude < 0.1f) return;
             UpdateBranch();
         }
 
         private void UpdateBranch()
         {
             _branchTime += Time.deltaTime;
-            if (_branchTime >= _branchAfter)
+            var isTurningAround = Vector3.Dot(_lastInputDirection, _inputDirection) < 0f;
+            if (_branchTime >= _branchAfter || isTurningAround)
             {
                 // Add Ivy Node
                 var halfPi = Mathf.PI / 2f;
@@ -73,6 +69,7 @@ namespace Creeper
             _line.SetPosition(_currentSegmentIndex, branchPosition);
             _livelyBranch.SetIvyNode(branchPosition);
             _livelyBranch.UpdateIvyNodes();
+            _lastInputDirection = _inputDirection;
         }
     }
 }

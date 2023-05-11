@@ -30,7 +30,7 @@ namespace Creeper
             ""id"": ""e1729a06-d09b-457a-9ad2-871720888fcd"",
             ""actions"": [
                 {
-                    ""name"": ""Move"",
+                    ""name"": ""MoveCreeper"",
                     ""type"": ""Value"",
                     ""id"": ""196a819f-bc1f-4fc0-96d7-381b2eca7a4d"",
                     ""expectedControlType"": ""Vector2"",
@@ -39,7 +39,7 @@ namespace Creeper
                     ""initialStateCheck"": true
                 },
                 {
-                    ""name"": ""Rotate"",
+                    ""name"": ""RotateCamera"",
                     ""type"": ""Value"",
                     ""id"": ""9201fda4-cc06-46bb-9087-f0f4e61b4704"",
                     ""expectedControlType"": ""Vector3"",
@@ -55,6 +55,15 @@ namespace Creeper
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ZoomCamera"",
+                    ""type"": ""Value"",
+                    ""id"": ""50395116-f20c-4a33-a393-b6c769203bfe"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -65,7 +74,7 @@ namespace Creeper
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Move"",
+                    ""action"": ""MoveCreeper"",
                     ""isComposite"": true,
                     ""isPartOfComposite"": false
                 },
@@ -76,7 +85,7 @@ namespace Creeper
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Move"",
+                    ""action"": ""MoveCreeper"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
@@ -87,7 +96,7 @@ namespace Creeper
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Move"",
+                    ""action"": ""MoveCreeper"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
@@ -98,7 +107,7 @@ namespace Creeper
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Move"",
+                    ""action"": ""MoveCreeper"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
@@ -109,7 +118,7 @@ namespace Creeper
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Move"",
+                    ""action"": ""MoveCreeper"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
@@ -120,7 +129,7 @@ namespace Creeper
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Rotate"",
+                    ""action"": ""RotateCamera"",
                     ""isComposite"": true,
                     ""isPartOfComposite"": false
                 },
@@ -131,7 +140,7 @@ namespace Creeper
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Rotate"",
+                    ""action"": ""RotateCamera"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
@@ -142,7 +151,7 @@ namespace Creeper
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Rotate"",
+                    ""action"": ""RotateCamera"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
@@ -153,7 +162,7 @@ namespace Creeper
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Rotate"",
+                    ""action"": ""RotateCamera"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
@@ -164,7 +173,7 @@ namespace Creeper
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Rotate"",
+                    ""action"": ""RotateCamera"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
@@ -175,7 +184,7 @@ namespace Creeper
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Rotate"",
+                    ""action"": ""RotateCamera"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
@@ -186,7 +195,7 @@ namespace Creeper
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Rotate"",
+                    ""action"": ""RotateCamera"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
@@ -200,6 +209,39 @@ namespace Creeper
                     ""action"": ""Reset"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""1D Axis"",
+                    ""id"": ""b9d546ee-65db-4416-92b0-951084c96d9a"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ZoomCamera"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""9c117142-8b47-4eb9-9e7d-547f4d3cc5df"",
+                    ""path"": ""<Keyboard>/k"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ZoomCamera"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""39e8d5b0-d1f8-4546-87a3-ec5d792c4ab4"",
+                    ""path"": ""<Keyboard>/l"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ZoomCamera"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         }
@@ -208,9 +250,10 @@ namespace Creeper
 }");
             // PlayerInput
             m_PlayerInput = asset.FindActionMap("PlayerInput", throwIfNotFound: true);
-            m_PlayerInput_Move = m_PlayerInput.FindAction("Move", throwIfNotFound: true);
-            m_PlayerInput_Rotate = m_PlayerInput.FindAction("Rotate", throwIfNotFound: true);
+            m_PlayerInput_MoveCreeper = m_PlayerInput.FindAction("MoveCreeper", throwIfNotFound: true);
+            m_PlayerInput_RotateCamera = m_PlayerInput.FindAction("RotateCamera", throwIfNotFound: true);
             m_PlayerInput_Reset = m_PlayerInput.FindAction("Reset", throwIfNotFound: true);
+            m_PlayerInput_ZoomCamera = m_PlayerInput.FindAction("ZoomCamera", throwIfNotFound: true);
         }
 
         public void Dispose()
@@ -270,16 +313,18 @@ namespace Creeper
         // PlayerInput
         private readonly InputActionMap m_PlayerInput;
         private IPlayerInputActions m_PlayerInputActionsCallbackInterface;
-        private readonly InputAction m_PlayerInput_Move;
-        private readonly InputAction m_PlayerInput_Rotate;
+        private readonly InputAction m_PlayerInput_MoveCreeper;
+        private readonly InputAction m_PlayerInput_RotateCamera;
         private readonly InputAction m_PlayerInput_Reset;
+        private readonly InputAction m_PlayerInput_ZoomCamera;
         public struct PlayerInputActions
         {
             private @PlayerInputs m_Wrapper;
             public PlayerInputActions(@PlayerInputs wrapper) { m_Wrapper = wrapper; }
-            public InputAction @Move => m_Wrapper.m_PlayerInput_Move;
-            public InputAction @Rotate => m_Wrapper.m_PlayerInput_Rotate;
+            public InputAction @MoveCreeper => m_Wrapper.m_PlayerInput_MoveCreeper;
+            public InputAction @RotateCamera => m_Wrapper.m_PlayerInput_RotateCamera;
             public InputAction @Reset => m_Wrapper.m_PlayerInput_Reset;
+            public InputAction @ZoomCamera => m_Wrapper.m_PlayerInput_ZoomCamera;
             public InputActionMap Get() { return m_Wrapper.m_PlayerInput; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -289,37 +334,44 @@ namespace Creeper
             {
                 if (m_Wrapper.m_PlayerInputActionsCallbackInterface != null)
                 {
-                    @Move.started -= m_Wrapper.m_PlayerInputActionsCallbackInterface.OnMove;
-                    @Move.performed -= m_Wrapper.m_PlayerInputActionsCallbackInterface.OnMove;
-                    @Move.canceled -= m_Wrapper.m_PlayerInputActionsCallbackInterface.OnMove;
-                    @Rotate.started -= m_Wrapper.m_PlayerInputActionsCallbackInterface.OnRotate;
-                    @Rotate.performed -= m_Wrapper.m_PlayerInputActionsCallbackInterface.OnRotate;
-                    @Rotate.canceled -= m_Wrapper.m_PlayerInputActionsCallbackInterface.OnRotate;
+                    @MoveCreeper.started -= m_Wrapper.m_PlayerInputActionsCallbackInterface.OnMoveCreeper;
+                    @MoveCreeper.performed -= m_Wrapper.m_PlayerInputActionsCallbackInterface.OnMoveCreeper;
+                    @MoveCreeper.canceled -= m_Wrapper.m_PlayerInputActionsCallbackInterface.OnMoveCreeper;
+                    @RotateCamera.started -= m_Wrapper.m_PlayerInputActionsCallbackInterface.OnRotateCamera;
+                    @RotateCamera.performed -= m_Wrapper.m_PlayerInputActionsCallbackInterface.OnRotateCamera;
+                    @RotateCamera.canceled -= m_Wrapper.m_PlayerInputActionsCallbackInterface.OnRotateCamera;
                     @Reset.started -= m_Wrapper.m_PlayerInputActionsCallbackInterface.OnReset;
                     @Reset.performed -= m_Wrapper.m_PlayerInputActionsCallbackInterface.OnReset;
                     @Reset.canceled -= m_Wrapper.m_PlayerInputActionsCallbackInterface.OnReset;
+                    @ZoomCamera.started -= m_Wrapper.m_PlayerInputActionsCallbackInterface.OnZoomCamera;
+                    @ZoomCamera.performed -= m_Wrapper.m_PlayerInputActionsCallbackInterface.OnZoomCamera;
+                    @ZoomCamera.canceled -= m_Wrapper.m_PlayerInputActionsCallbackInterface.OnZoomCamera;
                 }
                 m_Wrapper.m_PlayerInputActionsCallbackInterface = instance;
                 if (instance != null)
                 {
-                    @Move.started += instance.OnMove;
-                    @Move.performed += instance.OnMove;
-                    @Move.canceled += instance.OnMove;
-                    @Rotate.started += instance.OnRotate;
-                    @Rotate.performed += instance.OnRotate;
-                    @Rotate.canceled += instance.OnRotate;
+                    @MoveCreeper.started += instance.OnMoveCreeper;
+                    @MoveCreeper.performed += instance.OnMoveCreeper;
+                    @MoveCreeper.canceled += instance.OnMoveCreeper;
+                    @RotateCamera.started += instance.OnRotateCamera;
+                    @RotateCamera.performed += instance.OnRotateCamera;
+                    @RotateCamera.canceled += instance.OnRotateCamera;
                     @Reset.started += instance.OnReset;
                     @Reset.performed += instance.OnReset;
                     @Reset.canceled += instance.OnReset;
+                    @ZoomCamera.started += instance.OnZoomCamera;
+                    @ZoomCamera.performed += instance.OnZoomCamera;
+                    @ZoomCamera.canceled += instance.OnZoomCamera;
                 }
             }
         }
         public PlayerInputActions @PlayerInput => new PlayerInputActions(this);
         public interface IPlayerInputActions
         {
-            void OnMove(InputAction.CallbackContext context);
-            void OnRotate(InputAction.CallbackContext context);
+            void OnMoveCreeper(InputAction.CallbackContext context);
+            void OnRotateCamera(InputAction.CallbackContext context);
             void OnReset(InputAction.CallbackContext context);
+            void OnZoomCamera(InputAction.CallbackContext context);
         }
     }
 }

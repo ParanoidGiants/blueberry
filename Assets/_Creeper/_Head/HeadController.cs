@@ -210,7 +210,7 @@ namespace Creeper
         {
             return !CurrentContactNormals.Any(x => 
                 x.GameObjectId == collisionInstanceId
-                && RMath.AreDirectíonsConsideredEqual(x.Normal, collisionNormal)
+                && RMath.AreDirectionsConsideredEqual(x.Normal, collisionNormal)
             );
         }
         private void OnCollisionExit(Collision collision)

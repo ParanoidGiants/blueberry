@@ -19,23 +19,27 @@ namespace Creeper
         private void OnEnable()
         {
             input.Enable();
-            input.PlayerInput.Move.performed += OnMove;
-            input.PlayerInput.Rotate.performed += OnRotate;
+            input.PlayerInput.MoveCreeper.performed += OnMove;
+            input.PlayerInput.RotateCamera.performed += OnRotate;
+            input.PlayerInput.ZoomCamera.performed += OnZoom;
             input.PlayerInput.Reset.performed += OnReset;
 
-            input.PlayerInput.Move.canceled += OnCancelMove;
-            input.PlayerInput.Rotate.canceled += OnCancelRotate;
+            input.PlayerInput.MoveCreeper.canceled += OnCancelMove;
+            input.PlayerInput.RotateCamera.canceled += OnCancelRotate;
+            input.PlayerInput.ZoomCamera.canceled += OnCancelZoom;
         }
 
         private void OnDisable()
         {
             input.Disable();
-            input.PlayerInput.Move.performed -= OnMove;
-            input.PlayerInput.Rotate.performed -= OnRotate;
+            input.PlayerInput.MoveCreeper.performed -= OnMove;
+            input.PlayerInput.RotateCamera.performed -= OnRotate;
+            input.PlayerInput.ZoomCamera.performed -= OnZoom;
             input.PlayerInput.Reset.performed -= OnReset;
 
-            input.PlayerInput.Move.canceled -= OnCancelMove;
-            input.PlayerInput.Rotate.canceled -= OnCancelRotate;
+            input.PlayerInput.MoveCreeper.canceled -= OnCancelMove;
+            input.PlayerInput.RotateCamera.canceled -= OnCancelRotate;
+            input.PlayerInput.ZoomCamera.canceled -= OnCancelZoom;
         }
         #endregion PlayerInputBinding
 
@@ -75,6 +79,24 @@ namespace Creeper
         public void OnCancelRotate(InputAction.CallbackContext _directionCallback)
         {
             Camera.SetRotateDirection(Vector3.zero);
+        }
+
+        public void OnZoom(InputAction.CallbackContext _directionCallback)
+        {
+            var direction = _directionCallback.ReadValue<Vector3>();
+            if (direction.magnitude > 1f)
+            {
+                direction.Normalize();
+            }
+        }
+
+        public void OnCancelZoom(InputAction.CallbackContext _directionCallback)
+        {
+            var direction = _directionCallback.ReadValue<Vector3>();
+            if (direction.magnitude > 1f)
+            {
+                direction.Normalize();
+            }
         }
 
         public void OnReset(InputAction.CallbackContext _directionCallback)

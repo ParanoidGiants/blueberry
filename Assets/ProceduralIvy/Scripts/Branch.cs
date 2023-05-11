@@ -1,18 +1,20 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class Branch : MonoBehaviour {
     const string AMOUNT = "_Amount";
     const string RADIUS = "_Radius";
     const float MAX = 0.5f;
 
-    public int maxNodeCount = 15;
+    public int totalNodeCount = 0;
+    public int maxLivelyNodeCount = 15;
     public List<IvyNode> branchNodes;
 
-    Mesh mesh;
+    Mesh livelyMesh;
     Material material;
-    MeshFilter meshFilter;
+    MeshFilter meshFilter; 
     MeshRenderer meshRenderer;
 
     Material leafMaterial;
@@ -37,7 +39,7 @@ public class Branch : MonoBehaviour {
         this.branchNodes = branchNodes;
         this.branchRadius = branchRadius;
         this.material = new Material(material);
-        mesh = createMesh(branchNodes);
+        livelyMesh = createMesh(branchNodes);
     }
 
     public void init(List<IvyNode> branchNodes, float branchRadius, Material material, Material leafMaterial, Blossom leafPrefab, Material flowerMaterial, Blossom flowerPrefab, bool isFirst)
@@ -45,7 +47,7 @@ public class Branch : MonoBehaviour {
         this.branchNodes = branchNodes;
         this.branchRadius = branchRadius;
         this.material = new Material(material);
-        mesh = createMesh(branchNodes);
+        livelyMesh = createMesh(branchNodes);
 
         this.leafMaterial = leafMaterial;
         this.flowerMaterial = flowerMaterial;
@@ -149,6 +151,11 @@ public class Branch : MonoBehaviour {
     public void AddIvyNode(Vector3 position, Vector3 normal)
     {
         branchNodes.Add(new IvyNode(position, normal));
+        totalNodeCount++;
+        if (branchNodes.Count >= maxLivelyNodeCount)
+        {
+            branchNodes.RemoveAt(0);
+        }
 
         var nodeCount = branchNodes.Count;
         Mesh mesh = meshFilter.mesh;
@@ -247,59 +254,57 @@ public class Branch : MonoBehaviour {
         Vector3[] normals = mesh.normals;
         Vector2[] uv = mesh.uv;
         int[] triangles = mesh.triangles;
-        {
-            //int i = branchNodes.Count - 1;
-            //float vStep = (2f * Mathf.PI) / meshFaces;
-            //var fw = Vector3.zero;
-            //if (i > 0)
-            //{
-            //    fw = this.branchNodes[i - 1].getPosition() - this.branchNodes[i].getPosition();
-            //}
+        //int i = branchNodes.Count - 1;
+        //float vStep = (2f * Mathf.PI) / meshFaces;
+        //var fw = Vector3.zero;
+        //if (i > 0)
+        //{
+        //    fw = this.branchNodes[i - 1].getPosition() - this.branchNodes[i].getPosition();
+        //}
 
-            //if (i < this.branchNodes.Count - 1)
-            //{
-            //    fw += this.branchNodes[i].getPosition() - this.branchNodes[i + 1].getPosition();
-            //}
+        //if (i < this.branchNodes.Count - 1)
+        //{
+        //    fw += this.branchNodes[i].getPosition() - this.branchNodes[i + 1].getPosition();
+        //}
 
-            //if (fw == Vector3.zero)
-            //{
-            //    fw = Vector3.forward;
-            //}
+        //if (fw == Vector3.zero)
+        //{
+        //    fw = Vector3.forward;
+        //}
 
-            //fw.Normalize();
+        //fw.Normalize();
 
-            //var up = this.branchNodes[i].getNormal();
-            //up.Normalize();
+        //var up = this.branchNodes[i].getNormal();
+        //up.Normalize();
 
-            //for (int v = 0; v < meshFaces; v++)
-            //{
-            //    var orientation = Quaternion.LookRotation(fw, up);
-            //    Vector3 xAxis = Vector3.up;
-            //    Vector3 yAxis = Vector3.right;
-            //    Vector3 pos = this.branchNodes[i].getPosition();
-            //    pos += orientation * xAxis * (branchRadius * Mathf.Sin(v * vStep));
-            //    pos += orientation * yAxis * (branchRadius * Mathf.Cos(v * vStep));
+        //for (int v = 0; v < meshFaces; v++)
+        //{
+        //    var orientation = Quaternion.LookRotation(fw, up);
+        //    Vector3 xAxis = Vector3.up;
+        //    Vector3 yAxis = Vector3.right;
+        //    Vector3 pos = this.branchNodes[i].getPosition();
+        //    pos += orientation * xAxis * (branchRadius * Mathf.Sin(v * vStep));
+        //    pos += orientation * yAxis * (branchRadius * Mathf.Cos(v * vStep));
 
-            //    vertices[i * meshFaces + v] = pos;
+        //    vertices[i * meshFaces + v] = pos;
 
-            //    var diff = pos - this.branchNodes[i].getPosition();
-            //    normals[i * meshFaces + v] = diff / diff.magnitude;
+        //    var diff = pos - this.branchNodes[i].getPosition();
+        //    normals[i * meshFaces + v] = diff / diff.magnitude;
 
-            //    float uvID = remap(i, 0, branchNodes.Count - 1, 0, 1);
-            //    uv[i * meshFaces + v] = new Vector2((float)v / meshFaces, uvID);
-            //}
+        //    float uvID = remap(i, 0, branchNodes.Count - 1, 0, 1);
+        //    uv[i * meshFaces + v] = new Vector2((float)v / meshFaces, uvID);
+        //}
 
-            //if (i + 1 < branchNodes.Count)
-            //{
-            //    for (int v = 0; v < meshFaces; v++)
-            //    {
-            //        triangles[i * meshFaces * 6 + v * 6] = ((v + 1) % meshFaces) + i * meshFaces;
-            //        triangles[i * meshFaces * 6 + v * 6 + 1] = triangles[i * meshFaces * 6 + v * 6 + 4] = v + i * meshFaces;
-            //        triangles[i * meshFaces * 6 + v * 6 + 2] = triangles[i * meshFaces * 6 + v * 6 + 3] = ((v + 1) % meshFaces + meshFaces) + i * meshFaces;
-            //        triangles[i * meshFaces * 6 + v * 6 + 5] = (meshFaces + v % meshFaces) + i * meshFaces;
-            //    }
-            //}
-        }
+        //if (i + 1 < branchNodes.Count)
+        //{
+        //    for (int v = 0; v < meshFaces; v++)
+        //    {
+        //        triangles[i * meshFaces * 6 + v * 6] = ((v + 1) % meshFaces) + i * meshFaces;
+        //        triangles[i * meshFaces * 6 + v * 6 + 1] = triangles[i * meshFaces * 6 + v * 6 + 4] = v + i * meshFaces;
+        //        triangles[i * meshFaces * 6 + v * 6 + 2] = triangles[i * meshFaces * 6 + v * 6 + 3] = ((v + 1) % meshFaces + meshFaces) + i * meshFaces;
+        //        triangles[i * meshFaces * 6 + v * 6 + 5] = (meshFaces + v % meshFaces) + i * meshFaces;
+        //    }
+        //}
 
         var minIndex = Mathf.Min(branchNodes.Count - 3, 0);
         for (int i = 0; i < this.branchNodes.Count; i++)
@@ -387,7 +392,7 @@ public class Branch : MonoBehaviour {
                         fw = nodes[i].getPosition() - nodes[i + 1].getPosition();
                         otherNormal = nodes[i + 1].getNormal();
                     }
-                    // ísFlower
+                    // Ã­sFlower
                     var isFlower = (r == 3) && Vector3.Dot(n, otherNormal) >= .95f;
 
                     var prefab = leafPrefab;

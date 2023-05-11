@@ -40,12 +40,11 @@ namespace RootMath
         }
     }
 
-    public class RMath
+    public static class RMath
     {
         public static bool AreDirectíonsConsideredEqual(Vector3 _direction1, Vector3 _directions)
         {
             return Vector3.Dot(_direction1, _directions) > 0.99f;
         }
     }
-
 }
