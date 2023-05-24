@@ -1,228 +1,174 @@
-using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using RootMath;
+using UnityEngine.Serialization;
 
 namespace Creeper
 {
     public class HeadController : MonoBehaviour
     {
-        #region Essentials
         private static int _WHAT_IS_CLIMBABLE;
         public static int WHAT_IS_CLIMBABLE { get { return _WHAT_IS_CLIMBABLE; } }
+        
+        [Header("Settings")]
+        [SerializeField] private float _raycastLengthEpsilon;
+        [SerializeField] private float _drawTime;
+        [SerializeField] private float _moveSpeed;
+        
+        [Space(10)]
+        [Header("Watchers")]
+        [SerializeField] private bool _isGrounded = false;
+        [SerializeField] private float _raycastLengthForward;
+        [SerializeField] private Vector3 _inputDirection;
+        [SerializeField] private Vector3 _lastPosition;
+        [SerializeField] private Vector3 _groundDirection;
+        [SerializeField] private Vector3 _behindDirection;
+        
+        [Space(10)]
+        [SerializeField] private Axis projectedAxis;
+        [SerializeField] private ContactObjectManager contactObjectManager;
+        
+        private Rigidbody _rigidbody;
+        private Transform _cameraTransform;
+        
+        public Vector3 InputDirection { set { _inputDirection = value; } }
+        public Vector3 CalculateMovementDirection()
+        { 
+            return projectedAxis == null 
+                ? Vector3.zero
+                : Vector3.Normalize(projectedAxis.right * _inputDirection.x + projectedAxis.up * _inputDirection.y);
+        }
+        
+        public Vector3 GetGroundPosition()
+        {
+            return transform.position + 0.5f * transform.localScale.z * _groundDirection;
+        }
+        
+#region LifeCycle
         private void Start()
         {
             _WHAT_IS_CLIMBABLE = LayerMask.GetMask("Climbable");
-            rigidbody = GetComponent<Rigidbody>();
+            _rigidbody = GetComponent<Rigidbody>();
+            _cameraTransform = Camera.main?.transform;
+            contactObjectManager = new ContactObjectManager();
+            _lastPosition = transform.position;
+            _groundDirection = -transform.up;
         }
-
-        private void Update()
+        
+        private void OnCollisionEnter(Collision collision)
         {
+            contactObjectManager.TryAddNormals(collision);
+            UpdateGround();
         }
-
+        
+        private void OnCollisionStay(Collision collision)
+        {
+            contactObjectManager.TryAddNormals(collision);
+            UpdateGround();
+        }
+        
+        private void OnCollisionExit(Collision collision)
+        {
+            contactObjectManager.RemoveContactObjects(collision);
+            UpdateGround();
+            Debug.Log("EXIT");
+        }
+        
         private void FixedUpdate()
         {
-            rigidbody.velocity = Vector3.zero;
-            DebugDrawNormal();
-
-            if (!_isGrounded) FindGround();
-            else UpdateMovement();
+            _rigidbody.velocity = Vector3.zero;
+            
+            _isGrounded = contactObjectManager.contactObjects.Count > 0;
+            if (_isGrounded) UpdateMovement();
+            else FindGround();
         }
-
-        private void DebugDrawNormal()
-        {
-            var currentNormal = -_groundDirection;
-            if (_isGrounded)
-            {
-                Debug.DrawRay(transform.position, currentNormal, Color.green);
-            }
-        }
-        #endregion Essentials
-
-        #region Movement
-        [SerializeField] private float moveSpeed;
-        private Vector3 inputDirection;
-        public Vector3 InputDirection { set { this.inputDirection = value; } }
-        public Vector3 MovementDirection { 
-            get {
-                return _projectedAxis == null 
-                    ? Vector3.zero
-                    : Vector3.Normalize(this._projectedAxis.right * this.inputDirection.x + this._projectedAxis.up * this.inputDirection.y);
-            }
-        }
-
-        private Axis _projectedAxis;
-
-        private Axis CreateMovementAxis()
-        {
-            var camera = Camera.main.transform;
-            var wallDirection = _groundDirection;
-            return new Axis()
-            {
-                right = ChatGPT.IntersectingLine(transform.position, camera.right, camera.position, wallDirection),
-                up = ChatGPT.IntersectingLine(transform.position, camera.up, camera.position, wallDirection)
-            };
-        }
-
-
+#endregion LifeCycle
+        
         private void UpdateMovement()
         {
-            var moveDirection = MovementDirection;
+            var moveDirection = CalculateMovementDirection();
             _behindDirection = -moveDirection;
-            rigidbody.MovePosition(transform.position + moveSpeed * moveDirection);
-            if (this.inputDirection.magnitude > 0.1f)
+            _lastPosition = transform.position;
+            
+            _rigidbody.MovePosition(transform.position + _moveSpeed * moveDirection);
+            if (_inputDirection.magnitude > 0.1f)
             {
-                transform.rotation = Quaternion.LookRotation(moveDirection, transform.up);
+                transform.rotation = Quaternion.LookRotation(moveDirection, -_groundDirection);
             }
         }
-
-        public void UpdateAxis()
-        {
-            _projectedAxis = CreateMovementAxis();
-        }
-        #endregion Movement
-
-        #region Climbing
-        private Vector3 _groundDirection;
-        private Vector3 _behindDirection;
-        [SerializeField] private bool _isGrounded = false;
-        [SerializeField] private int _currentObjectIndex = -1;
-        private new Rigidbody rigidbody;
-
-
-        [SerializeField] private float _raycastLength;
-        [SerializeField] private float _raycastLengthDown;
-        [SerializeField] private float _drawTime;
+        
         private void FindGround()
         {
-            var raycastLength = _raycastLength;
-
             RaycastHit hit;
-            var rayDirection = _groundDirection;
-            
-            var rayOrigin = transform.position + 0.5f * transform.localScale.z * rayDirection;
-            Debug.DrawRay(rayOrigin, _raycastLengthDown * rayDirection, Color.red, _drawTime);
-            var hasFoundNewGround = Physics.Raycast(rayOrigin, rayDirection, out hit, _raycastLengthDown, WHAT_IS_CLIMBABLE);
-            if (hasFoundNewGround)
+            // Search Below
+            var rayOrigin = transform.position;
+            var raycastLength = 0.5f * transform.localScale.z + _raycastLengthEpsilon;
+            if (ShootRay(rayOrigin, _groundDirection, raycastLength, out hit, Color.red))
             {
-                SetPositionToHitPoint(hit.point, hit.normal);
+                SetRaycastContactObject(hit.point, hit.normal);
+                return;
+            }
+            // Search Behind
+            rayOrigin += raycastLength * _groundDirection;
+            raycastLength = (transform.position - _lastPosition).magnitude + _raycastLengthEpsilon;
+            if (ShootRay(rayOrigin, _behindDirection, raycastLength, out hit, Color.cyan))
+            {
+                SetRaycastContactObject(hit.point, hit.normal);
                 return;
             }
 
-            for (int i = -5; i < 5; i++)
+            // Search up
+            rayOrigin += raycastLength * _behindDirection;
+            raycastLength = _raycastLengthEpsilon;
+            if (ShootRay(rayOrigin, -_groundDirection, raycastLength, out hit, Color.blue))
             {
-                var rayFrom = rayOrigin + _raycastLengthDown * _groundDirection;
-
-                raycastLength = _raycastLength * Mathf.Pow(2f, i);
-                rayDirection = _behindDirection;
-                Debug.DrawRay(rayFrom, raycastLength * rayDirection, Color.green, _drawTime);
-                hasFoundNewGround = Physics.Raycast(rayFrom, rayDirection, out hit, raycastLength, WHAT_IS_CLIMBABLE);
-                if (hasFoundNewGround)
-                {
-                    SetPositionToHitPoint(hit.point, hit.normal);
-                    return;
-                }
-
-                rayFrom += raycastLength * rayDirection;
-                rayDirection = -_groundDirection;
-                Debug.DrawRay(rayFrom, raycastLength * rayDirection, Color.blue, _drawTime);
-                hasFoundNewGround = Physics.Raycast(rayFrom, rayDirection, out hit, raycastLength, WHAT_IS_CLIMBABLE);
-                if (hasFoundNewGround)
-                {
-                    SetPositionToHitPoint(hit.point, hit.normal);
-                    return;
-                }
-
-                rayFrom += raycastLength * rayDirection;
-                rayDirection = -_behindDirection;
-                Debug.DrawRay(rayFrom, raycastLength * rayDirection, Color.blue, _drawTime);
-                hasFoundNewGround = Physics.Raycast(rayFrom, rayDirection, out hit, raycastLength, WHAT_IS_CLIMBABLE);
-                if (hasFoundNewGround)
-                {
-                    SetPositionToHitPoint(hit.point, hit.normal);
-                    return;
-                }
+                SetRaycastContactObject(hit.point, hit.normal);
+                return;
             }
-        }
-        private void SetPositionToHitPoint(Vector3 _position, Vector3 _groundNormal)
-        {
-            Debug.DrawRay(_position, _groundNormal, Color.magenta, 1f);
-            transform.position = _position + 0.5f * transform.localScale.z * _groundNormal;
-            transform.up = _groundNormal;
+            
+            Debug.Log("USE OLD GROUND");
+            _rigidbody.MovePosition(_lastPosition);
         }
 
-        public Vector3 GroundPosition { get { return transform.position - 0.5f * transform.up; } }
-
-        private void RecalculateGroundDirection()
+        private bool ShootRay(Vector3 rayOrigin, Vector3 rayDirection, float raycastLength, out RaycastHit hit, Color color)
         {
-            var newGroundDirection = Vector3.zero;
-            foreach (var contactNormal in CurrentContactNormals)
-            {
-                newGroundDirection += contactNormal.Normal;
-            }
-
-            if (newGroundDirection.magnitude == 0f)
-            {
-                int index = Random.Range(0, CurrentContactNormals.Count);
-                newGroundDirection = CurrentContactNormals[index].Normal;
-            }
-            else
-            {
-                newGroundDirection.Normalize();
-            }
-
-            Debug.DrawRay(transform.position, newGroundDirection, Color.gray, 1f);
-            _isGrounded = true;
-            _groundDirection = -newGroundDirection;
-            UpdateAxis();
-            transform.up = newGroundDirection;
+            Debug.DrawRay(rayOrigin, rayDirection * raycastLength, color, _drawTime);
+            return Physics.Raycast(rayOrigin, rayDirection, out hit, raycastLength, WHAT_IS_CLIMBABLE);
         }
         
-        public List<ContactNormal> CurrentContactNormals = new List<ContactNormal>();
-        private void OnCollisionEnter(Collision collision)
+        private void SetRaycastContactObject(Vector3 position, Vector3 normal)
         {
-            var normal = collision.GetContact(collision.contactCount - 1).normal;
-            var instanceId = collision.gameObject.GetInstanceID();
-            CurrentContactNormals.Add(new ContactNormal(instanceId, normal));
-            _currentObjectIndex = instanceId;
-            RecalculateGroundDirection();
+            var newPosition = position + normal * ((0.5f - _raycastLengthEpsilon) * transform.localScale.z);
+            _rigidbody.MovePosition(newPosition);
         }
-
-        private void OnCollisionStay(Collision collision)
+        
+        public void UpdateGround()
         {
-            var contactCount = collision.contactCount;
-            var contacts = new ContactPoint[contactCount];
-            collision.GetContacts(contacts);
-            var collisionInstanceId = collision.gameObject.GetInstanceID();
-            var newContacts = contacts.Where(x => IsNewContact(collisionInstanceId, x.normal)).ToArray();
-            if (newContacts.Length == 0) return;
-
-            foreach (var contact in newContacts)
+            contactObjectManager.UpdateGround();
+            if (contactObjectManager.normal.magnitude == 0)
             {
-                CurrentContactNormals.Add(new ContactNormal(collisionInstanceId, contact.normal));
+                _isGrounded = false;
+                return;
             }
-
-            
-            RecalculateGroundDirection();
+            _isGrounded = true;
+            _groundDirection = -contactObjectManager.normal;
+            projectedAxis = CreateMovementAxis();
+            transform.up = -_groundDirection;
+            Debug.DrawRay(transform.position, transform.up, Color.green, 1f);
         }
-
-        private bool IsNewContact(int collisionInstanceId, Vector3 collisionNormal)
+        
+        private Axis CreateMovementAxis()
         {
-            return !CurrentContactNormals.Any(x => 
-                x.GameObjectId == collisionInstanceId
-                && RMath.AreDirectionsConsideredEqual(x.Normal, collisionNormal)
+            var wallDirection = _groundDirection;
+            var position = transform.position;
+            var cameraPosition = _cameraTransform.position;
+            return new Axis(
+                position,
+                cameraPosition,
+                _cameraTransform.right,
+                _cameraTransform.up,
+                wallDirection
             );
         }
-        private void OnCollisionExit(Collision collision)
-        {
-            CurrentContactNormals.RemoveAll(x => x.GameObjectId == collision.gameObject.GetInstanceID());
-            _isGrounded = CurrentContactNormals.Count != 0;
-
-            if (_isGrounded)
-            {
-                RecalculateGroundDirection();
-            }
-        }
-        #endregion Climbing
     }
 }

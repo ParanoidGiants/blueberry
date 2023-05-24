@@ -9,6 +9,30 @@ namespace RootMath
     {
         public Vector3 up;
         public Vector3 right;
+        
+        public Axis(Vector3 up, Vector3 right)
+        {
+            this.up = up;
+            this.right = right;
+        }
+        /*
+         * 
+            var cameraTransform = Camera.main.transform;
+            var wallDirection = _groundDirection;
+            var position = transform.position;
+            var cameraPosition = cameraTransform.position;
+            return new Axis()
+            {
+                right = ChatGPT.IntersectingLine(position, cameraTransform.right, cameraPosition, wallDirection),
+                up = ChatGPT.IntersectingLine(position, cameraTransform.up, cameraPosition, wallDirection)
+            };
+         */
+        
+        public Axis(Vector3 position, Vector3 cameraPosition, Vector3 cameraRight, Vector3 cameraUp, Vector3 wallDirection)
+        {
+            right = ChatGPT.IntersectingLine(position, cameraRight, cameraPosition, wallDirection);
+            up = ChatGPT.IntersectingLine(position, cameraUp, cameraPosition, wallDirection);
+        }
     }
 
     public static class ChatGPT

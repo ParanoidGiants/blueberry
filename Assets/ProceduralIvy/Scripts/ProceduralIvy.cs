@@ -47,12 +47,12 @@ public class ProceduralIvy : MonoBehaviour {
     public void createIvy()
     {
         var normal = _head.transform.up;
-        var position = _head.GroundPosition;
+        var position = _head.GetGroundPosition();
         Vector3 tangent = findTangentFromArbitraryNormal(normal);
         GameObject ivy = new GameObject("Ivy " + ivyCount);
         ivy.transform.SetParent(transform);
         
-        Vector3 dir = _head.MovementDirection;
+        Vector3 dir = _head.CalculateMovementDirection();
         List<IvyNode> nodes = createBranch(maxPointsForBranch, position, normal, dir);
         GameObject branch = new GameObject("Branch");
         Branch b = branch.AddComponent<Branch>();

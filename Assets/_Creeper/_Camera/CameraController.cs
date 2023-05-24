@@ -33,7 +33,7 @@ namespace Creeper
             if (_rotateDirection.magnitude == 0f) return;
 
 
-            _head.UpdateAxis();
+            _head.UpdateGround();
             var rotateDirection = _rotateDirection * Time.deltaTime;
             transform.rotation *= Quaternion.Euler(rotateDirection.y, rotateDirection.z, -rotateDirection.x);
         }
