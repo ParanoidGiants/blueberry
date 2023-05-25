@@ -2235,21 +2235,9 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1736329973694839850, guid: 257cd7876e4b6da43b92681f37c57bfa, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -1.032
-      objectReference: {fileID: 0}
-    - target: {fileID: 1736329973694839850, guid: 257cd7876e4b6da43b92681f37c57bfa, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 1.188
-      objectReference: {fileID: 0}
     - target: {fileID: 5470295772608336501, guid: 257cd7876e4b6da43b92681f37c57bfa, type: 3}
       propertyPath: m_Name
       value: Creeper
-      objectReference: {fileID: 0}
-    - target: {fileID: 5470295772608336504, guid: 257cd7876e4b6da43b92681f37c57bfa, type: 3}
-      propertyPath: FallSpeed
-      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 5470295772608336505, guid: 257cd7876e4b6da43b92681f37c57bfa, type: 3}
       propertyPath: m_RootOrder
@@ -2294,18 +2282,6 @@ PrefabInstance:
     - target: {fileID: 5470295772608336505, guid: 257cd7876e4b6da43b92681f37c57bfa, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7030071542069802542, guid: 257cd7876e4b6da43b92681f37c57bfa, type: 3}
-      propertyPath: _drawTime
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7030071542069802542, guid: 257cd7876e4b6da43b92681f37c57bfa, type: 3}
-      propertyPath: _moveSpeed
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7030071542069802542, guid: 257cd7876e4b6da43b92681f37c57bfa, type: 3}
-      propertyPath: _raycastLengthEpsilon
-      value: 0.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 257cd7876e4b6da43b92681f37c57bfa, type: 3}
