@@ -46,6 +46,7 @@ namespace Creeper
         public void TryAddNormals(Collision collision)
         {
             var collisionInstanceId = collision.gameObject.GetInstanceID();
+            RemoveContactObjects(collisionInstanceId);
             for (int i = 0; i < collision.contactCount; i++)
             {
                 TryAddContactObject(collisionInstanceId, collision.GetContact(i).normal);

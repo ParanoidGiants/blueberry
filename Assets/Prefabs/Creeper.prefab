@@ -128,13 +128,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: beb269b01bf864f44a7e6fc9f7e99ef0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 0.1
+  _raycastLengthEpsilon: 0.1
+  _drawTime: 1
+  _moveSpeed: 0.1
   _isGrounded: 0
-  _currentObjectIndex: -1
-  _raycastLength: 1
-  _raycastLengthDown: 0.1
-  _drawTime: 0
-  CurrentContactNormals: []
+  _raycastLengthForward: 0
+  _inputDirection: {x: 0, y: 0, z: 0}
+  _lastPosition: {x: 0, y: 0, z: 0}
+  _groundDirection: {x: 0, y: 0, z: 0}
+  _behindDirection: {x: 0, y: 0, z: 0}
+  projectedAxis:
+    up: {x: 0, y: 0, z: 0}
+    right: {x: 0, y: 0, z: 0}
+  contactObjectManager:
+    contactObjects: []
+    normal: {x: 0, y: 0, z: 0}
 --- !u!114 &7894755850764996838
 MonoBehaviour:
   m_ObjectHideFlags: 0

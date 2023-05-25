@@ -808,5 +808,17 @@ PrefabInstance:
       propertyPath: m_Name
       value: Creeper
       objectReference: {fileID: 0}
+    - target: {fileID: 8567532191546326454, guid: 907c774c7d7bc59419d691e061ef3528, type: 3}
+      propertyPath: _drawTime
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8567532191546326454, guid: 907c774c7d7bc59419d691e061ef3528, type: 3}
+      propertyPath: _moveSpeed
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8567532191546326454, guid: 907c774c7d7bc59419d691e061ef3528, type: 3}
+      propertyPath: _raycastLengthEpsilon
+      value: 0.1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 907c774c7d7bc59419d691e061ef3528, type: 3}
