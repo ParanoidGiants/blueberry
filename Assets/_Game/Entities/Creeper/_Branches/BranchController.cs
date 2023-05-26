@@ -50,18 +50,7 @@ namespace Creeper
             var isTurningAround = Vector3.Dot(_lastInputDirection, _inputDirection) < 0f;
             if (_branchTime >= _branchAfter || isTurningAround)
             {
-                // Add Ivy Node
-                var halfPi = Mathf.PI / 2f;
-                var random = Random.Range(-halfPi, halfPi);
-                _oldDeltaX = Mathf.Lerp(_oldDeltaX, _targetDeltaX, _branchTime / _branchAfter);
-                var oldBranchPosition = _head.position + _oldDeltaX * _head.right;
-                _targetDeltaX = Mathf.Sin(random) * _branchStrength;
-                _currentSegmentIndex++;
-                _line.positionCount = _currentSegmentIndex + 1;
-                _line.SetPosition(_currentSegmentIndex, oldBranchPosition);
-
-                _livelyBranch.AddIvyNode(oldBranchPosition, transform.forward, _head.localScale.x);
-                _branchTime = 0f;
+                AddIvyNode();
             }
 
             // Update Segment Position
@@ -69,9 +58,24 @@ namespace Creeper
             var currentDeltaX = Mathf.Lerp(_oldDeltaX, _targetDeltaX, factor);
             var branchPosition = _head.position + currentDeltaX * _head.right;
             _line.SetPosition(_currentSegmentIndex, branchPosition);
-            _livelyBranch.SetIvyNode(branchPosition);
-            _livelyBranch.UpdateIvyNodes();
+            // _livelyBranch.SetIvyNode(branchPosition);
+            // _livelyBranch.UpdateIvyNodes();
             _lastInputDirection = _inputDirection;
+        }
+
+        private void AddIvyNode()
+        {
+            var halfPi = Mathf.PI / 2f;
+            var random = Random.Range(-halfPi, halfPi);
+            _oldDeltaX = Mathf.Lerp(_oldDeltaX, _targetDeltaX, _branchTime / _branchAfter);
+            var oldBranchPosition = _head.position + _oldDeltaX * _head.right;
+            _targetDeltaX = Mathf.Sin(random) * _branchStrength;
+            _currentSegmentIndex++;
+            _line.positionCount = _currentSegmentIndex + 1;
+            _line.SetPosition(_currentSegmentIndex, oldBranchPosition);
+
+            // _livelyBranch.AddIvyNode(oldBranchPosition, transform.forward, _head.localScale.x);
+            _branchTime = 0f;
         }
     }
 }
