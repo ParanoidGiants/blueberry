@@ -5,56 +5,53 @@ namespace Creeper
     public class CameraController : MonoBehaviour
     {
         [SerializeField] private Transform Target;
-        [SerializeField] private float RotateSpeed = 0.1f;
-        [SerializeField] private float ZoomSpeed = 0.1f;
-        [SerializeField] private float MoveSpeed = 0.1f;
-        [SerializeField] private float MoveZSpeed = 1f;
-
-        private Vector3 _rotateDirection;
-        private float _zoomDirection;
         private HeadController _head;
         private Transform _cameraTransform;
-        private LayerMask whatToIgnore;
-        private float currentCameraZ = -10f;
-        private float targetCameraZ = -10f;
-        private float pitch = 0f;
-
+        
+        [Space(10)]
+        [Header("Move")]
+        [SerializeField] private float MoveSpeed = 0.1f;
+        
+        [Space(10)]
+        [Header("Rotate")]
+        [SerializeField] private float RotateSpeed = 0.1f;
+        [SerializeField] private float MinPitch;
+        [SerializeField] private float MaxPitch;
+        private Vector3 _rotateDirection;
+        private float _pitch = 0f;
+        
+        [Space(10)]
+        [Header("Zoom")]
+        [SerializeField] private float ZoomSpeed = 0.1f;
+        [SerializeField] private float MinZoom = 3f;
+        [SerializeField] private float MaxZoom = 15f;
+        private float _zoomDirection;
 
         private void Start()
         {
             _head = FindObjectOfType<HeadController>();
             _cameraTransform = GetComponentInChildren<Camera>().transform;
-            whatToIgnore = LayerMask.GetMask("Player");
-            pitch = transform.rotation.eulerAngles.x;
+            _pitch = transform.rotation.eulerAngles.x;
         }
 
         private void Update()
         {
-            FollowWithHandle();
+            FollowTarget();
             Rotate();
             Zoom();
         }
 
         private void Zoom()
         {
-            // TODO: implement zoom using _zoomDirection
-            
-            // zoom depending on objects
-            RaycastHit hit;
-            if (ShootRay(transform.position, -transform.forward, 10f, out hit, Color.red))
-            {
-                targetCameraZ = -hit.distance;
-            }
-            else
-            {
-                targetCameraZ = -10f;
-            }
-            
-            currentCameraZ = Mathf.Lerp(currentCameraZ, targetCameraZ, Time.deltaTime * MoveZSpeed);
-            _cameraTransform.localPosition = new Vector3(0, 0, currentCameraZ);
+            var localPosition = _cameraTransform.localPosition;
+            var positionZ = localPosition.z;
+            var targetPositionZ = positionZ + _zoomDirection;
+            targetPositionZ = Mathf.Clamp(targetPositionZ, -MaxZoom, -MinZoom);
+            localPosition = new Vector3(localPosition.x, localPosition.y, targetPositionZ);
+            _cameraTransform.localPosition = localPosition;
         }
 
-        private void FollowWithHandle()
+        private void FollowTarget()
         {
             transform.position = Vector3.Lerp(transform.position, Target.position, Time.deltaTime * MoveSpeed);
         }
@@ -71,22 +68,17 @@ namespace Creeper
             transform.RotateAround(transform.position, Vector3.up, -rotateDirection.x);
             
             // Rotate around transform right axis
-            pitch -= rotateDirection.y;
-            pitch = Mathf.Clamp(pitch, -80, 80); // Prevent camera from going upside down
+            _pitch += rotateDirection.y;
+            // Prevent camera from going upside down
+            _pitch = Mathf.Clamp(_pitch, MinPitch, MaxPitch);
 
             var rotation = transform.rotation;
-            transform.rotation = Quaternion.Euler(pitch, rotation.eulerAngles.y, rotation.eulerAngles.z);
+            transform.rotation = Quaternion.Euler(_pitch, rotation.eulerAngles.y, rotation.eulerAngles.z);
         }
 
         public void SetRotateDirection(Vector3 _direction)
         {
             _rotateDirection = RotateSpeed * _direction;
-        }
-
-        private bool ShootRay(Vector3 rayOrigin, Vector3 rayDirection, float raycastLength, out RaycastHit hit, Color color)
-        {
-            Debug.DrawRay(rayOrigin, rayDirection * raycastLength, color);
-            return Physics.Raycast(rayOrigin, rayDirection, out hit, raycastLength, ~whatToIgnore);
         }
 
         public void SetZoomDirection(float direction)
