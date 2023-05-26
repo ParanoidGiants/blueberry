@@ -3706,6 +3706,10 @@ PrefabInstance:
       value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 1687207124368014884, guid: 907c774c7d7bc59419d691e061ef3528, type: 3}
+      propertyPath: m_Name
+      value: Branch
+      objectReference: {fileID: 0}
+    - target: {fileID: 1687207124368014884, guid: 907c774c7d7bc59419d691e061ef3528, type: 3}
       propertyPath: m_Layer
       value: 7
       objectReference: {fileID: 0}
@@ -3772,6 +3776,10 @@ PrefabInstance:
     - target: {fileID: 6665412065068568276, guid: 907c774c7d7bc59419d691e061ef3528, type: 3}
       propertyPath: m_Enabled
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6665412065068568277, guid: 907c774c7d7bc59419d691e061ef3528, type: 3}
+      propertyPath: m_Name
+      value: BranchMesh
       objectReference: {fileID: 0}
     - target: {fileID: 6665412065068568277, guid: 907c774c7d7bc59419d691e061ef3528, type: 3}
       propertyPath: m_Layer
@@ -3865,10 +3873,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Target: {fileID: 2044043446}
-  RotateSpeed: 50
-  ZoomSpeed: 0.1
   MoveSpeed: 3
-  MoveZSpeed: 10
+  RotateSpeed: 50
+  MinPitch: -85
+  MaxPitch: 85
+  ZoomSpeed: 0.01
+  MinZoom: 3
+  MaxZoom: 15
 --- !u!1 &2127728633 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -5881097242974141378, guid: 40ee246858182b348ac2fed67c9f607b, type: 3}
