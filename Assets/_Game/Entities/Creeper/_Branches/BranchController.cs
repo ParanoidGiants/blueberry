@@ -4,8 +4,7 @@ namespace Creeper
 {
     public class BranchController : MonoBehaviour
     {
-        [SerializeField] private Branch _deadBranch;
-        [SerializeField] private Branch _livelyBranch;
+        [SerializeField] private RootsBranch _livelyBranch;
         [SerializeField] private Material _branchMaterial;
         [SerializeField] private Transform _head;
         [SerializeField] private float _branchAfter = 1f;
@@ -58,7 +57,7 @@ namespace Creeper
                 _line.positionCount = _currentSegmentIndex + 1;
                 _line.SetPosition(_currentSegmentIndex, oldBranchPosition);
 
-                _livelyBranch.AddIvyNode(oldBranchPosition, transform.forward);
+                _livelyBranch.AddIvyNode(oldBranchPosition, transform.forward, _head.localScale.x);
                 _branchTime = 0f;
             }
 
