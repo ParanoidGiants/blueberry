@@ -3711,7 +3711,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1687207124368014886, guid: 907c774c7d7bc59419d691e061ef3528, type: 3}
       propertyPath: _branchAfter
-      value: 1
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 1687207124368014886, guid: 907c774c7d7bc59419d691e061ef3528, type: 3}
       propertyPath: _branchStrength
@@ -3776,6 +3776,10 @@ PrefabInstance:
     - target: {fileID: 6665412065068568277, guid: 907c774c7d7bc59419d691e061ef3528, type: 3}
       propertyPath: m_Layer
       value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 8596026562885247701, guid: 907c774c7d7bc59419d691e061ef3528, type: 3}
+      propertyPath: m_Mass
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 8596026562885247701, guid: 907c774c7d7bc59419d691e061ef3528, type: 3}
       propertyPath: m_UseGravity
@@ -3862,6 +3866,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Target: {fileID: 2044043446}
   RotateSpeed: 50
+  ZoomSpeed: 0.1
   MoveSpeed: 3
   MoveZSpeed: 10
 --- !u!1 &2127728633 stripped
