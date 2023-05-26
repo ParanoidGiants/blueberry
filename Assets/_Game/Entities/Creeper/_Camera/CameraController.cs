@@ -6,10 +6,12 @@ namespace Creeper
     {
         [SerializeField] private Transform Target;
         [SerializeField] private float RotateSpeed = 0.1f;
+        [SerializeField] private float ZoomSpeed = 0.1f;
         [SerializeField] private float MoveSpeed = 0.1f;
         [SerializeField] private float MoveZSpeed = 1f;
 
         private Vector3 _rotateDirection;
+        private float _zoomDirection;
         private HeadController _head;
         private Transform _cameraTransform;
         private LayerMask whatToIgnore;
@@ -30,8 +32,14 @@ namespace Creeper
         {
             FollowWithHandle();
             Rotate();
-            
+            Zoom();
+        }
 
+        private void Zoom()
+        {
+            // TODO: implement zoom using _zoomDirection
+            
+            // zoom depending on objects
             RaycastHit hit;
             if (ShootRay(transform.position, -transform.forward, 10f, out hit, Color.red))
             {
@@ -79,6 +87,11 @@ namespace Creeper
         {
             Debug.DrawRay(rayOrigin, rayDirection * raycastLength, color);
             return Physics.Raycast(rayOrigin, rayDirection, out hit, raycastLength, ~whatToIgnore);
+        }
+
+        public void SetZoomDirection(float direction)
+        {
+            _zoomDirection = ZoomSpeed * direction;
         }
     }
 }

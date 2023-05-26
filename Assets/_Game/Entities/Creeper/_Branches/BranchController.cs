@@ -28,6 +28,9 @@ namespace Creeper
             var branchPosition = _head.position;
 
             _line = GetComponent<LineRenderer>();
+            var localScale = _head.localScale;
+            _line.startWidth = localScale.x;
+            _line.endWidth = localScale.x;
             _line.positionCount = 2;
             _line.SetPosition(0, branchPosition);
             _line.SetPosition(1, branchPosition);

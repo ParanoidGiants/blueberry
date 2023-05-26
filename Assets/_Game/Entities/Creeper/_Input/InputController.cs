@@ -83,20 +83,14 @@ namespace Creeper
 
         public void OnZoom(InputAction.CallbackContext _directionCallback)
         {
-            var direction = _directionCallback.ReadValue<Vector3>();
-            if (direction.magnitude > 1f)
-            {
-                direction.Normalize();
-            }
+            var direction = _directionCallback.ReadValue<float>();
+            Camera.SetZoomDirection(direction);
         }
 
         public void OnCancelZoom(InputAction.CallbackContext _directionCallback)
         {
-            var direction = _directionCallback.ReadValue<Vector3>();
-            if (direction.magnitude > 1f)
-            {
-                direction.Normalize();
-            }
+            var direction = _directionCallback.ReadValue<float>();
+            Camera.SetZoomDirection(direction);
         }
 
         public void OnReset(InputAction.CallbackContext _directionCallback)
