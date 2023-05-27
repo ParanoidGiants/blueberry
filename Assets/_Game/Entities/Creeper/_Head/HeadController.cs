@@ -9,6 +9,7 @@ namespace Creeper
         public static int WHAT_IS_CLIMBABLE { get { return _WHAT_IS_CLIMBABLE; } }
         
         [Header("References")]
+        [SerializeField] private BranchController Branch;
         private Rigidbody _rigidbody;
         private Transform _cameraTransform;
         
@@ -160,6 +161,7 @@ namespace Creeper
             _groundDirection = -contactObjectManager.normal;
             projectedAxis = CreateMovementAxis();
             transform.up = -_groundDirection;
+            Branch.AddIvyNode();
             Debug.DrawRay(transform.position, transform.up, Color.green, 1f);
         }
         

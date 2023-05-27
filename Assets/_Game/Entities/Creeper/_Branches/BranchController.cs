@@ -63,7 +63,7 @@ namespace Creeper
             _lastInputDirection = _inputDirection;
         }
 
-        private void AddIvyNode()
+        public void AddIvyNode()
         {
             var halfPi = Mathf.PI / 2f;
             var random = Random.Range(-halfPi, halfPi);
