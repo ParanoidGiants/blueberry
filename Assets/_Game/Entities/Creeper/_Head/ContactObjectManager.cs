@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Collections.Generic;
 using RootMath;
 using UnityEngine;
 
@@ -9,8 +9,13 @@ namespace Creeper
     [Serializable]
     public class ContactObjectManager
     {
-        public List<ContactObject> contactObjects = new List<ContactObject>();
+        public Dictionary<int, List<Vector3>> contactObjects = new();
         public Vector3 normal;
+        
+        public ContactObjectManager()
+        {
+            contactObjects = new Dictionary<int, List<Vector3>>();
+        }
         
         public void UpdateGround()
         {
@@ -20,48 +25,47 @@ namespace Creeper
                 return;
             }
             normal = Vector3.zero;
-            foreach (var contactObject in contactObjects)
+            foreach (var contactObject in contactObjects.Values)
             {
-                normal += contactObject.normal;
+                foreach (var contactNormal in contactObject)
+                {
+                    normal += contactNormal;
+                }
             }
             normal.Normalize();
         }
         
-        public void TryAddContactObject(int gameObjectId, Vector3 normal)
+        public bool TryAddContactObject(int collisionInstanceId, Vector3 normal)
         {
-            foreach (var contactObject in contactObjects)
+            if (!contactObjects.ContainsKey(collisionInstanceId))
             {
-                if (contactObject.gameObjectId == gameObjectId
-                    && RMath.AreDirectionsConsideredEqual(contactObject.normal, normal)
-                   )
-                {
-                    return;
-                }
+                contactObjects.Add(collisionInstanceId, new List<Vector3>());
+                contactObjects[collisionInstanceId].Add(normal);
+                return true;
             }
-
-            contactObjects.Add(new ContactObject(gameObjectId, normal));
-            UpdateGround();
+            if (!contactObjects[collisionInstanceId].Contains(normal))
+            {
+                contactObjects[collisionInstanceId].Add(normal);
+                return true;
+            }
+            
+            return false;
         }
 
-        public void TryAddNormals(Collision collision)
+        public bool TryAddNormals(Collision collision)
         {
             var collisionInstanceId = collision.gameObject.GetInstanceID();
-            RemoveContactObjects(collisionInstanceId);
+            bool isCollisionNew = !contactObjects.ContainsKey(collisionInstanceId);
             for (int i = 0; i < collision.contactCount; i++)
             {
-                TryAddContactObject(collisionInstanceId, collision.GetContact(i).normal);
+                isCollisionNew |= TryAddContactObject(collisionInstanceId, collision.GetContact(i).normal);
             }
-            UpdateGround();
+            return isCollisionNew;
         }
         
-        public void RemoveContactObjects(int gameObjectId)
+        public void RemoveContactObjects(int collisionInstanceId)
         {
-            contactObjects.RemoveAll(co => co.gameObjectId == gameObjectId);
-        }
-
-        public void RemoveContactObjects(Collision collision)
-        {
-            contactObjects.RemoveAll(x => x.gameObjectId == collision.gameObject.GetInstanceID());
+            contactObjects.Remove(collisionInstanceId);
         }
     }
 }
