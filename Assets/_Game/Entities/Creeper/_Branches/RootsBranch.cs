@@ -30,7 +30,7 @@ public class RootsBranch : MonoBehaviour {
     float growthSpeed = 2;
     float currentAmount = 0.5f;
 
-    CollectableManager manager;
+    CollectFertilizer manager;
     int blossomCounter = 0;
     public void initBaseMesh(Vector3 position, Vector3 normal, Material material)
     {

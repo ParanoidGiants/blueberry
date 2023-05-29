@@ -45,7 +45,7 @@ namespace Creeper
         {
             var localPosition = _cameraTransform.localPosition;
             var positionZ = localPosition.z;
-            var targetPositionZ = positionZ + _zoomDirection;
+            var targetPositionZ = positionZ + _zoomDirection * Time.deltaTime;
             targetPositionZ = Mathf.Clamp(targetPositionZ, -MaxZoom, -MinZoom);
             localPosition = new Vector3(localPosition.x, localPosition.y, targetPositionZ);
             _cameraTransform.localPosition = localPosition;

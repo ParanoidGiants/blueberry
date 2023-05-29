@@ -1,7 +1,6 @@
 using System;
 using UnityEngine;
 
-// TODO: create own namespace
 [Serializable]
 public class IvyNode {
     public Vector3 position;

@@ -26,11 +26,11 @@ public class ProceduralIvy : MonoBehaviour {
 
     int ivyCount = 0;
 
-    private CollectableManager _collectableManager;
+    private CollectFertilizer _collectFertilizer;
     private HeadController _head;
     void Awake()
     {
-        _collectableManager = FindObjectOfType<CollectableManager>();
+        _collectFertilizer = FindObjectOfType<CollectFertilizer>();
         _head = FindObjectOfType<HeadController>();
         createIvy();
     }
@@ -56,7 +56,7 @@ public class ProceduralIvy : MonoBehaviour {
         List<IvyNode> nodes = createBranch(maxPointsForBranch, position, normal, dir);
         GameObject branch = new GameObject("Branch");
         Branch b = branch.AddComponent<Branch>();
-        if (!wantBlossoms || _collectableManager.collectableCounter == 0)
+        if (!wantBlossoms || _collectFertilizer.collectableCounter == 0)
         {
             b.init(nodes, branchRadius, branchMaterial);
         } else {
