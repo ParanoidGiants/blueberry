@@ -4,8 +4,7 @@ namespace Creeper
 {
     public class BranchController : MonoBehaviour
     {
-        [SerializeField] private Branch _deadBranch;
-        [SerializeField] private Branch _livelyBranch;
+        [SerializeField] private RootsBranch _livelyBranch;
         [SerializeField] private Material _branchMaterial;
         [SerializeField] private Transform _head;
         [SerializeField] private float _branchAfter = 1f;
@@ -29,6 +28,9 @@ namespace Creeper
             var branchPosition = _head.position;
 
             _line = GetComponent<LineRenderer>();
+            var localScale = _head.localScale;
+            _line.startWidth = localScale.x;
+            _line.endWidth = localScale.x;
             _line.positionCount = 2;
             _line.SetPosition(0, branchPosition);
             _line.SetPosition(1, branchPosition);
@@ -48,18 +50,7 @@ namespace Creeper
             var isTurningAround = Vector3.Dot(_lastInputDirection, _inputDirection) < 0f;
             if (_branchTime >= _branchAfter || isTurningAround)
             {
-                // Add Ivy Node
-                var halfPi = Mathf.PI / 2f;
-                var random = Random.Range(-halfPi, halfPi);
-                _oldDeltaX = Mathf.Lerp(_oldDeltaX, _targetDeltaX, _branchTime / _branchAfter);
-                var oldBranchPosition = _head.position + _oldDeltaX * _head.right;
-                _targetDeltaX = Mathf.Sin(random) * _branchStrength;
-                _currentSegmentIndex++;
-                _line.positionCount = _currentSegmentIndex + 1;
-                _line.SetPosition(_currentSegmentIndex, oldBranchPosition);
-
-                _livelyBranch.AddIvyNode(oldBranchPosition, transform.forward);
-                _branchTime = 0f;
+                AddIvyNode();
             }
 
             // Update Segment Position
@@ -67,9 +58,24 @@ namespace Creeper
             var currentDeltaX = Mathf.Lerp(_oldDeltaX, _targetDeltaX, factor);
             var branchPosition = _head.position + currentDeltaX * _head.right;
             _line.SetPosition(_currentSegmentIndex, branchPosition);
-            _livelyBranch.SetIvyNode(branchPosition);
-            _livelyBranch.UpdateIvyNodes();
+            // _livelyBranch.SetIvyNode(branchPosition);
+            // _livelyBranch.UpdateIvyNodes();
             _lastInputDirection = _inputDirection;
+        }
+
+        public void AddIvyNode()
+        {
+            var halfPi = Mathf.PI / 2f;
+            var random = Random.Range(-halfPi, halfPi);
+            _oldDeltaX = Mathf.Lerp(_oldDeltaX, _targetDeltaX, _branchTime / _branchAfter);
+            var oldBranchPosition = _head.position + _oldDeltaX * _head.right;
+            _targetDeltaX = Mathf.Sin(random) * _branchStrength;
+            _currentSegmentIndex++;
+            _line.positionCount = _currentSegmentIndex + 1;
+            _line.SetPosition(_currentSegmentIndex, oldBranchPosition);
+
+            // _livelyBranch.AddIvyNode(oldBranchPosition, transform.forward, _head.localScale.x);
+            _branchTime = 0f;
         }
     }
 }

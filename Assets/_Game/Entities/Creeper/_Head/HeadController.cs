@@ -1,7 +1,5 @@
-using System.Linq;
 using UnityEngine;
 using RootMath;
-using UnityEngine.Serialization;
 
 namespace Creeper
 {
@@ -9,6 +7,11 @@ namespace Creeper
     {
         private static int _WHAT_IS_CLIMBABLE;
         public static int WHAT_IS_CLIMBABLE { get { return _WHAT_IS_CLIMBABLE; } }
+        
+        [Header("References")]
+        [SerializeField] private BranchController Branch;
+        private Rigidbody _rigidbody;
+        private Transform _cameraTransform;
         
         [Header("Settings")]
         [SerializeField] private float _raycastLengthEpsilon;
@@ -18,7 +21,6 @@ namespace Creeper
         [Space(10)]
         [Header("Watchers")]
         [SerializeField] private bool _isGrounded = false;
-        [SerializeField] private float _raycastLengthForward;
         [SerializeField] private Vector3 _inputDirection;
         [SerializeField] private Vector3 _lastPosition;
         [SerializeField] private Vector3 _groundDirection;
@@ -28,8 +30,6 @@ namespace Creeper
         [SerializeField] private Axis projectedAxis;
         [SerializeField] private ContactObjectManager contactObjectManager;
         
-        private Rigidbody _rigidbody;
-        private Transform _cameraTransform;
         
         public Vector3 InputDirection { set { _inputDirection = value; } }
         public Vector3 CalculateMovementDirection()
@@ -67,15 +67,18 @@ namespace Creeper
         {
             if (!IsOfClimbableLayer(collision.gameObject.layer)) return;
             
-            contactObjectManager.TryAddNormals(collision);
-            UpdateGround();
+            var isCollisionNew = contactObjectManager.TryAddNormals(collision);
+            if (isCollisionNew)
+            {
+                UpdateGround();
+            }
         }
         
         private void OnCollisionExit(Collision collision)
         {
             if (!IsOfClimbableLayer(collision.gameObject.layer)) return;
             
-            contactObjectManager.RemoveContactObjects(collision);
+            contactObjectManager.RemoveContactObjects(collision.gameObject.GetInstanceID());
             UpdateGround();
         }
         
@@ -110,7 +113,7 @@ namespace Creeper
             var raycastLength = 0.5f * transform.localScale.z + _raycastLengthEpsilon;
             if (ShootRay(rayOrigin, _groundDirection, raycastLength, out hit, Color.red))
             {
-                SetRaycastContactObject(hit.point, hit.normal);
+                SetPosition(hit.point, hit.normal);
                 return;
             }
             // Search Behind
@@ -118,7 +121,7 @@ namespace Creeper
             raycastLength = (transform.position - _lastPosition).magnitude + _raycastLengthEpsilon;
             if (ShootRay(rayOrigin, _behindDirection, raycastLength, out hit, Color.cyan))
             {
-                SetRaycastContactObject(hit.point, hit.normal);
+                SetPosition(hit.point, hit.normal);
                 return;
             }
 
@@ -127,7 +130,7 @@ namespace Creeper
             raycastLength = _raycastLengthEpsilon;
             if (ShootRay(rayOrigin, -_groundDirection, raycastLength, out hit, Color.blue))
             {
-                SetRaycastContactObject(hit.point, hit.normal);
+                SetPosition(hit.point, hit.normal);
                 return;
             }
             
@@ -140,7 +143,7 @@ namespace Creeper
             return Physics.Raycast(rayOrigin, rayDirection, out hit, raycastLength, WHAT_IS_CLIMBABLE);
         }
         
-        private void SetRaycastContactObject(Vector3 position, Vector3 normal)
+        private void SetPosition(Vector3 position, Vector3 normal)
         {
             var newPosition = position + normal * ((0.5f - _raycastLengthEpsilon) * transform.localScale.z);
             _rigidbody.MovePosition(newPosition);
@@ -158,6 +161,7 @@ namespace Creeper
             _groundDirection = -contactObjectManager.normal;
             projectedAxis = CreateMovementAxis();
             transform.up = -_groundDirection;
+            Branch.AddIvyNode();
             Debug.DrawRay(transform.position, transform.up, Color.green, 1f);
         }
         

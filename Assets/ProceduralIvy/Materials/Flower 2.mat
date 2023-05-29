@@ -2,14 +2,16 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!21 &2100000
 Material:
-  serializedVersion: 6
+  serializedVersion: 8
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Flower 2
-  m_Shader: {fileID: 4800000, guid: 7bf4d42545a33cd47af93cc233c4c6b4, type: 3}
-  m_ShaderKeywords: _HORIZONTAL_ON
+  m_Shader: {fileID: -6465566751694194690, guid: 2dddb178b12963945b139d42985107ad, type: 3}
+  m_ValidKeywords: []
+  m_InvalidKeywords:
+  - _HORIZONTAL_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -27,13 +29,47 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
     m_Floats:
+    - Vector1_45B55B6D: 5
+    - Vector1_58119182: 2
+    - Vector1_AC643A86: 10
+    - Vector1_E86E7DA0: 0.04
     - _Amount: 1
     - _Horizontal: 1
     - _Leaf: 0
+    - _QueueControl: 0
+    - _QueueOffset: 0
     - _Radius: -0.12
     m_Colors:
+    - Color_6E33406E: {r: 1, g: 0.1760984, b: 0, a: 0}
+    - Color_AB020D47: {r: 16, g: 6.337255, b: 0, a: 1}
     - _Color: {r: 0.4811321, g: 0.079432175, b: 0.10114577, a: 1}
     - _ColorCenter: {r: 0.4056604, g: 0.024875412, b: 0.047057025, a: 1}
     - _ColorEnd: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
+--- !u!114 &5792498957716082245
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 5

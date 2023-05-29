@@ -1,10 +1,10 @@
 using UnityEngine;
 
-public class CollectableManager : MonoBehaviour
+public class CollectFertilizer : MonoBehaviour
 {
     public int collectableCounter;
 
-    public void CollectableCollected()
+    public void OnCollectFertilizer()
     {
         collectableCounter++;
     }

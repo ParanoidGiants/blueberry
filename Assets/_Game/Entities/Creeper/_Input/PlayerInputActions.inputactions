@@ -154,28 +154,6 @@
                     "isPartOfComposite": true
                 },
                 {
-                    "name": "Forward",
-                    "id": "fdb0000a-87bb-4e0b-846c-8d06168e3c65",
-                    "path": "<Keyboard>/p",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "RotateCamera",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "Backward",
-                    "id": "2a524b9c-69b8-4b6a-aea7-45abe9170d3d",
-                    "path": "<Keyboard>/o",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "RotateCamera",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
                     "name": "",
                     "id": "d227fd16-50bc-4c44-9119-46ef67f4517c",
                     "path": "<Keyboard>/r",
