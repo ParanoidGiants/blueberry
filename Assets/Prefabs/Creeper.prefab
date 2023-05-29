@@ -52,7 +52,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1514108666894034132}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -208,7 +208,7 @@ LineRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: e581d5b5f0340bc49b2fce7d57f8bbe1, type: 2}
+  - {fileID: 2100000, guid: 80b9272bf5f1b604ebac8acfdae33b74, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -302,7 +302,7 @@ MonoBehaviour:
   _livelyBranch: {fileID: 6665412065068568266}
   _branchMaterial: {fileID: 2100000, guid: 56b47004a97f4f748b47a6db6898b6ae, type: 2}
   _head: {fileID: 1113100603157985202}
-  _branchAfter: 0.2
+  _branchAfter: 0.1
   _branchStrength: 0.5
   _branchTime: 0
   _currentSegmentIndex: -1
