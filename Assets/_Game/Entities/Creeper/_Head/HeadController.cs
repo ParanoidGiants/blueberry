@@ -159,10 +159,15 @@ namespace Creeper
             }
             _isGrounded = true;
             _groundDirection = -contactObjectManager.normal;
-            projectedAxis = CreateMovementAxis();
+            UpdateMovementAxis();
             transform.up = -_groundDirection;
             Branch.AddIvyNode();
             Debug.DrawRay(transform.position, transform.up, Color.green, 1f);
+        }
+
+        public void UpdateMovementAxis()
+        {
+            projectedAxis = CreateMovementAxis();
         }
         
         private Axis CreateMovementAxis()

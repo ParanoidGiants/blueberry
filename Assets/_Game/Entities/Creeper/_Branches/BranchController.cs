@@ -4,6 +4,7 @@ namespace Creeper
 {
     public class BranchController : MonoBehaviour
     {
+        private const float HALF_PI = Mathf.PI / 2f;
         [SerializeField] private RootsBranch _livelyBranch;
         [SerializeField] private Material _branchMaterial;
         [SerializeField] private Transform _head;
@@ -51,6 +52,10 @@ namespace Creeper
             if (_branchTime >= _branchAfter || isTurningAround)
             {
                 AddIvyNode();
+                _branchTime = 0f;
+                _oldDeltaX = _targetDeltaX;
+                var random = Random.Range(-HALF_PI, HALF_PI);
+                _targetDeltaX = Mathf.Sin(random) * _branchStrength;
             }
 
             // Update Segment Position
@@ -65,17 +70,14 @@ namespace Creeper
 
         public void AddIvyNode()
         {
-            var halfPi = Mathf.PI / 2f;
-            var random = Random.Range(-halfPi, halfPi);
-            _oldDeltaX = Mathf.Lerp(_oldDeltaX, _targetDeltaX, _branchTime / _branchAfter);
-            var oldBranchPosition = _head.position + _oldDeltaX * _head.right;
-            _targetDeltaX = Mathf.Sin(random) * _branchStrength;
+            Debug.Log("Add Ivy Node!");
+            var currentDeltaX = Mathf.Lerp(_oldDeltaX, _targetDeltaX, _branchTime / _branchAfter);
+            var currentBranchPosition = _head.position + currentDeltaX * _head.right;
             _currentSegmentIndex++;
             _line.positionCount = _currentSegmentIndex + 1;
-            _line.SetPosition(_currentSegmentIndex, oldBranchPosition);
-
+            _line.SetPosition(_currentSegmentIndex, currentBranchPosition);
             // _livelyBranch.AddIvyNode(oldBranchPosition, transform.forward, _head.localScale.x);
-            _branchTime = 0f;
+
         }
     }
 }
