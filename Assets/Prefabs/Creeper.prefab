@@ -52,7 +52,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1514108666894034132}
-  m_Enabled: 0
+  m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -65,7 +65,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: ba2ee4f4a170157499193536192992f5, type: 2}
+  - {fileID: 2100000, guid: ea8f6bdae8f58bf45be25d38c798c2a1, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -167,7 +167,7 @@ GameObject:
   - component: {fileID: 1687207124368014887}
   - component: {fileID: 1687207124368014886}
   m_Layer: 7
-  m_Name: Branch
+  m_Name: BranchController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -208,7 +208,7 @@ LineRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 80b9272bf5f1b604ebac8acfdae33b74, type: 2}
+  - {fileID: -7501595221950952968, guid: da5341e9d8b5be34ab4360df3ae3b0e9, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -299,13 +299,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59897e50bef1ebf428675700cf88f6c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _livelyBranch: {fileID: 6665412065068568266}
-  _branchMaterial: {fileID: 2100000, guid: 56b47004a97f4f748b47a6db6898b6ae, type: 2}
-  _head: {fileID: 1113100603157985202}
-  _branchAfter: 0.1
-  _branchStrength: 0.5
-  _branchTime: 0
-  _currentSegmentIndex: -1
+  head: {fileID: 1113100603157985202}
+  branch: {fileID: 6665412065068568266}
+  branchLength: 0.1
+  segmentsMaxCount: 10
 --- !u!1 &6665412063840737773
 GameObject:
   m_ObjectHideFlags: 0
@@ -353,7 +350,7 @@ GameObject:
   - component: {fileID: 6665412065068568267}
   - component: {fileID: 6665412065068568276}
   m_Layer: 7
-  m_Name: BranchMesh
+  m_Name: RootBranch
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -387,7 +384,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   totalNodeCount: 0
-  maxLivelyNodeCount: 15
+  material: {fileID: 2100000, guid: b62f0e1ecd7b8d44491046e753dc3680, type: 2}
   branchNodes: []
   branchRadius: 1
 --- !u!33 &6665412065068568267
@@ -405,7 +402,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6665412065068568277}
-  m_Enabled: 0
+  m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1

@@ -1,15 +1,17 @@
 using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Creeper
 {
     public class BranchController : MonoBehaviour
     {
         [SerializeField] private Transform head;
+        [SerializeField] private RootBranch branch;
         private int _currentSegmentIndex = -1;
         
         public float branchLength = 2f;
-        public int segmentsMaxCount = 15;
+        public int maxNodeCount = 10;
         
         private Vector3 _lastPosition;
         private LineRenderer _line;
@@ -31,6 +33,7 @@ namespace Creeper
             _line.positionCount = 2;
             _line.SetPosition(0, position);
             _line.SetPosition(1, position);
+            branch.InitBaseMesh(position, head.up, maxNodeCount);
         }
 
         private void Update()
@@ -51,13 +54,15 @@ namespace Creeper
             var moveDirection = position - _line.GetPosition(_currentSegmentIndex);
             var linePositions = new Vector3[_currentSegmentIndex+1];
             _line.GetPositions(linePositions);
-            var start = Mathf.Clamp(_currentSegmentIndex - segmentsMaxCount, 0, _currentSegmentIndex);
+            var start = Mathf.Clamp(_currentSegmentIndex - maxNodeCount, 0, _currentSegmentIndex);
             for (var i = start; i <= _currentSegmentIndex; i++)
             {
-                var moveFactor =  (float) (i - start) / segmentsMaxCount;
+                var moveFactor =  (float) (i - start) / maxNodeCount;
                 var linePosition = linePositions[i] + moveDirection * moveFactor;
                 _line.SetPosition(i, linePosition);
+                branch.SetIvyNode(i, linePosition);
             }
+            branch.UpdateIvyNodes();
         }
 
         public void AddNode(Vector3 position)
@@ -66,6 +71,7 @@ namespace Creeper
             _line.positionCount = _currentSegmentIndex+1;
             _lastPosition = position;
             _line.SetPosition(_currentSegmentIndex, position);
+            branch.AddIvyNode(position, head.up);
         }
     }
 }
