@@ -59,9 +59,7 @@ namespace Creeper
         private void Rotate()
         {
             if (_rotateDirection.magnitude == 0f) return;
-
-
-            _head.UpdateGround();
+            
             var rotateDirection = _rotateDirection * Time.deltaTime;
             
             // Rotate around world up axis
@@ -74,6 +72,7 @@ namespace Creeper
 
             var rotation = transform.rotation;
             transform.rotation = Quaternion.Euler(_pitch, rotation.eulerAngles.y, rotation.eulerAngles.z);
+            _head.UpdateMovementAxis();
         }
 
         public void SetRotateDirection(Vector3 _direction)

@@ -9,7 +9,7 @@ namespace Creeper
     [Serializable]
     public class ContactObjectManager
     {
-        public Dictionary<int, List<Vector3>> contactObjects = new();
+        public Dictionary<int, List<Vector3>> contactObjects;
         public Vector3 normal;
         
         public ContactObjectManager()
@@ -21,7 +21,7 @@ namespace Creeper
         {
             if (contactObjects.Count == 0)
             {
-                Debug.Log("No new ground direction found");
+                Debug.Log("No ground direction found");
                 return;
             }
             normal = Vector3.zero;

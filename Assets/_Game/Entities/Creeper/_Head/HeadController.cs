@@ -59,18 +59,21 @@ namespace Creeper
         {
             if (!IsOfClimbableLayer(collision.gameObject.layer)) return;
             
-            contactObjectManager.TryAddNormals(collision);
-            UpdateGround();
+            if (contactObjectManager.TryAddNormals(collision))
+            {
+                UpdateGround();
+                Branch.AddNode(transform.position);
+            }
         }
         
         private void OnCollisionStay(Collision collision)
         {
             if (!IsOfClimbableLayer(collision.gameObject.layer)) return;
             
-            var isCollisionNew = contactObjectManager.TryAddNormals(collision);
-            if (isCollisionNew)
+            if (contactObjectManager.TryAddNormals(collision))
             {
                 UpdateGround();
+                Branch.AddNode(transform.position);
             }
         }
         
@@ -149,7 +152,7 @@ namespace Creeper
             _rigidbody.MovePosition(newPosition);
         }
         
-        public void UpdateGround()
+        private void UpdateGround()
         {
             contactObjectManager.UpdateGround();
             if (contactObjectManager.normal.magnitude == 0)
@@ -159,10 +162,16 @@ namespace Creeper
             }
             _isGrounded = true;
             _groundDirection = -contactObjectManager.normal;
+            UpdateMovementAxis();
+            var transform1 = transform;
+            transform1.up = -_groundDirection;
+            Debug.DrawRay(transform1.position, transform1.up, Color.green, 1f);
+            
+        }
+
+        public void UpdateMovementAxis()
+        {
             projectedAxis = CreateMovementAxis();
-            transform.up = -_groundDirection;
-            Branch.AddIvyNode();
-            Debug.DrawRay(transform.position, transform.up, Color.green, 1f);
         }
         
         private Axis CreateMovementAxis()

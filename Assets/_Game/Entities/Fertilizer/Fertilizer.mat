@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Fertilizer
-  m_Shader: {fileID: -6465566751694194690, guid: 731035c124acca54e92dc672f7cd49a6, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: 6a3a2efcef5f87a4fbf2b2f2b136f9f5, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
   m_LightmapFlags: 4
@@ -86,11 +86,14 @@ Material:
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
+    - _Offset: 0
     - _Parallax: 0.02
     - _QueueControl: 0
     - _QueueOffset: 0
+    - _Scale: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
+    - _Speed: 1
     - _SrcBlend: 1
     - _UVSec: 0
     - _ZWrite: 1
@@ -99,8 +102,11 @@ Material:
     - Color_6E33406E: {r: 1, g: 0, b: 0, a: 1}
     - Color_AB020D47: {r: 16, g: 6.337255, b: 0, a: 1}
     - Color_EBBDF7D5: {r: 1, g: 0.64926535, b: 0, a: 1}
+    - _BaseColor: {r: 0, g: 0.1000247, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _MainColor: {r: 0.6132076, g: 0.07231221, b: 0.3562506, a: 1}
+    - _SecondaryColor: {r: 0.03301889, g: 1, b: 0.8908836, a: 1}
   m_BuildTextureStacks: []
 --- !u!114 &8660882049382477189
 MonoBehaviour:
