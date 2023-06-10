@@ -27,7 +27,7 @@ public class RootBranch : MonoBehaviour {
         };
         _meshRenderer = GetComponent<MeshRenderer>();
         _meshRenderer.material = material;
-        _meshFilter.mesh = CreateMesh(branchNodes);
+        ApplyMesh(CreateMesh(branchNodes));
         _maxLivingNodeCount = maxSegmentCount;
 
         material.SetFloat(RADIUS, 1f);
@@ -112,6 +112,7 @@ public class RootBranch : MonoBehaviour {
         mesh.uv = new Vector2[nodeCount * _meshFaces * 4];
         mesh.triangles = new int[(nodeCount - 1) * _meshFaces * 6];
         _meshFilter.mesh = mesh;
+        ApplyMesh(mesh);
     }
     
     public void SetIvyNode(int index, Vector3 branchPosition)
@@ -133,8 +134,9 @@ public class RootBranch : MonoBehaviour {
             var radius = defaultRadius;
             if (i > nodeCount - _maxLivingNodeCount)
             {
-                radius -= ((float) (i - (nodeCount - _maxLivingNodeCount)) / _maxLivingNodeCount) * defaultRadius;
+                radius -= ((float)(i - (nodeCount - _maxLivingNodeCount)) / _maxLivingNodeCount) * defaultRadius;
             }
+
             float vStep = (2f * Mathf.PI) / _meshFaces;
 
             var fw = Vector3.zero;
@@ -168,7 +170,7 @@ public class RootBranch : MonoBehaviour {
                 pos += orientation * yAxis * (radius * Mathf.Cos(v * vStep));
 
                 vertices[i * _meshFaces + v] = pos;
-                
+
                 var diff = pos - branchNodes[i].getPosition();
                 normals[i * _meshFaces + v] = diff / diff.magnitude;
 
@@ -181,16 +183,26 @@ public class RootBranch : MonoBehaviour {
                 for (int v = 0; v < _meshFaces; v++)
                 {
                     triangles[i * _meshFaces * 6 + v * 6] = ((v + 1) % _meshFaces) + i * _meshFaces;
-                    triangles[i * _meshFaces * 6 + v * 6 + 1] = triangles[i * _meshFaces * 6 + v * 6 + 4] = v + i * _meshFaces;
-                    triangles[i * _meshFaces * 6 + v * 6 + 2] = triangles[i * _meshFaces * 6 + v * 6 + 3] = ((v + 1) % _meshFaces + _meshFaces) + i * _meshFaces;
+                    triangles[i * _meshFaces * 6 + v * 6 + 1] =
+                        triangles[i * _meshFaces * 6 + v * 6 + 4] = v + i * _meshFaces;
+                    triangles[i * _meshFaces * 6 + v * 6 + 2] = triangles[i * _meshFaces * 6 + v * 6 + 3] =
+                        ((v + 1) % _meshFaces + _meshFaces) + i * _meshFaces;
                     triangles[i * _meshFaces * 6 + v * 6 + 5] = (_meshFaces + v % _meshFaces) + i * _meshFaces;
                 }
             }
         }
+
         mesh.vertices = vertices;
         mesh.triangles = triangles;
         mesh.normals = normals;
         mesh.uv = uv;
+        ApplyMesh(mesh);
+    }
+
+    private void ApplyMesh(Mesh mesh)
+    {
         _meshFilter.mesh = mesh;
-    }   
+        _meshFilter.sharedMesh.RecalculateBounds();
+        _meshFilter.sharedMesh.RecalculateNormals();
+    }
 }

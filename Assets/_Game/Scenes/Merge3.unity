@@ -2000,6 +2000,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1224439023}
     m_Modifications:
+    - target: {fileID: 1687207124368014886, guid: 907c774c7d7bc59419d691e061ef3528, type: 3}
+      propertyPath: branchLength
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1687207124368014887, guid: 907c774c7d7bc59419d691e061ef3528, type: 3}
       propertyPath: m_Enabled
       value: 0
@@ -2059,6 +2063,14 @@ PrefabInstance:
     - target: {fileID: 6665412065068568266, guid: 907c774c7d7bc59419d691e061ef3528, type: 3}
       propertyPath: defaultRadius
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6665412065068568276, guid: 907c774c7d7bc59419d691e061ef3528, type: 3}
+      propertyPath: m_DynamicOccludee
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6665412065068568277, guid: 907c774c7d7bc59419d691e061ef3528, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 907c774c7d7bc59419d691e061ef3528, type: 3}

@@ -34,7 +34,7 @@ namespace Creeper
             _pitch = transform.rotation.eulerAngles.x;
         }
 
-        private void Update()
+        private void LateUpdate()
         {
             FollowTarget();
             Rotate();
