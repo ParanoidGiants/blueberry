@@ -45,7 +45,7 @@ namespace Creeper
 
         #region PlayerInputReferences
         public HeadController Head;
-        public BranchController Branch;
+        public RootBranchController Branch;
         public CameraController Camera;
         #endregion PlayerInputReferences
 
