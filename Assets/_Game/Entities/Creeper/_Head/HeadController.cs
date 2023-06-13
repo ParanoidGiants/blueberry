@@ -1,5 +1,6 @@
 using UnityEngine;
 using RootMath;
+using UnityEngine.Serialization;
 
 namespace Creeper
 {
@@ -9,7 +10,7 @@ namespace Creeper
         public static int WHAT_IS_CLIMBABLE { get { return _WHAT_IS_CLIMBABLE; } }
         
         [Header("References")]
-        [SerializeField] private BranchController Branch;
+        public VineController branchController;
         private Rigidbody _rigidbody;
         private Transform _cameraTransform;
         
@@ -62,7 +63,7 @@ namespace Creeper
             if (contactObjectManager.TryAddNormals(collision))
             {
                 UpdateGround();
-                Branch.AddNode(transform.position);
+                branchController.AddNodeToVine(new VineNode(transform.position, transform.up));
             }
         }
         
@@ -73,7 +74,7 @@ namespace Creeper
             if (contactObjectManager.TryAddNormals(collision))
             {
                 UpdateGround();
-                Branch.AddNode(transform.position);
+                branchController.AddNodeToVine(new VineNode(transform.position, transform.up));
             }
         }
         
