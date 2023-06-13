@@ -10,7 +10,7 @@ namespace Creeper
         public static int WHAT_IS_CLIMBABLE { get { return _WHAT_IS_CLIMBABLE; } }
         
         [Header("References")]
-        public RootBranchController branchController;
+        public VineController branchController;
         private Rigidbody _rigidbody;
         private Transform _cameraTransform;
         
@@ -63,7 +63,7 @@ namespace Creeper
             if (contactObjectManager.TryAddNormals(collision))
             {
                 UpdateGround();
-                branchController.AddIvyNode(transform.position, transform.up);
+                branchController.AddNodeToVine(new VineNode(transform.position, transform.up));
             }
         }
         
@@ -74,7 +74,7 @@ namespace Creeper
             if (contactObjectManager.TryAddNormals(collision))
             {
                 UpdateGround();
-                branchController.AddIvyNode(transform.position, transform.up);
+                branchController.AddNodeToVine(new VineNode(transform.position, transform.up));
             }
         }
         
