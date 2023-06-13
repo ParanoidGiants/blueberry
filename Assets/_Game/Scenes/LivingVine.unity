@@ -2249,7 +2249,7 @@ PrefabInstance:
     - target: {fileID: 661344943, guid: 907c774c7d7bc59419d691e061ef3528, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: c6f2c6a8e4dde094b8294491b25c4bef, type: 2}
+      objectReference: {fileID: 2100000, guid: 80b9272bf5f1b604ebac8acfdae33b74, type: 2}
     - target: {fileID: 746574534, guid: 907c774c7d7bc59419d691e061ef3528, type: 3}
       propertyPath: m_Enabled
       value: 0
@@ -2301,6 +2301,14 @@ PrefabInstance:
     - target: {fileID: 6665412063840737773, guid: 907c774c7d7bc59419d691e061ef3528, type: 3}
       propertyPath: m_Name
       value: Creeper
+      objectReference: {fileID: 0}
+    - target: {fileID: 6665412065068568266, guid: 907c774c7d7bc59419d691e061ef3528, type: 3}
+      propertyPath: vineLength
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6665412065068568266, guid: 907c774c7d7bc59419d691e061ef3528, type: 3}
+      propertyPath: defaultRadius
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 6665412065068568266, guid: 907c774c7d7bc59419d691e061ef3528, type: 3}
       propertyPath: maxDeadNodeCount

@@ -87,7 +87,8 @@ public class VineController : MonoBehaviour
             {
                 _deadVineNodes.RemoveAt(0);
             }
-            UpdateDeadMesh();
+            RefreshDeadMesh();
+            
             _livingVineNodes.RemoveAt(0);
         }
         
@@ -120,6 +121,7 @@ public class VineController : MonoBehaviour
             _livingVineNodes[i].normal = transform.up;
         }
         UpdateLivingMesh();
+        UpdateDeadMesh();
     }
 
     private void UpdateLivingMesh()
@@ -162,7 +164,7 @@ public class VineController : MonoBehaviour
                 var orientation = Quaternion.LookRotation(forward, up);
                 Vector3 xAxis = Vector3.up;
                 Vector3 yAxis = Vector3.right;
-                Vector3 position = _livingVineNodes[i].position;
+                Vector3 position = _livingVineNodes[i].position - head.up * (head.localScale.y * 0.5f) + _livingVineNodes[i].normal * radius;
                 position += orientation * xAxis * (radius * Mathf.Sin(v * vStep));
                 position += orientation * yAxis * (radius * Mathf.Cos(v * vStep));
 
@@ -171,7 +173,8 @@ public class VineController : MonoBehaviour
                 var diff = position - _livingVineNodes[i].position;
                 normals[i * MESH_FACE_COUNT + v] = diff / diff.magnitude;
 
-                float uvID = Remap(i, i, nodeCount - 1, 0, 1);
+                var valueToMap = _currentNodeCount - maxLivingNodeCount + nodeCount;
+                float uvID = Remap(valueToMap, 0,  _currentNodeCount, 0, 1);
                 uv[i * MESH_FACE_COUNT + v] = new Vector2((float)v / MESH_FACE_COUNT, uvID);
             }
 
@@ -200,6 +203,50 @@ public class VineController : MonoBehaviour
     }
     
     private void UpdateDeadMesh()
+    {
+        if (_deadVineNodes.Count <= 1) return;
+        Mesh deadVineMesh = _deadVine.meshFilter.mesh;
+        
+        Vector3[] vertices = deadVineMesh.vertices;
+        Vector3[] normals = deadVineMesh.normals;
+        Vector2[] uv = deadVineMesh.uv;
+
+        var lastNodeIndex = _deadVineNodes.Count - 1;
+        var lastMeshIndex = _currentNodeCount - maxLivingNodeCount;
+        lastMeshIndex = Mathf.Max(0, lastMeshIndex);
+        
+        float vStep = (2f * Mathf.PI) / MESH_FACE_COUNT;
+        var forward = _deadVineNodes[lastNodeIndex].position - _livingVineNodes[1].position;
+        forward.Normalize();
+
+        var up = _deadVineNodes[lastNodeIndex].normal;
+        up.Normalize();
+
+        for (int v = 0; v < MESH_FACE_COUNT; v++)
+        {
+            var orientation = Quaternion.LookRotation(forward, up);
+            Vector3 xAxis = Vector3.up;
+            Vector3 yAxis = Vector3.right;
+            Vector3 pos = _deadVineNodes[lastNodeIndex].position - head.up * (head.localScale.y * 0.5f) + _deadVineNodes[lastNodeIndex].normal * defaultRadius;
+            pos += orientation * xAxis * (defaultRadius * Mathf.Sin(v * vStep));
+            pos += orientation * yAxis * (defaultRadius * Mathf.Cos(v * vStep));
+
+            vertices[lastMeshIndex * MESH_FACE_COUNT + v] = pos;
+
+            var diff = pos - _deadVineNodes[lastNodeIndex].position;
+            normals[lastMeshIndex * MESH_FACE_COUNT + v] = diff / diff.magnitude;
+            float uvID = Remap(lastNodeIndex, 0, _currentNodeCount, 0, 1);
+            uv[lastMeshIndex * MESH_FACE_COUNT + v] = new Vector2((float)v / MESH_FACE_COUNT, uvID);
+        }
+
+        deadVineMesh.vertices = vertices;
+        deadVineMesh.normals = normals;
+        deadVineMesh.uv = uv;
+
+        _deadVine.SetMesh(deadVineMesh);
+    }
+    
+    private void RefreshDeadMesh()
     {
         Mesh deadVineMesh = _deadVine.meshFilter.mesh;
         
@@ -243,7 +290,7 @@ public class VineController : MonoBehaviour
                 var orientation = Quaternion.LookRotation(forward, up);
                 Vector3 xAxis = Vector3.up;
                 Vector3 yAxis = Vector3.right;
-                Vector3 pos = _deadVineNodes[nodeIndex].position;
+                Vector3 pos = _deadVineNodes[nodeIndex].position - head.up * (head.localScale.y * 0.5f) + _deadVineNodes[nodeIndex].normal * defaultRadius;
                 pos += orientation * xAxis * (defaultRadius * Mathf.Sin(v * vStep));
                 pos += orientation * yAxis * (defaultRadius * Mathf.Cos(v * vStep));
 
@@ -252,7 +299,7 @@ public class VineController : MonoBehaviour
                 var diff = pos - _deadVineNodes[nodeIndex].position;
                 normals[i * MESH_FACE_COUNT + v] = diff / diff.magnitude;
 
-                float uvID = Remap(i, 0, 1, 0, 1);
+                float uvID = Remap(nodeIndex, 0, _currentNodeCount, 0, 1);
                 uv[i * MESH_FACE_COUNT + v] = new Vector2((float)v / MESH_FACE_COUNT, uvID);
             }
 
@@ -275,7 +322,7 @@ public class VineController : MonoBehaviour
         deadVineMesh.normals = normals;
         deadVineMesh.uv = uv;
 
-        _deadVine.meshFilter.mesh = deadVineMesh;
+        _deadVine.SetMesh(deadVineMesh);
     }
     
     private T[] ExtendArray<T>(T[] array, int newSize)
