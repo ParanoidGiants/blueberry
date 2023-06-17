@@ -21,7 +21,6 @@ namespace Creeper
         {
             if (contactObjects.Count == 0)
             {
-                Debug.Log("No ground direction found");
                 return;
             }
             normal = Vector3.zero;
