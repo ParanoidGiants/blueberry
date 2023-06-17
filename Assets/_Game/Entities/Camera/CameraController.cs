@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Creeper
@@ -26,12 +27,14 @@ namespace Creeper
         [SerializeField] private float MinZoom = 3f;
         [SerializeField] private float MaxZoom = 15f;
         private float _zoomDirection;
+        public List<CameraZone> _cameraZones;
 
         private void Start()
         {
             _head = FindObjectOfType<HeadController>();
             _cameraTransform = GetComponentInChildren<Camera>().transform;
             _pitch = transform.rotation.eulerAngles.x;
+            _cameraZones = new List<CameraZone>();
         }
 
         private void LateUpdate()
@@ -53,13 +56,36 @@ namespace Creeper
 
         private void FollowTarget()
         {
-            transform.position = Vector3.Lerp(transform.position, Target.position, Time.deltaTime * MoveSpeed);
+            var targetPosition = Target.position;
+            if (_cameraZones.Count != 0)
+            {
+                // for c# noobs: ^1 means last element in array
+                var activeCameraZone = _cameraZones[^1];
+                
+                if (activeCameraZone.FixPosition)
+                {
+                    targetPosition = activeCameraZone.position;
+                }
+                else
+                {
+                    targetPosition = activeCameraZone.Bounds.ClosestPoint(targetPosition);
+                }
+            }
+            transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * MoveSpeed);
         }
 
         private void Rotate()
         {
-            if (_rotateDirection.magnitude == 0f) return;
+            if (_cameraZones.Count != 0 && _cameraZones[^1].FixRotation)
+            {
+                var activeCameraZone = _cameraZones[^1];
+                transform.rotation = Quaternion.Lerp(transform.rotation, activeCameraZone.rotation, Time.deltaTime * MoveSpeed);
+                _head.UpdateMovementAxis();
+                return;
+            }
             
+            if (_rotateDirection.magnitude == 0f) return;
+
             var rotateDirection = _rotateDirection * Time.deltaTime;
             
             // Rotate around world up axis
@@ -83,6 +109,16 @@ namespace Creeper
         public void SetZoomDirection(float direction)
         {
             _zoomDirection = ZoomSpeed * direction;
+        }
+        
+        public void AddCameraZone(CameraZone cameraZone)
+        {
+            _cameraZones.Add(cameraZone);
+        }
+        
+        public void RemoveCameraZone(CameraZone cameraZone)
+        {
+            _cameraZones.Remove(cameraZone);
         }
     }
 }
