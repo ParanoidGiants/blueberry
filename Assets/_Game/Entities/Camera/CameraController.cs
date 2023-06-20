@@ -31,6 +31,7 @@ namespace Creeper
 
         private void Start()
         {
+            Application.targetFrameRate = 60;
             _head = FindObjectOfType<HeadController>();
             _cameraTransform = GetComponentInChildren<Camera>().transform;
             _pitch = transform.rotation.eulerAngles.x;
