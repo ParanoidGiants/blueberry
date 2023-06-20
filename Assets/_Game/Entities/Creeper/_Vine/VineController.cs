@@ -10,7 +10,6 @@ public class VineController : MonoBehaviour
     
     [Header("References")]
     public Transform head;
-    public Material material;
     public GameObject livingVineGameObject;
     public GameObject deadVineGameObject;
     
@@ -21,31 +20,22 @@ public class VineController : MonoBehaviour
     
     [Space(10)]
     [Header("Watchers")]
-    private int _maxDeadNodeCount = 3;
     private Vine _livingVine;
     private Vine _deadVine;
     [SerializeField] private List<VineNode> _livingVineNodes;
-    [SerializeField] private List<VineNode> _deadVineNodes;
     private int _currentNodeCount = 0;
     
     private Vector2 _inputDirection;
     public Vector2 InputDirection { set => _inputDirection = value; }
     
-    private LineRenderer _debugLine;
     private Vector3 _lastPosition;
 
     private void Start()
     {
-        _debugLine = GetComponent<LineRenderer>();
         _livingVineNodes = new List<VineNode>();
-        _deadVineNodes = new List<VineNode>();
         
         var position = head.position;
         _lastPosition = position;
-        var localScale = head.localScale;
-        _debugLine.startWidth = localScale.x;
-        _debugLine.endWidth = localScale.x;
-        
         InitMeshCreation(position, head.up);
     }
     
@@ -69,7 +59,6 @@ public class VineController : MonoBehaviour
             meshFilter = deadMeshFilter,
             meshRenderer = deadMeshRenderer
         };
-        _deadVineNodes.Add(_livingVineNodes[0]);
     }
     
     public void AddNodeToVine(VineNode vineNode)
@@ -77,28 +66,102 @@ public class VineController : MonoBehaviour
         _currentNodeCount++;
         _livingVineNodes.Add(vineNode);
         _lastPosition = vineNode.position;
-        _debugLine.positionCount = _currentNodeCount;
-        _debugLine.SetPosition(_currentNodeCount - 1, vineNode.position);
         
         if (_currentNodeCount > maxLivingNodeCount)
         {
-            _deadVineNodes.Add(_livingVineNodes[1]);
-            if (_deadVineNodes.Count > _maxDeadNodeCount)
-            {
-                _deadVineNodes.RemoveAt(0);
-            }
             RefreshDeadMesh();
-            
             _livingVineNodes.RemoveAt(0);
         }
         
-        Mesh mesh = _livingVine.meshFilter.mesh;
+        Mesh livingMesh = _livingVine.meshFilter.mesh;
         var livingNodeCount = _livingVineNodes.Count;
-        mesh.vertices = new Vector3[livingNodeCount * MESH_FACE_COUNT * 4];
-        mesh.normals = new Vector3[livingNodeCount * MESH_FACE_COUNT * 4];
-        mesh.uv = new Vector2[livingNodeCount * MESH_FACE_COUNT * 4];
-        mesh.triangles = new int[(livingNodeCount - 1) * MESH_FACE_COUNT * 6];
-        _livingVine.SetMesh(mesh);
+        livingMesh.vertices = new Vector3[livingNodeCount * MESH_FACE_COUNT * 4];
+        livingMesh.normals = new Vector3[livingNodeCount * MESH_FACE_COUNT * 4];
+        livingMesh.uv = new Vector2[livingNodeCount * MESH_FACE_COUNT * 4];
+        livingMesh.triangles = new int[(livingNodeCount - 1) * MESH_FACE_COUNT * 6];
+        _livingVine.SetMesh(livingMesh);
+    }
+    private void RefreshDeadMesh()
+    {
+        Mesh deadVineMesh = _deadVine.meshFilter.mesh;
+        var nextNodeToDie = _livingVineNodes[0];
+        var oldestLivingNode = _livingVineNodes[1];
+        
+        var deadMeshNodeCount = (int) Mathf.Max(0f,_currentNodeCount - maxLivingNodeCount + 1);
+        var vertexCount = (deadMeshNodeCount+1) * MESH_FACE_COUNT * 4;
+        var triangleCount = deadMeshNodeCount * MESH_FACE_COUNT * 6;
+        Vector3[] vertices = ExtendArray(deadVineMesh.vertices, vertexCount);
+        Vector3[] normals = ExtendArray(deadVineMesh.normals, vertexCount);
+        Vector2[] uv = ExtendArray(deadVineMesh.uv, vertexCount);
+        int[] triangles = ExtendArray(deadVineMesh.triangles, triangleCount);
+        
+        float vStep = (2f * Mathf.PI) / MESH_FACE_COUNT;
+        
+        var meshIndex = deadMeshNodeCount;
+        var oldMeshIndex = meshIndex - 1;
+        
+        var forward = (oldestLivingNode.position - nextNodeToDie.position).normalized;
+        forward.Normalize();
+
+        var up = oldestLivingNode.up;
+        up.Normalize();
+
+        for (int v = 0; v < MESH_FACE_COUNT; v++)
+        {
+            var orientation = Quaternion.LookRotation(forward, up);
+            Vector3 xAxis = Vector3.up;
+            Vector3 yAxis = Vector3.right;
+            Vector3 offset = nextNodeToDie.up * (defaultRadius - head.localScale.y * 0.5f);
+            Vector3 pos = nextNodeToDie.position + offset;
+            Debug.DrawRay(nextNodeToDie.position, offset, Color.red, 1f);
+            pos += orientation * xAxis * (defaultRadius * Mathf.Sin(v * vStep));
+            pos += orientation * yAxis * (defaultRadius * Mathf.Cos(v * vStep));
+
+            vertices[oldMeshIndex * MESH_FACE_COUNT + v] = pos;
+
+            var diff = pos - nextNodeToDie.position;
+            normals[oldMeshIndex * MESH_FACE_COUNT + v] = diff / diff.magnitude;
+
+            float uvID = Remap(1, 0, 1, 0, 1);
+            uv[oldMeshIndex * MESH_FACE_COUNT + v] = new Vector2((float)v / MESH_FACE_COUNT, uvID);
+        }
+        
+        for (int v = 0; v < MESH_FACE_COUNT; v++)
+        {
+            triangles[oldMeshIndex * MESH_FACE_COUNT * 6 + v * 6] = ((v + 1) % MESH_FACE_COUNT) + oldMeshIndex * MESH_FACE_COUNT;
+            triangles[oldMeshIndex * MESH_FACE_COUNT * 6 + v * 6 + 1] =
+                triangles[oldMeshIndex * MESH_FACE_COUNT * 6 + v * 6 + 4] = v + oldMeshIndex * MESH_FACE_COUNT;
+            triangles[oldMeshIndex * MESH_FACE_COUNT * 6 + v * 6 + 2] = triangles[oldMeshIndex * MESH_FACE_COUNT * 6 + v * 6 + 3] =
+                ((v + 1) % MESH_FACE_COUNT + MESH_FACE_COUNT) + oldMeshIndex * MESH_FACE_COUNT;
+            triangles[oldMeshIndex * MESH_FACE_COUNT * 6 + v * 6 + 5] = (MESH_FACE_COUNT + v % MESH_FACE_COUNT) + oldMeshIndex * MESH_FACE_COUNT;
+        }
+        
+        for (int v = 0; v < MESH_FACE_COUNT; v++)
+        {
+            var orientation = Quaternion.LookRotation(forward, up);
+            Vector3 xAxis = Vector3.up;
+            Vector3 yAxis = Vector3.right;
+            Vector3 offset = oldestLivingNode.up * (defaultRadius - head.localScale.y * 0.5f);
+            Vector3 pos = oldestLivingNode.position + offset;
+            Debug.DrawRay(oldestLivingNode.position, offset, Color.red, 1f);
+            pos += orientation * xAxis * (defaultRadius * Mathf.Sin(v * vStep));
+            pos += orientation * yAxis * (defaultRadius * Mathf.Cos(v * vStep));
+
+            vertices[meshIndex * MESH_FACE_COUNT + v] = pos;
+
+            var diff = pos - oldestLivingNode.position;
+            normals[meshIndex * MESH_FACE_COUNT + v] = diff / diff.magnitude;
+
+            float uvID = Remap(1, 0, 1, 0, 1);
+            uv[meshIndex * MESH_FACE_COUNT + v] = new Vector2((float)v / MESH_FACE_COUNT, uvID);
+        }
+        
+        deadVineMesh.vertices = vertices;
+        deadVineMesh.triangles = triangles;
+        deadVineMesh.normals = normals;
+        deadVineMesh.uv = uv;
+
+        _deadVine.SetMesh(deadVineMesh);
     }
     
     private void Update()
@@ -118,10 +181,8 @@ public class VineController : MonoBehaviour
         {
             var moveFactor = (float)i / (end - 1);
             _livingVineNodes[i].position += moveDirection * moveFactor;
-            _livingVineNodes[i].normal = transform.up;
         }
         UpdateLivingMesh();
-        UpdateDeadMesh();
     }
 
     private void UpdateLivingMesh()
@@ -142,21 +203,24 @@ public class VineController : MonoBehaviour
 
             float vStep = (2f * Mathf.PI) / MESH_FACE_COUNT;
             var forward = Vector3.zero;
-            if (i > 0) {
+            if (i > 0)
+            {
                 forward = _livingVineNodes[i - 1].position - _livingVineNodes[i].position;
             }
 
-            if (i < nodeCount - 1) {
+            if (i < nodeCount - 1)
+            {
                 forward += _livingVineNodes[i].position - _livingVineNodes[i + 1].position;
             }
 
-            if (forward == Vector3.zero) {
+            if (forward == Vector3.zero)
+            {
                 forward = Vector3.forward;
             }
 
             forward.Normalize();
 
-            var up = _livingVineNodes[i].normal;
+            var up = _livingVineNodes[i].up;
             up.Normalize();
 
             for (int v = 0; v < MESH_FACE_COUNT; v++)
@@ -164,7 +228,8 @@ public class VineController : MonoBehaviour
                 var orientation = Quaternion.LookRotation(forward, up);
                 Vector3 xAxis = Vector3.up;
                 Vector3 yAxis = Vector3.right;
-                Vector3 position = _livingVineNodes[i].position - head.up * (head.localScale.y * 0.5f) + _livingVineNodes[i].normal * radius;
+                Vector3 offset = _livingVineNodes[i].up * (radius - head.localScale.y * 0.5f);
+                Vector3 position = _livingVineNodes[i].position + offset;
                 position += orientation * xAxis * (radius * Mathf.Sin(v * vStep));
                 position += orientation * yAxis * (radius * Mathf.Cos(v * vStep));
 
@@ -190,8 +255,6 @@ public class VineController : MonoBehaviour
                     triangles[i * MESH_FACE_COUNT * 6 + v * 6 + 5] = (MESH_FACE_COUNT + v % MESH_FACE_COUNT) + i * MESH_FACE_COUNT;
                 }
             }
-            
-            _debugLine.SetPosition(i, _livingVineNodes[i].position);
         }
 
         livingVineMesh.vertices = vertices;
@@ -200,129 +263,6 @@ public class VineController : MonoBehaviour
         livingVineMesh.uv = uv;
         
         _livingVine.SetMesh(livingVineMesh);
-    }
-    
-    private void UpdateDeadMesh()
-    {
-        if (_deadVineNodes.Count <= 1) return;
-        Mesh deadVineMesh = _deadVine.meshFilter.mesh;
-        
-        Vector3[] vertices = deadVineMesh.vertices;
-        Vector3[] normals = deadVineMesh.normals;
-        Vector2[] uv = deadVineMesh.uv;
-
-        var lastNodeIndex = _deadVineNodes.Count - 1;
-        var lastMeshIndex = _currentNodeCount - maxLivingNodeCount;
-        lastMeshIndex = Mathf.Max(0, lastMeshIndex);
-        
-        float vStep = (2f * Mathf.PI) / MESH_FACE_COUNT;
-        var forward = _deadVineNodes[lastNodeIndex].position - _livingVineNodes[1].position;
-        forward.Normalize();
-
-        var up = _deadVineNodes[lastNodeIndex].normal;
-        up.Normalize();
-
-        for (int v = 0; v < MESH_FACE_COUNT; v++)
-        {
-            var orientation = Quaternion.LookRotation(forward, up);
-            Vector3 xAxis = Vector3.up;
-            Vector3 yAxis = Vector3.right;
-            Vector3 pos = _deadVineNodes[lastNodeIndex].position - head.up * (head.localScale.y * 0.5f) + _deadVineNodes[lastNodeIndex].normal * defaultRadius;
-            pos += orientation * xAxis * (defaultRadius * Mathf.Sin(v * vStep));
-            pos += orientation * yAxis * (defaultRadius * Mathf.Cos(v * vStep));
-
-            vertices[lastMeshIndex * MESH_FACE_COUNT + v] = pos;
-
-            var diff = pos - _deadVineNodes[lastNodeIndex].position;
-            normals[lastMeshIndex * MESH_FACE_COUNT + v] = diff / diff.magnitude;
-            float uvID = Remap(lastNodeIndex, 0, _currentNodeCount, 0, 1);
-            uv[lastMeshIndex * MESH_FACE_COUNT + v] = new Vector2((float)v / MESH_FACE_COUNT, uvID);
-        }
-
-        deadVineMesh.vertices = vertices;
-        deadVineMesh.normals = normals;
-        deadVineMesh.uv = uv;
-
-        _deadVine.SetMesh(deadVineMesh);
-    }
-    
-    private void RefreshDeadMesh()
-    {
-        Mesh deadVineMesh = _deadVine.meshFilter.mesh;
-        
-        var deadMeshNodeCount = _currentNodeCount - maxLivingNodeCount + 1;
-        var vertexCount = deadMeshNodeCount * MESH_FACE_COUNT * 4;
-        var triangleCount = (deadMeshNodeCount - 1) * MESH_FACE_COUNT * 6;
-        
-        Vector3[] vertices = ExtendArray(deadVineMesh.vertices, vertexCount);
-        Vector3[] normals = ExtendArray(deadVineMesh.normals, vertexCount);
-        Vector2[] uv = ExtendArray(deadVineMesh.uv, vertexCount);
-        int[] triangles = ExtendArray(deadVineMesh.triangles, triangleCount);
-
-        var meshIndex = Mathf.Max(0, deadMeshNodeCount - _maxDeadNodeCount);
-        var nodeIndex = 0;
-        for (int i = meshIndex; i < deadMeshNodeCount; i++, nodeIndex++)
-        {
-            float vStep = (2f * Mathf.PI) / MESH_FACE_COUNT;
-            var forward = Vector3.zero;
-            if (nodeIndex - 1 >= 0)
-            {
-                forward = _deadVineNodes[nodeIndex - 1].position - _deadVineNodes[nodeIndex].position;
-            }
-            
-            if (nodeIndex + 1 < _deadVineNodes.Count)
-            {
-                forward += _deadVineNodes[nodeIndex].position - _deadVineNodes[nodeIndex + 1].position;
-            }
-
-            if (forward == Vector3.zero)
-            {
-                forward = Vector3.forward;
-            }
-
-            forward.Normalize();
-
-            var up = _deadVineNodes[nodeIndex].normal;
-            up.Normalize();
-
-            for (int v = 0; v < MESH_FACE_COUNT; v++)
-            {
-                var orientation = Quaternion.LookRotation(forward, up);
-                Vector3 xAxis = Vector3.up;
-                Vector3 yAxis = Vector3.right;
-                Vector3 pos = _deadVineNodes[nodeIndex].position - head.up * (head.localScale.y * 0.5f) + _deadVineNodes[nodeIndex].normal * defaultRadius;
-                pos += orientation * xAxis * (defaultRadius * Mathf.Sin(v * vStep));
-                pos += orientation * yAxis * (defaultRadius * Mathf.Cos(v * vStep));
-
-                vertices[i * MESH_FACE_COUNT + v] = pos;
-
-                var diff = pos - _deadVineNodes[nodeIndex].position;
-                normals[i * MESH_FACE_COUNT + v] = diff / diff.magnitude;
-
-                float uvID = Remap(nodeIndex, 0, _currentNodeCount, 0, 1);
-                uv[i * MESH_FACE_COUNT + v] = new Vector2((float)v / MESH_FACE_COUNT, uvID);
-            }
-
-            if (i + 1 < deadMeshNodeCount)
-            {
-                for (int v = 0; v < MESH_FACE_COUNT; v++)
-                {
-                    triangles[i * MESH_FACE_COUNT * 6 + v * 6] = ((v + 1) % MESH_FACE_COUNT) + i * MESH_FACE_COUNT;
-                    triangles[i * MESH_FACE_COUNT * 6 + v * 6 + 1] =
-                        triangles[i * MESH_FACE_COUNT * 6 + v * 6 + 4] = v + i * MESH_FACE_COUNT;
-                    triangles[i * MESH_FACE_COUNT * 6 + v * 6 + 2] = triangles[i * MESH_FACE_COUNT * 6 + v * 6 + 3] =
-                        ((v + 1) % MESH_FACE_COUNT + MESH_FACE_COUNT) + i * MESH_FACE_COUNT;
-                    triangles[i * MESH_FACE_COUNT * 6 + v * 6 + 5] = (MESH_FACE_COUNT + v % MESH_FACE_COUNT) + i * MESH_FACE_COUNT;
-                }
-            }
-        }
-        
-        deadVineMesh.vertices = vertices;
-        deadVineMesh.triangles = triangles;
-        deadVineMesh.normals = normals;
-        deadVineMesh.uv = uv;
-
-        _deadVine.SetMesh(deadVineMesh);
     }
     
     private T[] ExtendArray<T>(T[] array, int newSize)

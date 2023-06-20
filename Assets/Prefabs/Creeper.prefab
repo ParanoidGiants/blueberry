@@ -297,7 +297,7 @@ MonoBehaviour:
   branchController: {fileID: 6665412065068568266}
   _raycastLengthEpsilon: 0.2
   _drawTime: 1
-  _moveSpeed: 0.1
+  _moveSpeed: 3
   _isGrounded: 0
   _inputDirection: {x: 0, y: 0, z: 0}
   _lastPosition: {x: 0, y: 0, z: 0}
@@ -505,7 +505,6 @@ MonoBehaviour:
   livingVineGameObject: {fileID: 194120857}
   deadVineGameObject: {fileID: 661344941}
   maxLivingNodeCount: 20
-  vineLength: 0.5
+  vineLength: 1
   defaultRadius: 0.5
   _livingVineNodes: []
-  _deadVineNodes: []

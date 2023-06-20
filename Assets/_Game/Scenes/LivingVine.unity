@@ -2768,22 +2768,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1224439023}
     m_Modifications:
-    - target: {fileID: 661344943, guid: 907c774c7d7bc59419d691e061ef3528, type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 661344943, guid: 907c774c7d7bc59419d691e061ef3528, type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: 80b9272bf5f1b604ebac8acfdae33b74, type: 2}
-    - target: {fileID: 746574534, guid: 907c774c7d7bc59419d691e061ef3528, type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1514108666894034132, guid: 907c774c7d7bc59419d691e061ef3528, type: 3}
-      propertyPath: m_TagString
-      value: Player
-      objectReference: {fileID: 0}
     - target: {fileID: 6665412063840737761, guid: 907c774c7d7bc59419d691e061ef3528, type: 3}
       propertyPath: m_RootOrder
       value: 3
@@ -2831,26 +2815,6 @@ PrefabInstance:
     - target: {fileID: 6665412063840737773, guid: 907c774c7d7bc59419d691e061ef3528, type: 3}
       propertyPath: m_Name
       value: Creeper
-      objectReference: {fileID: 0}
-    - target: {fileID: 6665412065068568266, guid: 907c774c7d7bc59419d691e061ef3528, type: 3}
-      propertyPath: vineLength
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 6665412065068568266, guid: 907c774c7d7bc59419d691e061ef3528, type: 3}
-      propertyPath: defaultRadius
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 6665412065068568266, guid: 907c774c7d7bc59419d691e061ef3528, type: 3}
-      propertyPath: maxDeadNodeCount
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 6665412065068568266, guid: 907c774c7d7bc59419d691e061ef3528, type: 3}
-      propertyPath: maxLivingNodeCount
-      value: 20
-      objectReference: {fileID: 0}
-    - target: {fileID: 6665412065068568266, guid: 907c774c7d7bc59419d691e061ef3528, type: 3}
-      propertyPath: livingVineNodes.Array.size
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 907c774c7d7bc59419d691e061ef3528, type: 3}
