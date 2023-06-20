@@ -102,7 +102,7 @@ namespace Creeper
             _behindDirection = -moveDirection;
             _lastPosition = transform.position;
             
-            _rigidbody.MovePosition(transform.position + _moveSpeed * moveDirection);
+            _rigidbody.MovePosition(transform.position + Time.deltaTime * _moveSpeed * moveDirection);
             if (_inputDirection.magnitude > 0.1f)
             {
                 transform.rotation = Quaternion.LookRotation(moveDirection, -_groundDirection);
