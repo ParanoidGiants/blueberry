@@ -131,7 +131,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 661344941}
-  m_Enabled: 0
+  m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -183,7 +183,7 @@ GameObject:
   - component: {fileID: 7894755850764996838}
   m_Layer: 7
   m_Name: Head
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -197,7 +197,7 @@ Transform:
   m_GameObject: {fileID: 1514108666894034132}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -15.7, y: 0, z: 2.6}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_LocalScale: {x: 0.25, y: 0.25, z: 0.25}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6665412063840737761}
@@ -504,14 +504,8 @@ MonoBehaviour:
   material: {fileID: 2100000, guid: 80b9272bf5f1b604ebac8acfdae33b74, type: 2}
   livingVineGameObject: {fileID: 194120857}
   deadVineGameObject: {fileID: 661344941}
-  maxLivingNodeCount: 10
-  vineLength: 2
+  maxLivingNodeCount: 20
+  vineLength: 0.5
   defaultRadius: 0.5
-  livingVine:
-    meshFilter: {fileID: 0}
-    meshRenderer: {fileID: 0}
-  deadVine:
-    meshFilter: {fileID: 0}
-    meshRenderer: {fileID: 0}
-  livingVineNodes: []
-  currentNodeCount: 0
+  _livingVineNodes: []
+  _deadVineNodes: []

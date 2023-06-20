@@ -114,14 +114,14 @@ namespace Creeper
             RaycastHit hit;
             // Search Below
             var rayOrigin = transform.position;
-            var raycastLength = 0.5f * transform.localScale.z + _raycastLengthEpsilon;
+            var raycastLength = transform.localScale.z + _raycastLengthEpsilon;
             if (ShootRay(rayOrigin, _groundDirection, raycastLength, out hit, Color.red))
             {
                 SetPosition(hit.point, hit.normal);
                 return;
             }
             // Search Behind
-            rayOrigin += raycastLength * _groundDirection;
+            rayOrigin += (0.5f * transform.localScale.z + _raycastLengthEpsilon) * _groundDirection;
             raycastLength = (transform.position - _lastPosition).magnitude + _raycastLengthEpsilon;
             if (ShootRay(rayOrigin, _behindDirection, raycastLength, out hit, Color.cyan))
             {
