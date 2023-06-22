@@ -63,7 +63,6 @@ namespace Creeper
             if (contactObjectManager.TryAddNormals(collision))
             {
                 UpdateGround();
-                branchController.AddNodeToVine(new VineNode(transform.position, transform.up));
             }
         }
         
@@ -74,7 +73,6 @@ namespace Creeper
             if (contactObjectManager.TryAddNormals(collision))
             {
                 UpdateGround();
-                branchController.AddNodeToVine(new VineNode(transform.position, transform.up));
             }
         }
         

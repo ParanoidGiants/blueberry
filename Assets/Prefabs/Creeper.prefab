@@ -197,7 +197,7 @@ Transform:
   m_GameObject: {fileID: 1514108666894034132}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -15.7, y: 0, z: 2.6}
-  m_LocalScale: {x: 0.25, y: 0.25, z: 0.25}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6665412063840737761}
@@ -501,10 +501,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   head: {fileID: 1113100603157985202}
-  material: {fileID: 2100000, guid: 80b9272bf5f1b604ebac8acfdae33b74, type: 2}
   livingVineGameObject: {fileID: 194120857}
   deadVineGameObject: {fileID: 661344941}
   maxLivingNodeCount: 20
-  vineLength: 1
-  defaultRadius: 0.5
+  vineLength: 0.2
+  defaultRadius: 0.25
   _livingVineNodes: []
+  _currentNodeCount: 0

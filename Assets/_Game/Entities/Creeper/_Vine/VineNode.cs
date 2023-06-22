@@ -6,10 +6,11 @@ using UnityEngine.Serialization;
 public class VineNode
 {
     public Vector3 position;
-    public Vector3 up;
-    public VineNode(Vector3 position, Vector3 up)
+    public Quaternion rotation;
+
+    public VineNode(Vector3 position, Quaternion rotation)
     {
         this.position = position;
-        this.up = up;
+        this.rotation = rotation;
     }
 }
