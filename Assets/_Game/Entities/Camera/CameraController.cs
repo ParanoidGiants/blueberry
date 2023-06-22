@@ -14,14 +14,6 @@ namespace Creeper
         [SerializeField] private float MoveSpeed = 0.1f;
         
         [Space(10)]
-        [Header("Rotate")]
-        [SerializeField] private float RotateSpeed = 0.1f;
-        [SerializeField] private float MinPitch;
-        [SerializeField] private float MaxPitch;
-        private Vector3 _rotateDirection;
-        private float _pitch = 0f;
-        
-        [Space(10)]
         [Header("Zoom")]
         [SerializeField] private float ZoomSpeed = 0.1f;
         [SerializeField] private float MinZoom = 3f;
@@ -34,7 +26,6 @@ namespace Creeper
             Application.targetFrameRate = 60;
             _head = FindObjectOfType<HeadController>();
             _cameraTransform = GetComponentInChildren<Camera>().transform;
-            _pitch = transform.rotation.eulerAngles.x;
             _cameraZones = new List<CameraZone>();
         }
 
@@ -78,28 +69,9 @@ namespace Creeper
                 return;
             }
             
-            if (_rotateDirection.magnitude == 0f) return;
-
-            var rotateDirection = _rotateDirection * Time.deltaTime;
-            
-            // Rotate around world up axis
-            transform.RotateAround(transform.position, Vector3.up, -rotateDirection.x);
-            
-            // Rotate around transform right axis
-            _pitch += rotateDirection.y;
-            // Prevent camera from going upside down
-            _pitch = Mathf.Clamp(_pitch, MinPitch, MaxPitch);
-
-            var rotation = transform.rotation;
-            transform.rotation = Quaternion.Euler(_pitch, rotation.eulerAngles.y, rotation.eulerAngles.z);
             _head.UpdateMovementAxis();
         }
-
-        public void SetRotateDirection(Vector3 _direction)
-        {
-            _rotateDirection = RotateSpeed * _direction;
-        }
-
+        
         public void SetZoomDirection(float direction)
         {
             _zoomDirection = ZoomSpeed * direction;

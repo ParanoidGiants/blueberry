@@ -20,12 +20,10 @@ namespace Creeper
         {
             input.Enable();
             input.PlayerInput.MoveCreeper.performed += OnMove;
-            input.PlayerInput.RotateCamera.performed += OnRotate;
             input.PlayerInput.ZoomCamera.performed += OnZoom;
             input.PlayerInput.Reset.performed += OnReset;
 
             input.PlayerInput.MoveCreeper.canceled += OnCancelMove;
-            input.PlayerInput.RotateCamera.canceled += OnCancelRotate;
             input.PlayerInput.ZoomCamera.canceled += OnCancelZoom;
         }
 
@@ -33,12 +31,10 @@ namespace Creeper
         {
             input.Disable();
             input.PlayerInput.MoveCreeper.performed -= OnMove;
-            input.PlayerInput.RotateCamera.performed -= OnRotate;
             input.PlayerInput.ZoomCamera.performed -= OnZoom;
             input.PlayerInput.Reset.performed -= OnReset;
 
             input.PlayerInput.MoveCreeper.canceled -= OnCancelMove;
-            input.PlayerInput.RotateCamera.canceled -= OnCancelRotate;
             input.PlayerInput.ZoomCamera.canceled -= OnCancelZoom;
         }
         #endregion PlayerInputBinding
@@ -65,22 +61,6 @@ namespace Creeper
             Head.InputDirection = Vector3.zero;
             Branch.InputDirection = Vector3.zero;
         }
-
-        public void OnRotate(InputAction.CallbackContext _directionCallback)
-        {
-            var direction = _directionCallback.ReadValue<Vector3>();
-            if (direction.magnitude > 1f)
-            {
-                direction.Normalize();
-            }
-            Camera.SetRotateDirection(direction);
-        }
-
-        public void OnCancelRotate(InputAction.CallbackContext _directionCallback)
-        {
-            Camera.SetRotateDirection(Vector3.zero);
-        }
-
         public void OnZoom(InputAction.CallbackContext _directionCallback)
         {
             var direction = _directionCallback.ReadValue<float>();

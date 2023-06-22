@@ -39,15 +39,6 @@ namespace Creeper
                     ""initialStateCheck"": true
                 },
                 {
-                    ""name"": ""RotateCamera"",
-                    ""type"": ""Value"",
-                    ""id"": ""9201fda4-cc06-46bb-9087-f0f4e61b4704"",
-                    ""expectedControlType"": ""Vector3"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": true
-                },
-                {
                     ""name"": ""Reset"",
                     ""type"": ""Button"",
                     ""id"": ""2273bc7a-3344-4a3a-ba35-b1602a80c803"",
@@ -123,61 +114,6 @@ namespace Creeper
                     ""isPartOfComposite"": true
                 },
                 {
-                    ""name"": ""Arrows"",
-                    ""id"": ""493ef030-b988-457b-a8e2-60c6e8c90f99"",
-                    ""path"": ""3DVector"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""RotateCamera"",
-                    ""isComposite"": true,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": ""Up"",
-                    ""id"": ""c84f3e66-7bba-43ce-8776-c7330ea70aa9"",
-                    ""path"": ""<Keyboard>/upArrow"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""RotateCamera"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""Down"",
-                    ""id"": ""f492ccfa-299d-4f9e-94eb-56bda35589d9"",
-                    ""path"": ""<Keyboard>/downArrow"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""RotateCamera"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""Left"",
-                    ""id"": ""3bd47a74-5eda-4c0e-93be-af417b402a7b"",
-                    ""path"": ""<Keyboard>/leftArrow"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""RotateCamera"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""Right"",
-                    ""id"": ""e13ac607-3afd-4e0e-b845-32025b7f9369"",
-                    ""path"": ""<Keyboard>/rightArrow"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""RotateCamera"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
                     ""name"": """",
                     ""id"": ""d227fd16-50bc-4c44-9119-46ef67f4517c"",
                     ""path"": ""<Keyboard>/r"",
@@ -229,7 +165,6 @@ namespace Creeper
             // PlayerInput
             m_PlayerInput = asset.FindActionMap("PlayerInput", throwIfNotFound: true);
             m_PlayerInput_MoveCreeper = m_PlayerInput.FindAction("MoveCreeper", throwIfNotFound: true);
-            m_PlayerInput_RotateCamera = m_PlayerInput.FindAction("RotateCamera", throwIfNotFound: true);
             m_PlayerInput_Reset = m_PlayerInput.FindAction("Reset", throwIfNotFound: true);
             m_PlayerInput_ZoomCamera = m_PlayerInput.FindAction("ZoomCamera", throwIfNotFound: true);
         }
@@ -292,7 +227,6 @@ namespace Creeper
         private readonly InputActionMap m_PlayerInput;
         private IPlayerInputActions m_PlayerInputActionsCallbackInterface;
         private readonly InputAction m_PlayerInput_MoveCreeper;
-        private readonly InputAction m_PlayerInput_RotateCamera;
         private readonly InputAction m_PlayerInput_Reset;
         private readonly InputAction m_PlayerInput_ZoomCamera;
         public struct PlayerInputActions
@@ -300,7 +234,6 @@ namespace Creeper
             private @PlayerInputs m_Wrapper;
             public PlayerInputActions(@PlayerInputs wrapper) { m_Wrapper = wrapper; }
             public InputAction @MoveCreeper => m_Wrapper.m_PlayerInput_MoveCreeper;
-            public InputAction @RotateCamera => m_Wrapper.m_PlayerInput_RotateCamera;
             public InputAction @Reset => m_Wrapper.m_PlayerInput_Reset;
             public InputAction @ZoomCamera => m_Wrapper.m_PlayerInput_ZoomCamera;
             public InputActionMap Get() { return m_Wrapper.m_PlayerInput; }
@@ -315,9 +248,6 @@ namespace Creeper
                     @MoveCreeper.started -= m_Wrapper.m_PlayerInputActionsCallbackInterface.OnMoveCreeper;
                     @MoveCreeper.performed -= m_Wrapper.m_PlayerInputActionsCallbackInterface.OnMoveCreeper;
                     @MoveCreeper.canceled -= m_Wrapper.m_PlayerInputActionsCallbackInterface.OnMoveCreeper;
-                    @RotateCamera.started -= m_Wrapper.m_PlayerInputActionsCallbackInterface.OnRotateCamera;
-                    @RotateCamera.performed -= m_Wrapper.m_PlayerInputActionsCallbackInterface.OnRotateCamera;
-                    @RotateCamera.canceled -= m_Wrapper.m_PlayerInputActionsCallbackInterface.OnRotateCamera;
                     @Reset.started -= m_Wrapper.m_PlayerInputActionsCallbackInterface.OnReset;
                     @Reset.performed -= m_Wrapper.m_PlayerInputActionsCallbackInterface.OnReset;
                     @Reset.canceled -= m_Wrapper.m_PlayerInputActionsCallbackInterface.OnReset;
@@ -331,9 +261,6 @@ namespace Creeper
                     @MoveCreeper.started += instance.OnMoveCreeper;
                     @MoveCreeper.performed += instance.OnMoveCreeper;
                     @MoveCreeper.canceled += instance.OnMoveCreeper;
-                    @RotateCamera.started += instance.OnRotateCamera;
-                    @RotateCamera.performed += instance.OnRotateCamera;
-                    @RotateCamera.canceled += instance.OnRotateCamera;
                     @Reset.started += instance.OnReset;
                     @Reset.performed += instance.OnReset;
                     @Reset.canceled += instance.OnReset;
@@ -347,7 +274,6 @@ namespace Creeper
         public interface IPlayerInputActions
         {
             void OnMoveCreeper(InputAction.CallbackContext context);
-            void OnRotateCamera(InputAction.CallbackContext context);
             void OnReset(InputAction.CallbackContext context);
             void OnZoomCamera(InputAction.CallbackContext context);
         }
