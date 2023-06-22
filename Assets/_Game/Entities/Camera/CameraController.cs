@@ -63,14 +63,7 @@ namespace Creeper
                 // for c# noobs: ^1 means last element in array
                 var activeCameraZone = _cameraZones[^1];
                 
-                if (activeCameraZone.FixPosition)
-                {
-                    targetPosition = activeCameraZone.position;
-                }
-                else
-                {
-                    targetPosition = activeCameraZone.Bounds.ClosestPoint(targetPosition);
-                }
+                targetPosition = activeCameraZone.Bounds.ClosestPoint(targetPosition);
             }
             transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * MoveSpeed);
         }

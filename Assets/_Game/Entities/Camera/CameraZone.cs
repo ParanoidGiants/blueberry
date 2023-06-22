@@ -13,10 +13,8 @@ public class CameraZone : MonoBehaviour
     [Space(10)]
     [Header("Settings")]
     [SerializeField] private bool fixRotation;
-    [SerializeField] private bool fixPosition;
     
     public bool FixRotation => fixRotation;
-    public bool FixPosition => fixPosition;
     public Vector3 position => arrowReference.position;
     public Quaternion rotation => arrowReference.rotation;
 
