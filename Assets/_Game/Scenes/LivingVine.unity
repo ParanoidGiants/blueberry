@@ -144,11 +144,27 @@ PrefabInstance:
       objectReference: {fileID: 1280873276}
     - target: {fileID: 985927614, guid: f2782408035ed8948ae280d6899cad84, type: 3}
       propertyPath: m_VersionIndex
-      value: 1696
+      value: 1702
       objectReference: {fileID: 0}
     - target: {fileID: 3439868048948404581, guid: f2782408035ed8948ae280d6899cad84, type: 3}
       propertyPath: m_Name
       value: Zone
+      objectReference: {fileID: 0}
+    - target: {fileID: 3439868048948404582, guid: f2782408035ed8948ae280d6899cad84, type: 3}
+      propertyPath: maximumZoom
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 3439868048948404582, guid: f2782408035ed8948ae280d6899cad84, type: 3}
+      propertyPath: minimumZoom
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 3439868048948404582, guid: f2782408035ed8948ae280d6899cad84, type: 3}
+      propertyPath: _maximumZoom
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 3439868048948404582, guid: f2782408035ed8948ae280d6899cad84, type: 3}
+      propertyPath: _minimumZoom
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 3439868048948404583, guid: f2782408035ed8948ae280d6899cad84, type: 3}
       propertyPath: m_RootOrder
@@ -344,7 +360,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh-213338
+  m_Name: pb_Mesh-1824
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -1939,7 +1955,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh-211656
+  m_Name: pb_Mesh-1256
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -2695,7 +2711,7 @@ PrefabInstance:
       objectReference: {fileID: 173333400}
     - target: {fileID: 985927614, guid: f2782408035ed8948ae280d6899cad84, type: 3}
       propertyPath: m_VersionIndex
-      value: 1699
+      value: 1705
       objectReference: {fileID: 0}
     - target: {fileID: 3439868048189022968, guid: f2782408035ed8948ae280d6899cad84, type: 3}
       propertyPath: m_Size.x
@@ -2748,6 +2764,22 @@ PrefabInstance:
     - target: {fileID: 3439868048948404581, guid: f2782408035ed8948ae280d6899cad84, type: 3}
       propertyPath: m_Name
       value: Zone (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 3439868048948404582, guid: f2782408035ed8948ae280d6899cad84, type: 3}
+      propertyPath: maximumZoom
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 3439868048948404582, guid: f2782408035ed8948ae280d6899cad84, type: 3}
+      propertyPath: minimumZoom
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3439868048948404582, guid: f2782408035ed8948ae280d6899cad84, type: 3}
+      propertyPath: _maximumZoom
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 3439868048948404582, guid: f2782408035ed8948ae280d6899cad84, type: 3}
+      propertyPath: _minimumZoom
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3439868048948404583, guid: f2782408035ed8948ae280d6899cad84, type: 3}
       propertyPath: m_RootOrder
@@ -2985,8 +3017,6 @@ MonoBehaviour:
   Target: {fileID: 2044043446}
   MoveSpeed: 3
   ZoomSpeed: 11
-  MinZoom: 3
-  MaxZoom: 15
   _cameraZones: []
 --- !u!1001 &2099580068
 PrefabInstance:

@@ -9,11 +9,12 @@ public class CameraZone : MonoBehaviour
     public Collider movementZone;
     [SerializeField] private Transform arrowReference;
 
+    [FormerlySerializedAs("_minimumZoom")]
     [Space(10)]
     [Header("Settings")]
-    [SerializeField] private bool fixRotation;
+    public float minimumZoom;
+    public float maximumZoom;
     
-    public bool FixRotation => fixRotation;
     public Quaternion rotation => arrowReference.rotation;
 
     public Bounds Bounds { get; private set; }

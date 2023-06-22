@@ -16,8 +16,6 @@ namespace Creeper
         [Space(10)]
         [Header("Zoom")]
         [SerializeField] private float ZoomSpeed = 0.1f;
-        [SerializeField] private float MinZoom = 3f;
-        [SerializeField] private float MaxZoom = 15f;
         private float _zoomDirection;
         public List<CameraZone> _cameraZones;
 
@@ -41,7 +39,7 @@ namespace Creeper
             var localPosition = _cameraTransform.localPosition;
             var positionZ = localPosition.z;
             var targetPositionZ = positionZ + _zoomDirection * Time.deltaTime;
-            targetPositionZ = Mathf.Clamp(targetPositionZ, -MaxZoom, -MinZoom);
+            targetPositionZ = Mathf.Clamp(targetPositionZ, -_cameraZones[^1].maximumZoom, -_cameraZones[^1].minimumZoom);
             localPosition = new Vector3(localPosition.x, localPosition.y, targetPositionZ);
             _cameraTransform.localPosition = localPosition;
         }
@@ -51,9 +49,7 @@ namespace Creeper
             var targetPosition = Target.position;
             if (_cameraZones.Count != 0)
             {
-                // for c# noobs: ^1 means last element in array
                 var activeCameraZone = _cameraZones[^1];
-                
                 targetPosition = activeCameraZone.Bounds.ClosestPoint(targetPosition);
             }
             transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * MoveSpeed);
@@ -61,7 +57,7 @@ namespace Creeper
 
         private void Rotate()
         {
-            if (_cameraZones.Count != 0 && _cameraZones[^1].FixRotation)
+            if (_cameraZones.Count != 0)
             {
                 var activeCameraZone = _cameraZones[^1];
                 transform.rotation = Quaternion.Lerp(transform.rotation, activeCameraZone.rotation, Time.deltaTime * MoveSpeed);
