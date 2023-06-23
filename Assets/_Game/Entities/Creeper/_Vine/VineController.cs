@@ -162,7 +162,7 @@ public class VineController : MonoBehaviour
         _deadVine.SetMesh(deadVineMesh);
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         if (_inputDirection.magnitude < 0.1f) return;
         
@@ -176,13 +176,13 @@ public class VineController : MonoBehaviour
         var lastNode = _livingVineNodes[^1];
         var end = _livingVineNodes.Count - 1;
         var moveDirection = position - lastNode.position;
-        for (var i = 1; i < _livingVineNodes.Count - 1; i++)
+        for (var i = 1; i < end; i++)
         {
             var moveFactor = (float)i / end;
             _livingVineNodes[i].position += moveDirection * moveFactor;
         }
 
-        for (var i = 1; i < _livingVineNodes.Count - 1; i++)
+        for (var i = 1; i < end; i++)
         {
             var nextForward = (_livingVineNodes[i + 1].position - _livingVineNodes[i].position).normalized;
             if (nextForward.sqrMagnitude == 0f) continue;

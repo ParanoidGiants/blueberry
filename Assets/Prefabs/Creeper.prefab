@@ -503,8 +503,8 @@ MonoBehaviour:
   head: {fileID: 1113100603157985202}
   livingVineGameObject: {fileID: 194120857}
   deadVineGameObject: {fileID: 661344941}
-  maxLivingNodeCount: 20
-  vineLength: 0.2
+  maxLivingNodeCount: 50
+  vineLength: 0.05
   defaultRadius: 0.25
   _livingVineNodes: []
   _currentNodeCount: 0
