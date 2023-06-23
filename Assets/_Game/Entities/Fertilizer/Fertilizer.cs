@@ -6,11 +6,10 @@ public class Fertilizer : MonoBehaviour
 {
     private void OnTriggerEnter(Collider other)
     {
-        CollectFertilizer manager = other.GetComponent<CollectFertilizer>();
+        FertilizerManager manager = other.GetComponent<FertilizerManager>();
         if (manager != null)
         {
-            manager.OnCollectFertilizer();
-            Debug.Log("Amount of Collectables: " + manager.collectableCounter);
+            manager.OnCollectFertilizer(this);
             Destroy(gameObject);
         }
     }

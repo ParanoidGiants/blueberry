@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class FertilizerMaterialManager : MonoBehaviour
+public class FertilizerMaterialController : MonoBehaviour
 {
     private Fertilizer[] _collectables;
     void Start()
