@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +20,10 @@ public class FertilizerManager : MonoBehaviour
         _fertilizerText = FindObjectOfType<FertilizerText>();
         _destination = FindObjectOfType<FertilizerDestination>();
         _totalAmount = _fertilizers.Count;
+    }
+
+    private void Start()
+    {
         UpdateUI();
     }
 
