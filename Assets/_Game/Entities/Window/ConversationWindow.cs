@@ -15,18 +15,21 @@ namespace Assets.Window
         private int conversation_counter = 0;
 
         private GameObject centerGO;
+        private WindowConversationUI conversationUI;
 
         private void Awake()
         {
+            conversationUI = FindObjectOfType<WindowConversationUI>();
             jsonContent = jsonFile.ToString();
             conversation = new Conversation(JsonHelper.FromJson<Statement>(jsonContent));
-            centerGO = new GameObject();
-            BoxCollider[] boxes = GetComponentsInChildren<BoxCollider>();
+            centerGO = new GameObject("AudioSource");
+            centerGO.transform.parent = transform;
+            BoxCollider[] boxes = GetComponents<BoxCollider>();
             foreach (BoxCollider box in boxes)
             {
-                if (box.tag == "WindowCollider")
+                if (box.CompareTag("WindowCollider"))
                 {
-                    centerGO.transform.position = box.center;
+                    centerGO.transform.localPosition = box.center;
                 }
             }
         }
@@ -55,6 +58,7 @@ namespace Assets.Window
             statement_ongoing = true;
             string statement_text = conversation.statements[conversation_counter].text;
             // Text output GUI
+            conversationUI.SetText(statement_text, centerGO.transform.position);
             Debug.Log(statement_text);
             string soundGroup = conversation.statements[conversation_counter].participant + "_" + conversation.statements[conversation_counter].length;
             yield return StartCoroutine(MasterAudio.PlaySound3DAtTransformAndWaitUntilFinished(soundGroup, centerGO.transform)); ;
@@ -75,6 +79,7 @@ namespace Assets.Window
             interaction_ongoing = false;
             conversation_done = false;
             conversation_counter = 0;
+            conversationUI.DisableConversation();
         }
     }
 }
