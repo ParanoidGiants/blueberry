@@ -33,7 +33,6 @@ public class VineController : MonoBehaviour
     private void Start()
     {
         _livingVineNodes = new List<VineNode>();
-        
         var position = head.position;
         _lastPosition = position;
         InitMeshCreation(position, head.rotation);
@@ -171,32 +170,37 @@ public class VineController : MonoBehaviour
         if (distance > vineLength)
         {
             AddNodeToVine(new VineNode(position, head.rotation));
+            UpdateLivingMesh();
         }
-
-        var lastNode = _livingVineNodes[^1];
-        var end = _livingVineNodes.Count - 1;
-        var moveDirection = position - lastNode.position;
-        for (var i = 1; i < end; i++)
+        else
         {
-            var moveFactor = (float)i / end;
-            _livingVineNodes[i].position += moveDirection * moveFactor;
-        }
-
-        for (var i = 1; i < end; i++)
-        {
-            var nextForward = (_livingVineNodes[i + 1].position - _livingVineNodes[i].position).normalized;
-            if (nextForward.sqrMagnitude == 0f) continue;
+            var lastNode = _livingVineNodes[^1];
+            var end = _livingVineNodes.Count - 1;
+            var moveDirection = position - lastNode.position;
+            for (var i = 1; i < end; i++)
+            {
+                if (_livingVineNodes[i].isFixed) continue;
             
-            _livingVineNodes[i].rotation = Quaternion.LookRotation(nextForward, _livingVineNodes[i].rotation * Vector3.up);
-        }
+                var moveFactor = (float)i / end;
+                _livingVineNodes[i].position += moveDirection * moveFactor;
+            }
 
-        lastNode.position = head.position;
-        lastNode.rotation = head.rotation;
+            for (var i = 1; i < end; i++)
+            {
+                if (_livingVineNodes[i].isFixed && _livingVineNodes[i + 1].isFixed) continue;
+
+                var nextForward = (_livingVineNodes[i + 1].position - _livingVineNodes[i].position).normalized;
+                if (nextForward.sqrMagnitude == 0f) continue;
+            
+                _livingVineNodes[i].rotation = Quaternion.LookRotation(nextForward, _livingVineNodes[i].rotation * Vector3.up);
+            }
+
+            lastNode.position = head.position;
+            lastNode.rotation = head.rotation;
         
-        UpdateLivingMesh();
+            UpdateLivingMesh();
+        }
     }
-
-    private const double EPSILON = 0.0001f;
 
     private void UpdateLivingMesh()
     {
@@ -216,7 +220,6 @@ public class VineController : MonoBehaviour
             {
                 radius -= ((float)(i - (nodeCount - 1 - maxLivingNodeCount)) / maxLivingNodeCount) * defaultRadius;
             }
-
 
             var orientation = livingVineNode.rotation;
             
@@ -284,5 +287,13 @@ public class VineController : MonoBehaviour
     {
         float t = Mathf.InverseLerp(oldLow, oldHigh, input);
         return Mathf.Lerp(newLow, newHigh, t);
+    }
+
+    public void FixAllNodes()
+    {
+        foreach (var node in _livingVineNodes)
+        {
+            node.isFixed = true;
+        }
     }
 }

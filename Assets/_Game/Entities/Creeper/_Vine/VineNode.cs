@@ -7,6 +7,7 @@ public class VineNode
 {
     public Vector3 position;
     public Quaternion rotation;
+    public bool isFixed = false;
 
     public VineNode(Vector3 position, Quaternion rotation)
     {

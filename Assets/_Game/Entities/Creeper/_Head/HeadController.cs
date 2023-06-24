@@ -50,7 +50,7 @@ namespace Creeper
         {
             _WHAT_IS_CLIMBABLE = LayerMask.GetMask("Climbable");
             _rigidbody = GetComponent<Rigidbody>();
-            _cameraTransform = Camera.main?.transform;
+            _cameraTransform = Camera.main.transform;
             contactObjectManager = new ContactObjectManager();
             _lastPosition = transform.position;
             _groundDirection = -transform.up;
@@ -62,6 +62,7 @@ namespace Creeper
             
             if (contactObjectManager.TryAddNormals(collision))
             {
+                branchController.FixAllNodes();
                 UpdateGround();
             }
         }
@@ -72,6 +73,7 @@ namespace Creeper
             
             if (contactObjectManager.TryAddNormals(collision))
             {
+                branchController.FixAllNodes();
                 UpdateGround();
             }
         }
