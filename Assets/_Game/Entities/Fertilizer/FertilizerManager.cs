@@ -1,8 +1,6 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class FertilizerManager : MonoBehaviour
@@ -12,6 +10,7 @@ public class FertilizerManager : MonoBehaviour
     private int _count = 0;
     private FertilizerText _fertilizerText;
     private FertilizerDestination _destination;
+    private bool isDelivering = false;
     public int Count => _count;
 
     private void Awake()
@@ -31,30 +30,27 @@ public class FertilizerManager : MonoBehaviour
     {
         _count++;
         UpdateUI();
-        isDelivered = false;
     }
 
-    public void DeliverFertilizer()
+    public void InitDeliverFertilizer()
     {
-        if (isDelivered) return;
-
-        isDelivered = true;
-        StartCoroutine(DeliverFertilizerCorountine());
+        StartCoroutine(DeliverFertilizer());
     }
 
-    private bool isDelivered = true;
-    private IEnumerator DeliverFertilizerCorountine()
+    private IEnumerator DeliverFertilizer()
     {
+        isDelivering = true;
         var collectedFertilizers = _fertilizers.Where(x => x.IsCollected && !x.IsDelivered);
 
         foreach (var collectedFertilizer in collectedFertilizers)
         {
-            collectedFertilizer.OnDeliver(transform.position, _destination.transform.position);
+            collectedFertilizer.OnDeliver(_destination.transform.position);
             _count--;
             _totalAmount--;
             UpdateUI();
             yield return new WaitForSeconds(0.2f);
         }
+        isDelivering = false;
     }
     
     private void UpdateUI()

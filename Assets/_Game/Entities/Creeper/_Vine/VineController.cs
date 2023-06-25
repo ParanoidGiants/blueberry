@@ -289,6 +289,11 @@ public class VineController : MonoBehaviour
         return Mathf.Lerp(newLow, newHigh, t);
     }
 
+    public Vector3 GetTipPosition()
+    {
+        return _livingVineNodes[^2].position;
+    }
+    
     public void FixAllNodes()
     {
         foreach (var node in _livingVineNodes)

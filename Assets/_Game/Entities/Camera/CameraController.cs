@@ -29,6 +29,8 @@ namespace Creeper
 
         private void LateUpdate()
         {
+            if (_cameraZones.Count < 1) return;
+
             FollowTarget();
             Rotate();
             Zoom();
@@ -39,7 +41,11 @@ namespace Creeper
             var localPosition = _cameraTransform.localPosition;
             var positionZ = localPosition.z;
             var targetPositionZ = positionZ + _zoomDirection * Time.deltaTime;
-            targetPositionZ = Mathf.Clamp(targetPositionZ, -_cameraZones[^1].maximumZoom, -_cameraZones[^1].minimumZoom);
+            targetPositionZ = Mathf.Clamp(
+                targetPositionZ, 
+                -_cameraZones[^1].maximumZoom, 
+                -_cameraZones[^1].minimumZoom
+            );
             localPosition = new Vector3(localPosition.x, localPosition.y, targetPositionZ);
             _cameraTransform.localPosition = localPosition;
         }
