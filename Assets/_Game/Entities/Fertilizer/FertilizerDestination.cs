@@ -7,6 +7,6 @@ public class FertilizerDestination : MonoBehaviour
         var manager = other.GetComponent<FertilizerManager>();
         if (manager == null) return;
 
-        manager.DeliverFertilizer();
+        manager.InitDeliverFertilizer();
     }
 }

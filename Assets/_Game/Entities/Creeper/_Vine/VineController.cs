@@ -285,4 +285,9 @@ public class VineController : MonoBehaviour
         float t = Mathf.InverseLerp(oldLow, oldHigh, input);
         return Mathf.Lerp(newLow, newHigh, t);
     }
+
+    public Vector3 GetTipPosition()
+    {
+        return _livingVineNodes[^2].position;
+    }
 }

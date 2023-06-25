@@ -14,6 +14,9 @@
         },
         {
             "m_Id": "6875228893334332aefce1e6a2b15956"
+        },
+        {
+            "m_Id": "d5a912f335464637909a5b7d424b5eef"
         }
     ],
     "m_Keywords": [],
@@ -92,6 +95,9 @@
         },
         {
             "m_Id": "3db18f294c594ea98f10901db97fea21"
+        },
+        {
+            "m_Id": "52f06a24280444cf8157cb655974acff"
         }
     ],
     "m_GroupDatas": [],
@@ -151,6 +157,20 @@
                     "m_Id": "ccad4112d21542c49348b2852c400a40"
                 },
                 "m_SlotId": 0
+            }
+        },
+        {
+            "m_OutputSlot": {
+                "m_Node": {
+                    "m_Id": "52f06a24280444cf8157cb655974acff"
+                },
+                "m_SlotId": 0
+            },
+            "m_InputSlot": {
+                "m_Node": {
+                    "m_Id": "cccd3514387d465e92031582cf2c03a9"
+                },
+                "m_SlotId": 2
             }
         },
         {
@@ -369,6 +389,21 @@
             "m_Id": "cca8c03d4d03413b89888545d4620d59"
         }
     ]
+}
+
+{
+    "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.Vector1MaterialSlot",
+    "m_ObjectId": "01f2d2a6234c45768caebaf0a633a7c2",
+    "m_Id": 0,
+    "m_DisplayName": "FresnelPower",
+    "m_SlotType": 1,
+    "m_Hidden": false,
+    "m_ShaderOutputName": "Out",
+    "m_StageCapability": 3,
+    "m_Value": 0.0,
+    "m_DefaultValue": 0.0,
+    "m_Labels": []
 }
 
 {
@@ -995,6 +1030,41 @@
 
 {
     "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.PropertyNode",
+    "m_ObjectId": "52f06a24280444cf8157cb655974acff",
+    "m_Group": {
+        "m_Id": ""
+    },
+    "m_Name": "Property",
+    "m_DrawState": {
+        "m_Expanded": true,
+        "m_Position": {
+            "serializedVersion": "2",
+            "x": -930.7000122070313,
+            "y": 491.0216979980469,
+            "width": 0.0,
+            "height": 0.0
+        }
+    },
+    "m_Slots": [
+        {
+            "m_Id": "01f2d2a6234c45768caebaf0a633a7c2"
+        }
+    ],
+    "synonyms": [],
+    "m_Precision": 0,
+    "m_PreviewExpanded": true,
+    "m_PreviewMode": 0,
+    "m_CustomColors": {
+        "m_SerializableColors": []
+    },
+    "m_Property": {
+        "m_Id": "d5a912f335464637909a5b7d424b5eef"
+    }
+}
+
+{
+    "m_SGVersion": 0,
     "m_Type": "UnityEditor.ShaderGraph.TimeNode",
     "m_ObjectId": "5456c21fc5ed42fabba21b4b4e7ab10e",
     "m_Group": {
@@ -1226,11 +1296,11 @@
     "m_Guid": {
         "m_GuidSerialized": "0b9f0804-986e-4679-9280-410a731b0577"
     },
-    "m_Name": "Scale",
+    "m_Name": "ShakeIntensity",
     "m_DefaultRefNameVersion": 1,
-    "m_RefNameGeneratedByDisplayName": "Scale",
-    "m_DefaultReferenceName": "_Scale",
-    "m_OverrideReferenceName": "",
+    "m_RefNameGeneratedByDisplayName": "ShakeIntensity",
+    "m_DefaultReferenceName": "_ShakeIntensity",
+    "m_OverrideReferenceName": "_ShakeIntensity",
     "m_GeneratePropertyBlock": true,
     "m_UseCustomSlotLabel": false,
     "m_CustomSlotLabel": "",
@@ -1251,7 +1321,7 @@
     "m_Type": "UnityEditor.ShaderGraph.Vector1MaterialSlot",
     "m_ObjectId": "69dfe9b445bf4c2c9532d623e06dde0d",
     "m_Id": 0,
-    "m_DisplayName": "Scale",
+    "m_DisplayName": "ShakeIntensity",
     "m_SlotType": 1,
     "m_Hidden": false,
     "m_ShaderOutputName": "Out",
@@ -2164,6 +2234,33 @@
 }
 
 {
+    "m_SGVersion": 1,
+    "m_Type": "UnityEditor.ShaderGraph.Internal.Vector1ShaderProperty",
+    "m_ObjectId": "d5a912f335464637909a5b7d424b5eef",
+    "m_Guid": {
+        "m_GuidSerialized": "0fc8c27c-9f5c-4ebd-abf2-7e691500cc28"
+    },
+    "m_Name": "FresnelPower",
+    "m_DefaultRefNameVersion": 1,
+    "m_RefNameGeneratedByDisplayName": "FresnelPower",
+    "m_DefaultReferenceName": "_FresnelPower",
+    "m_OverrideReferenceName": "",
+    "m_GeneratePropertyBlock": true,
+    "m_UseCustomSlotLabel": false,
+    "m_CustomSlotLabel": "",
+    "m_Precision": 0,
+    "overrideHLSLDeclaration": false,
+    "hlslDeclarationOverride": 0,
+    "m_Hidden": false,
+    "m_Value": 1.0,
+    "m_FloatType": 0,
+    "m_RangeValues": {
+        "x": 0.0,
+        "y": 1.0
+    }
+}
+
+{
     "m_SGVersion": 0,
     "m_Type": "UnityEditor.ShaderGraph.AddNode",
     "m_ObjectId": "d9152d8dc9d94c3ea00da13c76c309ef",
@@ -2237,6 +2334,9 @@
         },
         {
             "m_Id": "6875228893334332aefce1e6a2b15956"
+        },
+        {
+            "m_Id": "d5a912f335464637909a5b7d424b5eef"
         }
     ]
 }
