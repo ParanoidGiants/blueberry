@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6294301937390756078}
   - component: {fileID: 6294301937390756073}
   m_Layer: 0
-  m_Name: TestWindow
+  m_Name: WindowConversation
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
