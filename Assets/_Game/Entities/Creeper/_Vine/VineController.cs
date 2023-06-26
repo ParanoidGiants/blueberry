@@ -1,17 +1,15 @@
 using System.Collections.Generic;
-using Unity.Collections;
 using UnityEngine;
 
 public class VineController : MonoBehaviour
 {
-    private const string AMOUNT = "_Amount";
-    private const string RADIUS = "_Radius";
     private const int MESH_FACE_COUNT = 8;
     
     [Header("References")]
     public Transform head;
     public GameObject livingVineGameObject;
     public GameObject deadVineGameObject;
+    public GameObject deadVinePrefab;
     
     [Header("Settings")]
     [SerializeField] private int maxLivingNodeCount;
@@ -24,6 +22,10 @@ public class VineController : MonoBehaviour
     private Vine _deadVine;
     [SerializeField] private List<VineNode> _livingVineNodes;
     [SerializeField] private int _currentNodeCount = 0;
+    [SerializeField] private int maxDeadNodeCount;
+    [SerializeField] private int _deadNodeCount = 0;
+
+    
     
     private Vector2 _inputDirection;
     public Vector2 InputDirection { set => _inputDirection = value; }
@@ -50,13 +52,7 @@ public class VineController : MonoBehaviour
         };
         AddNodeToVine(new VineNode(position, rotation));
         
-        var deadMeshFilter = deadVineGameObject.GetComponent<MeshFilter>();
-        var deadMeshRenderer = deadVineGameObject.GetComponent<MeshRenderer>();
-        _deadVine = new Vine()
-        {
-            meshFilter = deadMeshFilter,
-            meshRenderer = deadMeshRenderer
-        };
+        InitNewDeadVineMesh();
     }
     
     public void AddNodeToVine(VineNode vineNode)
@@ -82,6 +78,13 @@ public class VineController : MonoBehaviour
     private void RefreshDeadMesh()
     {
         if (_livingVineNodes.Count <= maxLivingNodeCount) return;
+
+        _deadNodeCount++;
+        if (_deadNodeCount > maxDeadNodeCount)
+        {
+            InitNewDeadVineMesh();
+            _deadNodeCount = 0;
+        }
         
         var newDeadNode = _livingVineNodes[0];
         _livingVineNodes.RemoveAt(0);
@@ -159,6 +162,16 @@ public class VineController : MonoBehaviour
         deadVineMesh.uv = uv;
 
         _deadVine.SetMesh(deadVineMesh);
+    }
+
+    private void InitNewDeadVineMesh()
+    {
+        var newDeadVine = Instantiate(deadVinePrefab, deadVineGameObject.transform);
+        _deadVine = new Vine()
+        {
+            meshFilter = newDeadVine.GetComponent<MeshFilter>(),
+            meshRenderer = newDeadVine.GetComponent<MeshRenderer>()
+        };
     }
 
     private void FixedUpdate()
