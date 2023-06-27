@@ -90,12 +90,12 @@ public class VineBranch : MonoBehaviour
                 {
                     for (int v = 0; v < meshFaces; v++)
                     {
-                        var triangleIndex = index * meshFaces * 6 + v * 6;
+                        var triangleIndex = i * meshFaces * 6 + v * 6;
                         triangles[triangleIndex] = ((v + 1) % meshFaces) + index * meshFaces;
                         triangles[triangleIndex + 1]
                             = triangles[triangleIndex + 4]
                             = v + index * meshFaces;
-                        triangles[ + 2]
+                        triangles[triangleIndex + 2]
                             = triangles[triangleIndex + 3]
                             = ((v + 1) % meshFaces + meshFaces) + index * meshFaces;
                         triangles[triangleIndex + 5] = (meshFaces + v % meshFaces) + index * meshFaces;
@@ -103,17 +103,17 @@ public class VineBranch : MonoBehaviour
                 }
                 else
                 {
-                    
                     for (int v = 0; v < meshFaces; v++)
                     {
-                        triangles[i * meshFaces * 6 + v * 6] = ((v + 1) % meshFaces) + index * meshFaces;
-                        triangles[i * meshFaces * 6 + v * 6 + 1]
-                            = triangles[i * meshFaces * 6 + v * 6 + 4]
+                        var triangleIndex = i * meshFaces * 6 + v * 6;
+                        triangles[triangleIndex] = ((v + 1) % meshFaces) + index * meshFaces;
+                        triangles[triangleIndex + 1]
+                            = triangles[triangleIndex + 4]
                             = v + index * meshFaces;
-                        triangles[i * meshFaces * 6 + v * 6 + 2]
-                            = triangles[i * meshFaces * 6 + v * 6 + 3]
+                        triangles[triangleIndex + 2]
+                            = triangles[triangleIndex + 3]
                             = ((v + 1) % meshFaces + meshFaces) + index * meshFaces;
-                        triangles[i * meshFaces * 6 + v * 6 + 5] = (meshFaces + v % meshFaces) + index * meshFaces;
+                        triangles[triangleIndex + 5] = (meshFaces + v % meshFaces) + index * meshFaces;
                     }
                 }
             }

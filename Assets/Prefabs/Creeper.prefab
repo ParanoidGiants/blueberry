@@ -485,7 +485,7 @@ MonoBehaviour:
   deadVinePrefab: {fileID: 4949592234351781471, guid: 2d368ae7dbf53d94abb10d3fc3978386, type: 3}
   branchPrefab: {fileID: 5722849247196051468, guid: 1c75bc2c0508afc45bc66cd1a04de0d9, type: 3}
   branchGameObject: {fileID: 1075274475}
-  maxLivingNodeCount: 20
+  maxLivingNodeCount: 50
   vineLength: 0.1
   defaultRadius: 0.25
   _livingVineNodes: []
@@ -494,5 +494,5 @@ MonoBehaviour:
   _deadNodeCount: 0
   currentBranch: {fileID: 0}
   createBranchAfterSeconds: 1
-  createBranchInSecondes: 1
+  createBranchInSecondes: 0.5
   createBranchTime: 0
