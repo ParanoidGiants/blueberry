@@ -4,7 +4,7 @@ using UnityEngine;
 public class Branch : MonoBehaviour {
     const string AMOUNT = "_Amount";
     const string RADIUS = "_Radius";
-    const float MAX = 0.5f;
+    const float MAX = 3f;
 
     List<IvyNode> branchNodes;
 
@@ -24,7 +24,7 @@ public class Branch : MonoBehaviour {
     int meshFaces = 8;
 
     bool animate;
-    float growthSpeed = 2;
+    float growthSpeed = 1;
     float currentAmount = -1;
 
     public void init(List<IvyNode> branchNodes, float branchRadius, Material material) {

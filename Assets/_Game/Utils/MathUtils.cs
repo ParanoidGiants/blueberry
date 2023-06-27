@@ -58,5 +58,26 @@ namespace RootMath
         {
             return Vector3.Dot(_direction1, _directions) > 0.99f;
         }
+        
+        
+    
+        public static float Remap(float input, float oldLow, float oldHigh, float newLow, float newHigh)
+        {
+            float t = Mathf.InverseLerp(oldLow, oldHigh, input);
+            return Mathf.Lerp(newLow, newHigh, t);
+        }
+        
+        
+
+        public static T[] ExtendArray<T>(T[] array, int newSize)
+        {
+            T[] newArray = new T[newSize];
+            for (int i = 0; i < array.Length; i++)
+            {
+                newArray[i] = array[i];
+            }
+
+            return newArray;
+        }
     }
 }
