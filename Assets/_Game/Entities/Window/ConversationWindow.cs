@@ -70,6 +70,7 @@ namespace Assets.Window
             if (conversation_counter == conversation.statements.Length)
             {
                 conversation_done = true;
+                conversationUI.DisableConversation();
             }
         }
 
