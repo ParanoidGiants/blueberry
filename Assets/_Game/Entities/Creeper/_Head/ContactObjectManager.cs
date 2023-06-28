@@ -54,12 +54,42 @@ namespace Creeper
         public bool TryAddNormals(Collision collision)
         {
             var collisionInstanceId = collision.gameObject.GetInstanceID();
-            bool isCollisionNew = !contactObjects.ContainsKey(collisionInstanceId);
-            for (int i = 0; i < collision.contactCount; i++)
+            if (contactObjects.ContainsKey(collisionInstanceId) && contactObjects[collisionInstanceId].Count == collision.contactCount)
             {
-                isCollisionNew |= TryAddContactObject(collisionInstanceId, collision.GetContact(i).normal);
+                var oldList = new List<Vector3>(contactObjects[collisionInstanceId]);
+                contactObjects[collisionInstanceId].Clear();
+                
+                bool isCollisionNew = false;
+                for (int i = 0; i < collision.contactCount; i++)
+                {
+                    if (!oldList.Any(x => RMath.AreDirectionsConsideredEqual(x, collision.GetContact(i).normal)))
+                    {
+                        isCollisionNew = true;
+                    }
+                    contactObjects[collisionInstanceId].Add(collision.GetContact(i).normal);
+                }
+                return isCollisionNew;
             }
-            return isCollisionNew;
+            else if (!contactObjects.ContainsKey(collisionInstanceId))
+            {
+                contactObjects.Add(collisionInstanceId, new List<Vector3>());
+                for (int i = 0; i < collision.contactCount; i++)
+                {
+                    contactObjects[collisionInstanceId].Add(collision.GetContact(i).normal);
+                }
+
+                return true;
+            }
+            else
+            {
+                contactObjects[collisionInstanceId].Clear();
+                for (int i = 0; i < collision.contactCount; i++)
+                {
+                    contactObjects[collisionInstanceId].Add(collision.GetContact(i).normal);
+                }
+
+                return true;
+            }
         }
         
         public void RemoveContactObjects(int collisionInstanceId)
