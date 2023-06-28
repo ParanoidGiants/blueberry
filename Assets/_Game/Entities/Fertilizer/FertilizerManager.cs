@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class FertilizerManager : MonoBehaviour
 {
+    public VineController vine;
     private List<Fertilizer> _fertilizers;
     private int _totalAmount = 0;
     private int _count = 0;

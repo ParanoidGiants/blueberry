@@ -83,6 +83,37 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &237475405
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 237475406}
+  m_Layer: 7
+  m_Name: FlowersParent
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &237475406
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 237475405}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6665412065068568265}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &661344941
 GameObject:
   m_ObjectHideFlags: 0
@@ -93,7 +124,7 @@ GameObject:
   m_Component:
   - component: {fileID: 661344942}
   m_Layer: 7
-  m_Name: DeadVine
+  m_Name: DeadVinesParent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -124,7 +155,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1075274476}
   m_Layer: 7
-  m_Name: Branches
+  m_Name: BranchesParent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -159,7 +190,7 @@ GameObject:
   - component: {fileID: 4527447425975123680}
   - component: {fileID: 8596026562885247701}
   - component: {fileID: 8567532191546326454}
-  - component: {fileID: 7894755850764996838}
+  - component: {fileID: 5114505143686013325}
   m_Layer: 7
   m_Name: Head
   m_TagString: Player
@@ -287,7 +318,7 @@ MonoBehaviour:
     right: {x: 0, y: 0, z: 0}
   contactObjectManager:
     normal: {x: 0, y: 0, z: 0}
---- !u!114 &7894755850764996838
+--- !u!114 &5114505143686013325
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -299,6 +330,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0790d372905531f4c939d41b974f5bce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  vine: {fileID: 6665412065068568266}
 --- !u!1 &6665412063840737773
 GameObject:
   m_ObjectHideFlags: 0
@@ -365,6 +397,7 @@ Transform:
   - {fileID: 194120858}
   - {fileID: 661344942}
   - {fileID: 1075274476}
+  - {fileID: 237475406}
   m_Father: {fileID: 6665412063840737761}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -481,10 +514,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   head: {fileID: 1113100603157985202}
   livingVineGameObject: {fileID: 194120857}
-  deadVineGameObject: {fileID: 661344941}
+  deadVinesParent: {fileID: 661344941}
   deadVinePrefab: {fileID: 4949592234351781471, guid: 2d368ae7dbf53d94abb10d3fc3978386, type: 3}
+  branchesParent: {fileID: 1075274475}
   branchPrefab: {fileID: 5722849247196051468, guid: 1c75bc2c0508afc45bc66cd1a04de0d9, type: 3}
-  branchGameObject: {fileID: 1075274475}
+  flowerParent: {fileID: 237475405}
+  flowerPrefab: {fileID: 2010505362793215504, guid: 8c85075003f40e94ab4009f5547caa23, type: 3}
   maxLivingNodeCount: 50
   vineLength: 0.1
   defaultRadius: 0.25

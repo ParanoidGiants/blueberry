@@ -9,10 +9,15 @@ public class VineController : MonoBehaviour
     [Header("References")]
     public Transform head;
     public GameObject livingVineGameObject;
-    public GameObject deadVineGameObject;
+    
+    public GameObject deadVinesParent;
     public GameObject deadVinePrefab;
+    
+    public GameObject branchesParent;
     public GameObject branchPrefab;
-    public GameObject branchGameObject;
+
+    public GameObject flowerParent;
+    public GameObject flowerPrefab;
     
     [Header("Settings")]
     [SerializeField] private int maxLivingNodeCount;
@@ -179,7 +184,7 @@ public class VineController : MonoBehaviour
         if (currentBranch == null || currentBranch.isDone && createBranchTime >= createBranchAfterSeconds)
         {
             createBranchTime = 0f;
-            currentBranch = Instantiate(branchPrefab, branchGameObject.transform).GetComponent<VineBranch>();
+            currentBranch = Instantiate(branchPrefab, branchesParent.transform).GetComponent<VineBranch>();
             var position = _livingVineNodes[0].position;
             var up = _livingVineNodes[0].rotation * Vector3.up;
             var rotation = Random.Range(0f, 1f) > 0.5f 
@@ -193,7 +198,7 @@ public class VineController : MonoBehaviour
 
     private void InitNewDeadVineMesh()
     {
-        var newDeadVine = Instantiate(deadVinePrefab, deadVineGameObject.transform);
+        var newDeadVine = Instantiate(deadVinePrefab, deadVinesParent.transform);
         _deadVine = new Vine()
         {
             meshFilter = newDeadVine.GetComponent<MeshFilter>(),
@@ -211,6 +216,7 @@ public class VineController : MonoBehaviour
         {
             AddNodeToVine(new VineNode(position, head.rotation));
             UpdateLivingMesh();
+            UpdateFlowers();
         }
         else
         {
@@ -268,10 +274,7 @@ public class VineController : MonoBehaviour
         {
             var livingVineNode = _livingVineNodes[i];
             var radius = defaultRadius;
-            if (i > nodeCount - maxLivingNodeCount)
-            {
-                radius -= ((float)(i - (nodeCount - 1 - maxLivingNodeCount)) / maxLivingNodeCount) * defaultRadius;
-            }
+            radius -= ((float)(i - (nodeCount - 1 - maxLivingNodeCount)) / maxLivingNodeCount) * defaultRadius;
 
             var orientation = livingVineNode.rotation;
             
@@ -334,6 +337,36 @@ public class VineController : MonoBehaviour
         foreach (var node in _livingVineNodes)
         {
             node.isFixed = true;
+        }
+    }
+
+
+    public List<Flower> _flowers = new List<Flower>();
+    public void AddFlower()
+    {
+        var flower = Instantiate(flowerPrefab, flowerParent.transform).GetComponent<Flower>();
+        flower.vineIndex = _livingVineNodes.Count;
+        _flowers.Add(flower);
+        UpdateFlowers();
+    }
+
+    private void UpdateFlowers()
+    {
+        for (int i = _flowers.Count - 1; i >= 0; i--)
+        {
+            var flower = _flowers[i];
+            flower.vineIndex--;
+            var flowerIndex = flower.vineIndex;
+            if (flower.vineIndex >= 0)
+            {
+                var radius = defaultRadius * (1f - (float) flowerIndex / (_livingVineNodes.Count - 1));
+                var offset = _livingVineNodes[flowerIndex].rotation * Vector3.up * (2f * radius - head.localScale.y * 0.5f);
+                flower.transform.position = _livingVineNodes[flowerIndex].position + offset;
+            }
+            else
+            {
+                _flowers.RemoveAt(i);
+            }
         }
     }
 }

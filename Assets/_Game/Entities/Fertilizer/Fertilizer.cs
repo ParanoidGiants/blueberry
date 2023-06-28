@@ -1,23 +1,25 @@
+using System;
 using System.Collections;
+using System.Numerics;
 using Creeper;
 using UnityEngine;
 using DG.Tweening;
 using RootMath;
+using Vector3 = UnityEngine.Vector3;
 
 public class Fertilizer : MonoBehaviour
 {
     private Renderer _renderer;
     private Collider _collider;
     private bool _isCollected;
-    private bool _isDelivered = false;
+    private bool _isCollecting;
+    private bool _isDelivered;
     public bool IsCollected => _isCollected;
     public bool IsDelivered => _isDelivered;
 
     private VineController _vine;
     [SerializeField] private float _animateTimer = 1f;
     private Vector3 _originalScale;
-    private float _valueToTween = -5f;
-    private float _valueFromTween = 5f;
 
     private void Start()
     {
@@ -37,21 +39,41 @@ public class Fertilizer : MonoBehaviour
         manager.OnCollectFertilizer(this);
         AnimateCollect();
     }
+
+    private float time;
+    private Vector3 startPosition;
+    private static readonly int FresnelPower = Shader.PropertyToID("_FresnelPower");
+
+    private void Update()
+    {
+        if (!_isCollecting) return;
+
+        time += Time.deltaTime;
+        transform.position = Vector3.Lerp(startPosition, _vine.GetTipPosition(), time /_animateTimer);
+        
+        float value = Mathf.Lerp(-5f, 5f, time / _animateTimer);
+        _renderer.material.SetFloat(FresnelPower, value);
+            
+            
+        if (time >= _animateTimer)
+        {
+            _isCollecting = false;
+            _isCollected = true;
+            transform.position = _vine.GetTipPosition();
+            _renderer.material.SetFloat(FresnelPower, 5f);
+            _vine.AddFlower();
+        }
+    }
+
+
     private void AnimateCollect()
     {
+        startPosition = transform.position;
+        time = 0f;
+        _isCollecting = true;
         var sequence = DOTween.Sequence();
         sequence.Append(transform.DOScale(transform.localScale * 2f, 0.01f).SetEase(Ease.InCirc));
-        sequence.Append(transform.DOScale(Vector3.zero, _animateTimer * 0.8f).SetEase(Ease.OutCirc));
-        sequence.Join(transform.DOMove(_vine.GetTipPosition(), _animateTimer));
-        
-        _valueToTween = -5f;
-        DOTween.To(
-                () => _valueToTween,
-                x => _valueToTween = x,
-                5f, 
-                _animateTimer
-            )
-            .OnUpdate(() => _renderer.material.SetFloat("_FresnelPower", _valueToTween));
+        sequence.Append(transform.DOScale(Vector3.zero, _animateTimer - 0.01f).SetEase(Ease.OutCirc));
     }
 
     public void OnDeliver(Vector3 deliveryPosition)
