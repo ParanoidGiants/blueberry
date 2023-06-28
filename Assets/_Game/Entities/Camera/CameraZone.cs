@@ -6,10 +6,10 @@ using UnityEngine.Serialization;
 public class CameraZone : MonoBehaviour
 {
     [Header("References")]
+    public Collider effectZone;
     public Collider movementZone;
-    [SerializeField] private Transform arrowReference;
+    public Transform arrowReference;
 
-    [FormerlySerializedAs("_minimumZoom")]
     [Space(10)]
     [Header("Settings")]
     public float minimumZoom;
@@ -24,7 +24,14 @@ public class CameraZone : MonoBehaviour
     private void Awake()
     {
         _cameraController = FindObjectOfType<CameraController>();
-        Bounds = movementZone.bounds;
+        if (movementZone == null)
+        {
+            Bounds = effectZone.bounds;
+        }
+        else
+        {
+            Bounds = movementZone.bounds;
+        }
     }
 
     public void SetActive()
