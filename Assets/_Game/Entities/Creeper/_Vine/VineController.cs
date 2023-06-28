@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using RootMath;
 using UnityEngine;
 
 public class VineController : MonoBehaviour
@@ -10,6 +11,8 @@ public class VineController : MonoBehaviour
     public GameObject livingVineGameObject;
     public GameObject deadVineGameObject;
     public GameObject deadVinePrefab;
+    public GameObject branchPrefab;
+    public GameObject branchGameObject;
     
     [Header("Settings")]
     [SerializeField] private int maxLivingNodeCount;
@@ -31,6 +34,11 @@ public class VineController : MonoBehaviour
     public Vector2 InputDirection { set => _inputDirection = value; }
     
     private Vector3 _lastPosition;
+
+    [SerializeField] private VineBranch currentBranch;
+    [SerializeField] private float createBranchAfterSeconds = 4f;
+    [SerializeField] private float createBranchInSecondes = 1f;
+    [SerializeField] private float createBranchTime = 0f;
 
     private void Start()
     {
@@ -79,6 +87,8 @@ public class VineController : MonoBehaviour
     {
         if (_livingVineNodes.Count <= maxLivingNodeCount) return;
 
+        TryCreateBranch();
+        
         _deadNodeCount++;
         if (_deadNodeCount > maxDeadNodeCount)
         {
@@ -96,10 +106,10 @@ public class VineController : MonoBehaviour
         var triangleCount = (deadMeshNodeCount - 1) * MESH_FACE_COUNT * 6;
         
         Mesh deadVineMesh = _deadVine.meshFilter.mesh;
-        Vector3[] vertices = ExtendArray(deadVineMesh.vertices, vertexCount);
-        int[] triangles = ExtendArray(deadVineMesh.triangles, triangleCount);
-        Vector3[] normals = ExtendArray(deadVineMesh.normals, vertexCount);
-        Vector2[] uv = ExtendArray(deadVineMesh.uv, vertexCount);
+        Vector3[] vertices = RMath.ExtendArray(deadVineMesh.vertices, vertexCount);
+        int[] triangles = RMath.ExtendArray(deadVineMesh.triangles, triangleCount);
+        Vector3[] normals = RMath.ExtendArray(deadVineMesh.normals, vertexCount);
+        Vector2[] uv = RMath.ExtendArray(deadVineMesh.uv, vertexCount);
         
         float vStep = (2f * Mathf.PI) / MESH_FACE_COUNT;
         var newDeadMeshNodeIndex = deadMeshNodeCount - 2;
@@ -164,6 +174,23 @@ public class VineController : MonoBehaviour
         _deadVine.SetMesh(deadVineMesh);
     }
 
+    private void TryCreateBranch()
+    {
+        if (currentBranch == null || currentBranch.isDone && createBranchTime >= createBranchAfterSeconds)
+        {
+            createBranchTime = 0f;
+            currentBranch = Instantiate(branchPrefab, branchGameObject.transform).GetComponent<VineBranch>();
+            var position = _livingVineNodes[0].position;
+            var up = _livingVineNodes[0].rotation * Vector3.up;
+            var rotation = Random.Range(0f, 1f) > 0.5f 
+                ? Quaternion.AngleAxis(Random.Range(270f, 340f), up)
+                : Quaternion.AngleAxis(Random.Range(20f, 90.0f), up);
+            rotation *= _livingVineNodes[0].rotation;
+            var forward = rotation * Vector3.forward;
+            currentBranch.CreateBranch(position, Quaternion.LookRotation(forward, up), defaultRadius, vineLength);
+        }
+    }
+
     private void InitNewDeadVineMesh()
     {
         var newDeadVine = Instantiate(deadVinePrefab, deadVineGameObject.transform);
@@ -190,6 +217,8 @@ public class VineController : MonoBehaviour
             var lastNode = _livingVineNodes[^1];
             var end = _livingVineNodes.Count - 1;
             var moveDirection = position - lastNode.position;
+
+            UpdateBranch();
             for (var i = 1; i < end; i++)
             {
                 if (_livingVineNodes[i].isFixed) continue;
@@ -212,6 +241,16 @@ public class VineController : MonoBehaviour
             lastNode.rotation = head.rotation;
         
             UpdateLivingMesh();
+        }
+    }
+
+    private void UpdateBranch()
+    {
+        createBranchTime += Time.deltaTime;
+        if (currentBranch != null && !currentBranch.isDone)
+        {
+            var value = createBranchTime / createBranchInSecondes;
+            currentBranch.UpdateMesh(value);
         }
     }
 
@@ -259,7 +298,7 @@ public class VineController : MonoBehaviour
                 var diff = position - _livingVineNodes[i].position;
                 normals[vertexIndex] = diff / diff.magnitude;
 
-                float uvID = Remap(i, 0, _livingVineNodes.Count-1, 0, 1);
+                float uvID = RMath.Remap(i, 0, _livingVineNodes.Count-1, 0, 1);
                 uv[vertexIndex] = new Vector2((float)v / MESH_FACE_COUNT, uvID);
             }
 
@@ -283,23 +322,6 @@ public class VineController : MonoBehaviour
         livingVineMesh.uv = uv;
         
         _livingVine.SetMesh(livingVineMesh);
-    }
-
-    private T[] ExtendArray<T>(T[] array, int newSize)
-    {
-        T[] newArray = new T[newSize];
-        for (int i = 0; i < array.Length; i++)
-        {
-            newArray[i] = array[i];
-        }
-
-        return newArray;
-    }
-    
-    private float Remap(float input, float oldLow, float oldHigh, float newLow, float newHigh)
-    {
-        float t = Mathf.InverseLerp(oldLow, oldHigh, input);
-        return Mathf.Lerp(newLow, newHigh, t);
     }
 
     public Vector3 GetTipPosition()
