@@ -32,6 +32,8 @@ public class CameraZone : MonoBehaviour
         {
             Bounds = movementZone.bounds;
         }
+
+        arrowReference.GetComponent<Renderer>().enabled = false;
     }
 
     public void SetActive()
