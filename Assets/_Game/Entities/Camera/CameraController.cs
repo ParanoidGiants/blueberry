@@ -18,6 +18,7 @@ namespace Creeper
         [SerializeField] private float ZoomSpeed = 0.1f;
         private float _zoomDirection;
         public List<CameraZone> _cameraZones;
+        public bool isDangling = false;
 
         private void Start()
         {
@@ -81,12 +82,24 @@ namespace Creeper
         
         public void AddCameraZone(CameraZone cameraZone)
         {
+            if (isDangling)
+            {
+                _cameraZones.Clear();
+                isDangling = false;                
+            }
             _cameraZones.Add(cameraZone);
         }
         
         public void RemoveCameraZone(CameraZone cameraZone)
         {
-            _cameraZones.Remove(cameraZone);
+            if (_cameraZones.Count == 1)
+            {
+                isDangling = true;
+            }
+            else
+            {
+                _cameraZones.Remove(cameraZone);
+            }
         }
     }
 }
