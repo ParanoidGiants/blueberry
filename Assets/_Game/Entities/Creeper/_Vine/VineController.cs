@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using RootMath;
 using UnityEngine;
 
@@ -345,7 +346,7 @@ public class VineController : MonoBehaviour
     public void AddFlower()
     {
         var flower = Instantiate(flowerPrefab, flowerParent.transform).GetComponent<Flower>();
-        flower.vineIndex = _livingVineNodes.Count;
+        flower.Init(_livingVineNodes.Count);
         _flowers.Add(flower);
         UpdateFlowers();
     }
@@ -355,13 +356,14 @@ public class VineController : MonoBehaviour
         for (int i = _flowers.Count - 1; i >= 0; i--)
         {
             var flower = _flowers[i];
-            flower.vineIndex--;
-            var flowerIndex = flower.vineIndex;
             if (flower.vineIndex >= 0)
             {
-                var radius = defaultRadius * (1f - (float) flowerIndex / (_livingVineNodes.Count - 1));
-                var offset = _livingVineNodes[flowerIndex].rotation * Vector3.up * (2f * radius - head.localScale.y * 0.5f);
-                flower.transform.position = _livingVineNodes[flowerIndex].position + offset;
+                var flowerVineIndex = flower.vineIndex;
+                var rotation = _livingVineNodes[flowerVineIndex].rotation;
+                var radius = defaultRadius * (1f - (float) flowerVineIndex / (_livingVineNodes.Count - 1));
+                var offset = rotation * Vector3.up * (2f * radius - head.localScale.y * 0.5f);
+                var position = _livingVineNodes[flower.vineIndex].position + offset;
+                flower.UpdateFlower(position, rotation);
             }
             else
             {

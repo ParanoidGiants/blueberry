@@ -169,11 +169,11 @@ public class VineBranch : MonoBehaviour
         Vector3 p1 = pos + forward * segmentLength;
         if (Physics.Raycast(ray, out hit, rayLength, HeadController.WHAT_IS_CLIMBABLE))
         {
-            Debug.DrawLine(ray.origin, hit.point, Color.black, 3f);
+            // Debug.DrawLine(ray.origin, hit.point, Color.black, 3f);
             p1 = hit.point - forward * defaultRadius;
             newOrientation = Quaternion.LookRotation(up, -forward);
             var middleOrientation = Quaternion.Lerp(orientation, newOrientation, 0.5f);
-            VineNode p3Node = new VineNode(p1, middleOrientation, true);
+            VineNode p3Node = new VineNode(p1, middleOrientation);
 
             return new List<VineNode> { p3Node }.join(CreateBranchNodes(count - 1, p1, newOrientation));
         }
@@ -184,14 +184,14 @@ public class VineBranch : MonoBehaviour
         rayLength = 2f * defaultRadius;
         if (Physics.Raycast(ray, out hit, rayLength, HeadController.WHAT_IS_CLIMBABLE))
         {
-            Debug.DrawLine(ray.origin, hit.point, Color.gray, 3f);
+            // Debug.DrawLine(ray.origin, hit.point, Color.gray, 3f);
             p2 = hit.point + up * defaultRadius;
-            var p2Node = new VineNode(p2, newOrientation, true);
+            var p2Node = new VineNode(p2, newOrientation);
             return new List<VineNode> { p2Node }.join(CreateBranchNodes(count - 1, p2, newOrientation));
         }
         else
         {
-            Debug.DrawRay(ray.origin, ray.direction * rayLength, Color.gray, 3f);
+            // Debug.DrawRay(ray.origin, ray.direction * rayLength, Color.gray, 3f);
         }
         
         Vector3 p3;
@@ -207,10 +207,10 @@ public class VineBranch : MonoBehaviour
         rayLength = segmentLength;
         if (Physics.Raycast(ray, out hit, rayLength, HeadController.WHAT_IS_CLIMBABLE))
         {
-            Debug.DrawLine(ray.origin, hit.point, Color.yellow, 3f);
+            // Debug.DrawLine(ray.origin, hit.point, Color.yellow, 3f);
             p3 = hit.point + forward * defaultRadius;
             newOrientation = Quaternion.LookRotation(-up, forward);
-            VineNode p3Node = new VineNode(p3, newOrientation, true);
+            VineNode p3Node = new VineNode(p3, newOrientation);
 
             if (!IsOccluded(p3, pos, up))
             {
@@ -221,77 +221,13 @@ public class VineBranch : MonoBehaviour
             m0 = (pos + middle) / 2;
             m1 = (p3 + middle) / 2;
             var middleOrientation = Quaternion.Lerp(orientation, newOrientation, 0.5f);
-            m0Node = new VineNode(m0, orientation, true);
-            m1Node = new VineNode(m1, middleOrientation, true);
+            m0Node = new VineNode(m0, orientation);
+            m1Node = new VineNode(m1, middleOrientation);
             return new List<VineNode> { m0Node, m1Node, p3Node }.join(CreateBranchNodes(count - 3, p3, newOrientation));
         }
-        Debug.DrawRay(ray.origin, ray.direction * rayLength, Color.magenta, 3f);
+        // Debug.DrawRay(ray.origin, ray.direction * rayLength, Color.magenta, 3f);
         return null;
-        /*
-        
-        // check in front + below + behind
-        Vector3 p4;
-        VineNode p4Node;
-        p3 = p2;
-        ray = new Ray(p3, -forward);
-        rayLength = segmentLength;
-        if (Physics.Raycast(ray, out hit, rayLength, HeadController.WHAT_IS_CLIMBABLE))
-        {
-            Debug.DrawLine(ray.origin, hit.point, Color.magenta, 3f);
-            newOrientation = Quaternion.LookRotation(-up, forward);
-            p4 = hit.point + forward * defaultRadius;
-            p4Node = new VineNode(p4, newOrientation, true);
-            if (!IsOccluded(p4, pos, up))
-            {
-                Debug.Log("4 Count: " + count);
-                return new List<VineNode> { p4Node }.join(CreateBranchNodes(count - 1, p4, newOrientation));
-            }
-
-            middle = CalculateMiddlePoint(p4, pos, (up + forward) / 2);
-            m0 = (pos + middle) / 2;
-            m1 = (p4 + middle) / 2;
-            // m0Node = new VineNode(m0, Quaternion.LookRotation(forward), true);
-            m0Node = new VineNode(m0, Quaternion.LookRotation(forward));
-            // m1Node = new VineNode(m1, Quaternion.LookRotation(forward), true);
-            m1Node = new VineNode(m1, Quaternion.LookRotation(forward));
-
-            Debug.Log("5 Count: " + count);
-            return new List<VineNode> { m0Node, m1Node, p4Node }.join(CreateBranchNodes(count - 3, p4, newOrientation));
-        }
-        
-        p4 = p3 - up * segmentLength;
-        // p4Node = new VineNode(p4, Quaternion.LookRotation(-up), true);
-        p4Node = new VineNode(p4, Quaternion.LookRotation(-up));
-        if (!IsOccluded(p4, pos, up))
-        {
-            Debug.Log("6 Count: " + count);
-            return new List<VineNode> { p4Node }.join(CreateBranchNodes(count - 1, p4, forward, -up));
-        }
-        
-        middle = CalculateMiddlePoint(p4, pos, (up + forward) / 2);
-        m0 = (pos + middle) / 2;
-        m1 = (p4 + middle) / 2;
-        m0Node = new VineNode(m0, Quaternion.LookRotation(-up), true);
-        // m0Node = new VineNode(m0, Quaternion.LookRotation(-up));
-        m1Node = new VineNode(m1, Quaternion.LookRotation(-up), true);
-        // m1Node = new VineNode(m1, Quaternion.LookRotation(-up));
-
-        Debug.Log("7 Count: " + count);
-        return new List<VineNode> { m0Node, m1Node, p4Node }.join(CreateBranchNodes(count - 3, p4, forward, -up));
-         * 
-         */
     }
-
-    Vector3 FindTangentFromArbitraryNormal(Vector3 normal)
-    {
-        Vector3 t1 = Vector3.Cross(normal, Vector3.forward);
-        Vector3 t2 = Vector3.Cross(normal, Vector3.up);
-        if (t1.magnitude > t2.magnitude) {
-            return t1;
-        }
-        return t2;
-    }
-    
 
     private Vector3 ApplyCorrection(Vector3 p, Vector3 normal)
     {
