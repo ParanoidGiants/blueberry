@@ -1,11 +1,5 @@
-using System;
-using System.Collections;
-using System.Numerics;
-using Creeper;
 using UnityEngine;
 using DG.Tweening;
-using RootMath;
-using Vector3 = UnityEngine.Vector3;
 
 public class Fertilizer : MonoBehaviour
 {
@@ -79,9 +73,6 @@ public class Fertilizer : MonoBehaviour
     public void OnDeliver(Vector3 deliveryPosition)
     {
         if (_isDelivered) return;
-        
-        _isDelivered = true;
-        
         AnimateDelivery(deliveryPosition);
     }
     
@@ -89,9 +80,10 @@ public class Fertilizer : MonoBehaviour
     public void AnimateDelivery(Vector3 endPosition)
     {
         transform.position = _vine.GetTipPosition();
-        Sequence mySequence = DOTween.Sequence();
-        mySequence.Append(transform.DOScale(_originalScale, _animateTimer)); // Scale to original size over 1 second
-        mySequence.Append(transform.DOMove(endPosition, _animateTimer)); // Move to end position over 1 second
-        mySequence.Append(transform.DOScale(0, _animateTimer)); // Scale back to zero over 1 second
+        var sequence = DOTween.Sequence();
+        sequence.Append(transform.DOScale(_originalScale, _animateTimer)); // Scale to original size over 1 second
+        sequence.Append(transform.DOMove(endPosition, _animateTimer)); // Move to end position over 1 second
+        sequence.Append(transform.DOScale(0, _animateTimer)); // Scale back to zero over 1 second
+        sequence.OnComplete(() => _isDelivered = true);
     }
 }

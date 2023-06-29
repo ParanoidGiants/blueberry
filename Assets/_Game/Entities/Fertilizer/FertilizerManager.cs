@@ -11,7 +11,10 @@ public class FertilizerManager : MonoBehaviour
     private int _count = 0;
     private FertilizerText _fertilizerText;
     private FertilizerDestination _destination;
-    private bool isDelivering = false;
+    private bool _isDelivering = false;
+    public bool IsDelivering => _isDelivering;
+    private bool _isDelivered = false;
+    public bool IsDelivered => _isDelivered;
     public int Count => _count;
 
     private void Awake()
@@ -35,13 +38,14 @@ public class FertilizerManager : MonoBehaviour
 
     public void InitDeliverFertilizer()
     {
+        if (_isDelivering) return;
         StartCoroutine(DeliverFertilizer());
     }
 
     private IEnumerator DeliverFertilizer()
     {
-        isDelivering = true;
-        var collectedFertilizers = _fertilizers.Where(x => x.IsCollected && !x.IsDelivered);
+        _isDelivering = true;
+        var collectedFertilizers = _fertilizers.Where(x => x.IsCollected && !x.IsDelivered).ToList();
 
         foreach (var collectedFertilizer in collectedFertilizers)
         {
@@ -51,9 +55,21 @@ public class FertilizerManager : MonoBehaviour
             UpdateUI();
             yield return new WaitForSeconds(0.2f);
         }
-        isDelivering = false;
+        yield return new WaitUntil(() => AreAllFertilizersDelivered(collectedFertilizers));
+        
+        _isDelivered = _totalAmount == 0;
+        _isDelivering = false;
     }
-    
+
+    private bool AreAllFertilizersDelivered(List<Fertilizer> collected)
+    {
+        foreach (var fertilizer in collected)
+        {
+            if (!fertilizer.IsDelivered) return false;
+        }
+        return true;
+    }
+
     private void UpdateUI()
     {
         _fertilizerText.UpdateText(_count, _totalAmount);

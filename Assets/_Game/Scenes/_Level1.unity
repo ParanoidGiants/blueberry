@@ -184,6 +184,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Collectable (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 3035377605164500132, guid: d36952a29bc6728478ea872c4f1ae2f7, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3035377605164500136, guid: d36952a29bc6728478ea872c4f1ae2f7, type: 3}
       propertyPath: m_RootOrder
       value: 3
@@ -235,6 +239,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3035377605164500136, guid: d36952a29bc6728478ea872c4f1ae2f7, type: 3}
   m_PrefabInstance: {fileID: 60245861}
   m_PrefabAsset: {fileID: 0}
+--- !u!95 &61250717 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 543923634901393714, guid: 27bfc29b542356145986c1af0de114d7, type: 3}
+  m_PrefabInstance: {fileID: 1682830325}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &64582376
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -245,6 +254,10 @@ PrefabInstance:
     - target: {fileID: 3035377605164500132, guid: d36952a29bc6728478ea872c4f1ae2f7, type: 3}
       propertyPath: m_Name
       value: Collectable (0)
+      objectReference: {fileID: 0}
+    - target: {fileID: 3035377605164500132, guid: d36952a29bc6728478ea872c4f1ae2f7, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3035377605164500136, guid: d36952a29bc6728478ea872c4f1ae2f7, type: 3}
       propertyPath: m_RootOrder
@@ -831,6 +844,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Collectable (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 3035377605164500132, guid: d36952a29bc6728478ea872c4f1ae2f7, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3035377605164500136, guid: d36952a29bc6728478ea872c4f1ae2f7, type: 3}
       propertyPath: m_RootOrder
       value: 1
@@ -1319,6 +1336,10 @@ PrefabInstance:
     - target: {fileID: 3035377605164500132, guid: d36952a29bc6728478ea872c4f1ae2f7, type: 3}
       propertyPath: m_Name
       value: Collectable (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 3035377605164500132, guid: d36952a29bc6728478ea872c4f1ae2f7, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3035377605164500136, guid: d36952a29bc6728478ea872c4f1ae2f7, type: 3}
       propertyPath: m_RootOrder
@@ -3425,6 +3446,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Collectable (11)
       objectReference: {fileID: 0}
+    - target: {fileID: 3035377605164500132, guid: d36952a29bc6728478ea872c4f1ae2f7, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3035377605164500136, guid: d36952a29bc6728478ea872c4f1ae2f7, type: 3}
       propertyPath: m_RootOrder
       value: 10
@@ -4989,6 +5014,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Collectable (13)
       objectReference: {fileID: 0}
+    - target: {fileID: 3035377605164500132, guid: d36952a29bc6728478ea872c4f1ae2f7, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3035377605164500136, guid: d36952a29bc6728478ea872c4f1ae2f7, type: 3}
       propertyPath: m_RootOrder
       value: 12
@@ -5086,6 +5115,10 @@ PrefabInstance:
     - target: {fileID: 3035377605164500132, guid: d36952a29bc6728478ea872c4f1ae2f7, type: 3}
       propertyPath: m_Name
       value: Collectable (12)
+      objectReference: {fileID: 0}
+    - target: {fileID: 3035377605164500132, guid: d36952a29bc6728478ea872c4f1ae2f7, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3035377605164500136, guid: d36952a29bc6728478ea872c4f1ae2f7, type: 3}
       propertyPath: m_RootOrder
@@ -6194,6 +6227,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1129967074}
     m_Modifications:
+    - target: {fileID: 1561283850, guid: c6beb72372d426a4f962e39d4ae328cc, type: 3}
+      propertyPath: flowerAnimator
+      value: 
+      objectReference: {fileID: 61250717}
     - target: {fileID: 4713566422285572537, guid: c6beb72372d426a4f962e39d4ae328cc, type: 3}
       propertyPath: m_RootOrder
       value: 14
@@ -6259,6 +6296,10 @@ PrefabInstance:
     - target: {fileID: 3035377605164500132, guid: d36952a29bc6728478ea872c4f1ae2f7, type: 3}
       propertyPath: m_Name
       value: Collectable (8)
+      objectReference: {fileID: 0}
+    - target: {fileID: 3035377605164500132, guid: d36952a29bc6728478ea872c4f1ae2f7, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3035377605164500136, guid: d36952a29bc6728478ea872c4f1ae2f7, type: 3}
       propertyPath: m_RootOrder
@@ -6600,6 +6641,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Collectable (7)
       objectReference: {fileID: 0}
+    - target: {fileID: 3035377605164500132, guid: d36952a29bc6728478ea872c4f1ae2f7, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3035377605164500136, guid: d36952a29bc6728478ea872c4f1ae2f7, type: 3}
       propertyPath: m_RootOrder
       value: 6
@@ -6662,6 +6707,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Collectable (4)
       objectReference: {fileID: 0}
+    - target: {fileID: 3035377605164500132, guid: d36952a29bc6728478ea872c4f1ae2f7, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3035377605164500136, guid: d36952a29bc6728478ea872c4f1ae2f7, type: 3}
       propertyPath: m_RootOrder
       value: 4
@@ -6723,6 +6772,10 @@ PrefabInstance:
     - target: {fileID: 3035377605164500132, guid: d36952a29bc6728478ea872c4f1ae2f7, type: 3}
       propertyPath: m_Name
       value: Collectable (10)
+      objectReference: {fileID: 0}
+    - target: {fileID: 3035377605164500132, guid: d36952a29bc6728478ea872c4f1ae2f7, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3035377605164500136, guid: d36952a29bc6728478ea872c4f1ae2f7, type: 3}
       propertyPath: m_RootOrder
@@ -6793,6 +6846,26 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 372331926}
     m_Modifications:
+    - target: {fileID: 543923634901393714, guid: 27bfc29b542356145986c1af0de114d7, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1282002410746599938, guid: 27bfc29b542356145986c1af0de114d7, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1282002410746599938, guid: 27bfc29b542356145986c1af0de114d7, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1282002410746599938, guid: 27bfc29b542356145986c1af0de114d7, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1598716979282284169, guid: 27bfc29b542356145986c1af0de114d7, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5183849440965654211, guid: 27bfc29b542356145986c1af0de114d7, type: 3}
       propertyPath: m_Name
       value: house_6
@@ -6862,6 +6935,10 @@ PrefabInstance:
     - target: {fileID: 3035377605164500132, guid: d36952a29bc6728478ea872c4f1ae2f7, type: 3}
       propertyPath: m_Name
       value: Collectable (9)
+      objectReference: {fileID: 0}
+    - target: {fileID: 3035377605164500132, guid: d36952a29bc6728478ea872c4f1ae2f7, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3035377605164500136, guid: d36952a29bc6728478ea872c4f1ae2f7, type: 3}
       propertyPath: m_RootOrder
@@ -9711,6 +9788,10 @@ PrefabInstance:
     - target: {fileID: 3035377605164500132, guid: d36952a29bc6728478ea872c4f1ae2f7, type: 3}
       propertyPath: m_Name
       value: Collectable (5)
+      objectReference: {fileID: 0}
+    - target: {fileID: 3035377605164500132, guid: d36952a29bc6728478ea872c4f1ae2f7, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3035377605164500136, guid: d36952a29bc6728478ea872c4f1ae2f7, type: 3}
       propertyPath: m_RootOrder
