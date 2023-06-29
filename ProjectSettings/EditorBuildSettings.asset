@@ -6,6 +6,12 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/_Game/Scenes/LivingVine.unity
-    guid: e7f719c769ba02c4eb87c0ac8426c6fe
+    path: Assets/_Game/Scenes/_Game.unity
+    guid: 31745844734048642a151293f8cf5568
+  - enabled: 1
+    path: Assets/_Game/Scenes/_Title.unity
+    guid: e8a147304567e824fa37d3abbc176a3d
+  - enabled: 1
+    path: Assets/_Game/Scenes/_Level1.unity
+    guid: edcaf9e55a4c29b448493f4c194ab9be
   m_configObjects: {}
