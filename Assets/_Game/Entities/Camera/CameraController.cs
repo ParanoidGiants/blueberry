@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -18,7 +19,12 @@ namespace Creeper
         [SerializeField] private float ZoomSpeed = 0.1f;
         private float _zoomDirection;
         public List<CameraZone> _cameraZones;
-        public bool isDangling = false;
+        public bool isDangling;
+        
+        private bool _isAnimating;
+        private bool _isFlowerFocused;
+        public bool IsFlowerFocused => _isFlowerFocused;
+        
 
         private void Start()
         {
@@ -30,6 +36,11 @@ namespace Creeper
 
         private void LateUpdate()
         {
+            if (_isAnimating)
+            {
+                return;
+            }
+            
             if (_cameraZones.Count < 1) return;
 
             FollowTarget();
@@ -99,6 +110,38 @@ namespace Creeper
             else
             {
                 _cameraZones.Remove(cameraZone);
+            }
+        }
+
+        public IEnumerator MoveCameraToFlower(Vector3 targetPosition)
+        {
+            _isAnimating = true;
+            var startRotation = transform.rotation;
+            var targetRotation = Quaternion.Euler(20f, startRotation.eulerAngles.y, 0f);
+            var startPosition = transform.position;
+            
+            var startZoom = _cameraTransform.localPosition.z;
+            var targetZoom = -20f;
+            
+            var positionTime = 0f;
+            while (positionTime <= 1f)
+            {
+                transform.position = Vector3.Lerp(startPosition, targetPosition, positionTime);
+                transform.rotation = Quaternion.Lerp(startRotation, targetRotation, positionTime);
+                _cameraTransform.localPosition = new Vector3(0f, 0f, Mathf.Lerp(startZoom, targetZoom, positionTime));
+                
+                positionTime += Time.deltaTime;
+                yield return null;
+            }
+            _isFlowerFocused = true;
+
+            var rotationTime = 0f;
+            while (_isAnimating)
+            {
+                transform.rotation = Quaternion.Euler(20f, rotationTime, 0f);
+                rotationTime += Time.deltaTime * 20f;
+                rotationTime %= 360f;
+                yield return null;
             }
         }
     }
