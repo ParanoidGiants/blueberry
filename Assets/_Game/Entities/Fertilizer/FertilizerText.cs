@@ -13,6 +13,6 @@ public class FertilizerText : MonoBehaviour
 
     public void UpdateText(int currentCount, int totalCount)
     {
-        _text.text = $"<b>Fertilizer</b> {currentCount.ToString()} / {totalCount.ToString()}";
+        _text.text = $"{currentCount.ToString()} / {totalCount.ToString()}";
     }
 }
