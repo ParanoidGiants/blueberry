@@ -9,6 +9,7 @@ namespace Creeper
         #region PlayerInputBinding
         private PlayerInputs input = null;
         private bool IsReloadingScene = false;
+        private bool _areInputsFrozen;
 
         private void Awake()
         {
@@ -47,6 +48,8 @@ namespace Creeper
 
         public void OnMove(InputAction.CallbackContext _directionCallback)
         {
+            if (_areInputsFrozen) return;
+            
             var direction = _directionCallback.ReadValue<Vector2>();
             if (direction.magnitude > 1f)
             {
@@ -58,17 +61,23 @@ namespace Creeper
 
         public void OnCancelMove(InputAction.CallbackContext _directionCallback)
         {
+            if (_areInputsFrozen) return;
+
             Head.InputDirection = Vector3.zero;
             Branch.InputDirection = Vector3.zero;
         }
         public void OnZoom(InputAction.CallbackContext _directionCallback)
         {
+            if (_areInputsFrozen) return;
+
             var direction = _directionCallback.ReadValue<float>();
             Camera.SetZoomDirection(direction);
         }
 
         public void OnCancelZoom(InputAction.CallbackContext _directionCallback)
         {
+            if (_areInputsFrozen) return;
+
             var direction = _directionCallback.ReadValue<float>();
             Camera.SetZoomDirection(direction);
         }
@@ -79,6 +88,16 @@ namespace Creeper
 
             IsReloadingScene = true;
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
+
+        public void FreezeInputs()
+        {
+            _areInputsFrozen = true;
+        }
+
+        public void UnfreezeInputs()
+        {
+            _areInputsFrozen = false;
         }
     }
 }

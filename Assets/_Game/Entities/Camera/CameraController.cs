@@ -167,5 +167,10 @@ namespace Creeper
                 yield return null;
             }
         }
+
+        public void SetCameraActive(bool isActive)
+        {
+            _cameraTransform.gameObject.SetActive(isActive);
+        }
     }
 }

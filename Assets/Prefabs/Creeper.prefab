@@ -206,7 +206,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1514108666894034132}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1.28, y: 0.19, z: 2.6}
+  m_LocalPosition: {x: -40.5, y: -2.046, z: 4.9}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -531,3 +531,4 @@ MonoBehaviour:
   createBranchAfterSeconds: 1
   createBranchInSecondes: 0.5
   createBranchTime: 0
+  _flowers: []
