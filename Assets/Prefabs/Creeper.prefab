@@ -307,7 +307,7 @@ MonoBehaviour:
   branchController: {fileID: 6665412065068568266}
   _raycastLengthEpsilon: 0.2
   _drawTime: 1
-  _moveSpeed: 3
+  _moveSpeed: 5
   _isGrounded: 0
   _inputDirection: {x: 0, y: 0, z: 0}
   _lastPosition: {x: 0, y: 0, z: 0}
@@ -520,7 +520,7 @@ MonoBehaviour:
   branchPrefab: {fileID: 5722849247196051468, guid: 1c75bc2c0508afc45bc66cd1a04de0d9, type: 3}
   flowerParent: {fileID: 237475405}
   flowerPrefab: {fileID: 2010505362793215504, guid: 8c85075003f40e94ab4009f5547caa23, type: 3}
-  maxLivingNodeCount: 50
+  maxLivingNodeCount: 30
   vineLength: 0.1
   defaultRadius: 0.25
   _livingVineNodes: []
@@ -529,6 +529,6 @@ MonoBehaviour:
   _deadNodeCount: 0
   currentBranch: {fileID: 0}
   createBranchAfterSeconds: 1
-  createBranchInSecondes: 0.5
+  createBranchInSecondes: 0.2
   createBranchTime: 0
   _flowers: []
