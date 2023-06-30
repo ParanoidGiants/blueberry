@@ -1,11 +1,15 @@
 using System.Collections;
-using Creeper;
 using UnityEngine;
 
 public class FertilizerDestination : MonoBehaviour
 {
-    public Animator flowerAnimator;
-    public CameraController camera;
+    private Animator _animator;
+
+    private void Awake()
+    {
+        _animator = GetComponent<Animator>();
+    }
+
     private IEnumerator OnTriggerEnter(Collider other)
     {
         var manager = other.GetComponent<FertilizerManager>();
@@ -15,10 +19,7 @@ public class FertilizerDestination : MonoBehaviour
         yield return new WaitUntil(() => !manager.IsDelivering);
         
         if (!manager.IsDelivered) yield break;
-        
-        StartCoroutine(camera.MoveCameraToFlower(new Vector3(4.5f, 54f, -0.2f)));
 
-        yield return new WaitUntil(() => camera.IsFlowerFocused);
-        flowerAnimator.enabled = true;
+        _animator.enabled = true;
     }
 }

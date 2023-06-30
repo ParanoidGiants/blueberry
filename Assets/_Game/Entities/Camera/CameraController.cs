@@ -6,9 +6,9 @@ namespace Creeper
 {
     public class CameraController : MonoBehaviour
     {
-        [SerializeField] private Transform Target;
         private HeadController _head;
-        private Transform _cameraTransform;
+        public Transform Target;
+        public Transform _cameraTransform;
         
         [Space(10)]
         [Header("Move")]
@@ -30,7 +30,6 @@ namespace Creeper
         {
             Application.targetFrameRate = 60;
             _head = FindObjectOfType<HeadController>();
-            _cameraTransform = GetComponentInChildren<Camera>().transform;
             _cameraZones = new List<CameraZone>();
         }
 
@@ -50,16 +49,29 @@ namespace Creeper
 
         private void Zoom()
         {
-            var localPosition = _cameraTransform.localPosition;
-            var positionZ = localPosition.z;
-            var targetPositionZ = positionZ + _zoomDirection * Time.deltaTime;
-            targetPositionZ = Mathf.Clamp(
-                targetPositionZ, 
+            var currentLocalPosition = _cameraTransform.localPosition;
+            var nextLocalPosition = currentLocalPosition + Vector3.forward * (_zoomDirection * Time.deltaTime);
+            // RaycastHit hit;
+            // if (Physics.Raycast(
+            //         transform.position,
+            //         _cameraTransform.position - transform.position,
+            //         out hit,
+            //         _cameraZones[^1].maximumZoom,
+            //         HeadController.WHAT_IS_CLIMBABLE
+            //     )
+            // ) {
+            //     nextLocalPosition.z = Mathf.Max(hit.distance, nextLocalPosition.z);
+            // }
+            nextLocalPosition.z = Mathf.Clamp(
+                nextLocalPosition.z, 
                 -_cameraZones[^1].maximumZoom, 
                 -_cameraZones[^1].minimumZoom
             );
-            localPosition = new Vector3(localPosition.x, localPosition.y, targetPositionZ);
-            _cameraTransform.localPosition = localPosition;
+            _cameraTransform.localPosition = Vector3.Lerp(
+                currentLocalPosition, 
+                nextLocalPosition,
+                Time.deltaTime * ZoomSpeed
+            );
         }
 
         private void FollowTarget()
@@ -111,6 +123,17 @@ namespace Creeper
             {
                 _cameraZones.Remove(cameraZone);
             }
+        }
+
+        public void PlayEndAnimation()
+        {
+            
+        }
+        
+
+        public void PlayStartAnimation()
+        {
+            
         }
 
         public IEnumerator MoveCameraToFlower(Vector3 targetPosition)
