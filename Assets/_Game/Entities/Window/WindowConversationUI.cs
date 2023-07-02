@@ -1,4 +1,5 @@
-using System;
+using Creeper;
+using RootMath;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,10 +10,13 @@ public class WindowConversationUI : MonoBehaviour
     private Image _background;
     private RectTransform _rectTransform;
     private bool _isConversationActive;
-    public int pixelOffsetHorizontal = 0;
-    public int pixelOffsetVertical = 0;
     private Vector3 _currentTargetPosition;
     private Camera _camera;
+    private Transform _player;
+    public float _minDistance = 2f;
+    public float _maxDistance = 10f;
+    public float _minScale = 0.5f;
+    public float _maxScale = 1f;
 
     private void Start()
     {
@@ -21,20 +25,16 @@ public class WindowConversationUI : MonoBehaviour
         _background = GetComponent<Image>();
         DisableConversation();
         _camera = Camera.main;
+        _player = FindObjectOfType<HeadController>().transform;
     }
 
     private void Update()
     {
-        var sizeDelta = _rectTransform.sizeDelta;
-        var minX = sizeDelta.x / 2 + pixelOffsetHorizontal;
-        var maxX = _camera.scaledPixelWidth - sizeDelta.x / 2 - pixelOffsetHorizontal;
-        var minY = sizeDelta.y / 2 + pixelOffsetVertical;
-        var maxY = _camera.scaledPixelHeight - sizeDelta.y / 2 - pixelOffsetVertical;
-            
-        var newPosition = _camera.WorldToScreenPoint(_currentTargetPosition);
-        newPosition.x = Mathf.Clamp(newPosition.x, minX, maxX);
-        newPosition.y = Mathf.Clamp(newPosition.y, -maxY, -minY);
-        _rectTransform.anchoredPosition = newPosition;
+        _rectTransform.position = (Vector2) _camera.WorldToScreenPoint(_currentTargetPosition);
+
+        var distanceToPlayer = Mathf.Clamp((_currentTargetPosition - _player.position).magnitude, _minDistance, _maxDistance);
+        var newScale = RMath.Remap(distanceToPlayer, _minDistance, _maxDistance, _maxScale, _minScale);
+        _rectTransform.localScale = newScale * Vector3.one;
     }
 
     public void SetText(string conversationSnippet, Vector3 windowCenter)

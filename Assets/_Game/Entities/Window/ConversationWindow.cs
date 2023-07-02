@@ -58,7 +58,7 @@ namespace Assets.Window
             statement_ongoing = true;
             string statement_text = conversation.statements[conversation_counter].text;
             // Text output GUI
-            conversationUI.SetText(statement_text, centerGO.transform.position);
+            conversationUI.SetText(statement_text, transform.position);
             Debug.Log(statement_text);
             string soundGroup = conversation.statements[conversation_counter].participant + "_" + conversation.statements[conversation_counter].length;
             yield return StartCoroutine(MasterAudio.PlaySound3DAtTransformAndWaitUntilFinished(soundGroup, centerGO.transform)); ;

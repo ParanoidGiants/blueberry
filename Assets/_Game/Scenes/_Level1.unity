@@ -32240,11 +32240,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6294301937390756078, guid: 9d89c5264d0d6d44293f29e2633ae503, type: 3}
       propertyPath: m_Size.x
-      value: 2.6994944
+      value: 3.5954103
       objectReference: {fileID: 0}
     - target: {fileID: 6294301937390756078, guid: 9d89c5264d0d6d44293f29e2633ae503, type: 3}
       propertyPath: m_Size.y
-      value: 10.561216
+      value: 23.287043
       objectReference: {fileID: 0}
     - target: {fileID: 6294301937390756078, guid: 9d89c5264d0d6d44293f29e2633ae503, type: 3}
       propertyPath: m_Size.z
@@ -32252,11 +32252,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6294301937390756078, guid: 9d89c5264d0d6d44293f29e2633ae503, type: 3}
       propertyPath: m_Center.x
-      value: -0.8497472
+      value: -1.2977052
       objectReference: {fileID: 0}
     - target: {fileID: 6294301937390756078, guid: 9d89c5264d0d6d44293f29e2633ae503, type: 3}
       propertyPath: m_Center.y
-      value: 0.21939182
+      value: -6.1435213
       objectReference: {fileID: 0}
     - target: {fileID: 6294301937390756078, guid: 9d89c5264d0d6d44293f29e2633ae503, type: 3}
       propertyPath: m_Center.z
@@ -32280,7 +32280,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6294301937390756079, guid: 9d89c5264d0d6d44293f29e2633ae503, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -9.8
+      value: -9.95
       objectReference: {fileID: 0}
     - target: {fileID: 6294301937390756079, guid: 9d89c5264d0d6d44293f29e2633ae503, type: 3}
       propertyPath: m_LocalPosition.z
@@ -37203,6 +37203,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2864581771911314955, guid: fa4f1a2f70f6d944780481d0e549998c, type: 3}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 963194227}
     - target: {fileID: 2864581772730463484, guid: fa4f1a2f70f6d944780481d0e549998c, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
