@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Creeper;
+using RootMath;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -141,7 +142,7 @@ public class VineBranch : MonoBehaviour
             // Search Below
             ray = new Ray(pos, -up);
             rayLength = defaultRadius + EPSILON;
-            if (Physics.Raycast(ray, out hit, rayLength, HeadController.WHAT_IS_CLIMBABLE))
+            if (Physics.Raycast(ray, out hit, rayLength, RMath.WHAT_IS_CLIMBABLE))
             {
                 pos = hit.point + up * defaultRadius;
             }
@@ -167,7 +168,7 @@ public class VineBranch : MonoBehaviour
         ray = new Ray(pos, forward);
         rayLength = segmentLength + defaultRadius;
         Vector3 p1 = pos + forward * segmentLength;
-        if (Physics.Raycast(ray, out hit, rayLength, HeadController.WHAT_IS_CLIMBABLE))
+        if (Physics.Raycast(ray, out hit, rayLength, RMath.WHAT_IS_CLIMBABLE))
         {
             // Debug.DrawLine(ray.origin, hit.point, Color.black, 3f);
             p1 = hit.point - forward * defaultRadius;
@@ -182,7 +183,7 @@ public class VineBranch : MonoBehaviour
         Vector3 p2;
         ray = new Ray(p1, -up);
         rayLength = 2f * defaultRadius;
-        if (Physics.Raycast(ray, out hit, rayLength, HeadController.WHAT_IS_CLIMBABLE))
+        if (Physics.Raycast(ray, out hit, rayLength, RMath.WHAT_IS_CLIMBABLE))
         {
             // Debug.DrawLine(ray.origin, hit.point, Color.gray, 3f);
             p2 = hit.point + up * defaultRadius;
@@ -205,7 +206,7 @@ public class VineBranch : MonoBehaviour
         p2 = p1 + ray.direction * rayLength;
         ray = new Ray(p2, -forward);
         rayLength = segmentLength;
-        if (Physics.Raycast(ray, out hit, rayLength, HeadController.WHAT_IS_CLIMBABLE))
+        if (Physics.Raycast(ray, out hit, rayLength, RMath.WHAT_IS_CLIMBABLE))
         {
             // Debug.DrawLine(ray.origin, hit.point, Color.yellow, 3f);
             p3 = hit.point + forward * defaultRadius;

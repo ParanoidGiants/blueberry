@@ -5,9 +5,6 @@ namespace Creeper
 {
     public class HeadController : MonoBehaviour
     {
-        private static int _WHAT_IS_CLIMBABLE;
-        public static int WHAT_IS_CLIMBABLE { get { return _WHAT_IS_CLIMBABLE; } }
-        
         [Header("References")]
         public VineController branchController;
         private Rigidbody _rigidbody;
@@ -47,7 +44,6 @@ namespace Creeper
 #region LifeCycle
         private void Start()
         {
-            _WHAT_IS_CLIMBABLE = LayerMask.GetMask("Climbable");
             _rigidbody = GetComponent<Rigidbody>();
             _cameraTransform = Camera.main.transform;
             contactObjectManager = new ContactObjectManager();
@@ -57,7 +53,7 @@ namespace Creeper
         
         private void OnCollisionEnter(Collision collision)
         {
-            if (!IsOfClimbableLayer(collision.gameObject.layer)) return;
+            if (!RMath.IsLayerClimbable(collision.gameObject.layer)) return;
             
             if (contactObjectManager.TryAddNormals(collision))
             {
@@ -68,7 +64,7 @@ namespace Creeper
         
         private void OnCollisionStay(Collision collision)
         {
-            if (!IsOfClimbableLayer(collision.gameObject.layer)) return;
+            if (!RMath.IsLayerClimbable(collision.gameObject.layer)) return;
             
             if (contactObjectManager.TryAddNormals(collision))
             {
@@ -79,7 +75,7 @@ namespace Creeper
         
         private void OnCollisionExit(Collision collision)
         {
-            if (!IsOfClimbableLayer(collision.gameObject.layer)) return;
+            if (!RMath.IsLayerClimbable(collision.gameObject.layer)) return;
             
             contactObjectManager.RemoveContactObjects(collision.gameObject.GetInstanceID());
             UpdateGround();
@@ -143,7 +139,7 @@ namespace Creeper
         private bool ShootRay(Vector3 rayOrigin, Vector3 rayDirection, float raycastLength, out RaycastHit hit, Color color)
         {
             Debug.DrawRay(rayOrigin, rayDirection * raycastLength, color, _drawTime);
-            return Physics.Raycast(rayOrigin, rayDirection, out hit, raycastLength, WHAT_IS_CLIMBABLE);
+            return Physics.Raycast(rayOrigin, rayDirection, out hit, raycastLength, RMath.WHAT_IS_CLIMBABLE);
         }
         
         private void SetPosition(Vector3 position, Vector3 normal)
@@ -186,13 +182,6 @@ namespace Creeper
                 _cameraTransform.up,
                 wallDirection
             );
-        }
-
-        private bool IsOfClimbableLayer(int layer)
-        {
-            var collayer = 1 << layer;
-            var result = collayer & WHAT_IS_CLIMBABLE;
-            return result != 0;
         }
     }
 }

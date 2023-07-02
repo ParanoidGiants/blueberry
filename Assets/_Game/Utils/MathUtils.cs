@@ -79,5 +79,27 @@ namespace RootMath
 
             return newArray;
         }
+        
+        public static int WHAT_IS_CLIMBABLE => LayerMask.GetMask("Climbable");
+        public static bool IsLayerClimbable(int layer)
+        {
+            var colliderLayer = 1 << layer;
+            var result = colliderLayer & WHAT_IS_CLIMBABLE;
+            return result != 0;
+        }
+
+        public static bool IsLayerPlayer(int layer)
+        {
+            var colliderLayer = 1 << layer;
+            var result = colliderLayer & LayerMask.GetMask("Player");
+            return result != 0;
+        }
+        
+        public static bool IsLayerPlayerPhysicsCollider(int layer)
+        {
+            var colliderLayer = 1 << layer;
+            var result = colliderLayer & LayerMask.GetMask("PlayerPhysicsCollider");
+            return result != 0;
+        }
     }
 }
