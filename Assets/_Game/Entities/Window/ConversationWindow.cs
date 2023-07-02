@@ -14,7 +14,6 @@ namespace Assets.Window
         private bool conversation_done = false;
         private int conversation_counter = 0;
 
-        // private GameObject centerGO;
         private WindowConversationUI conversationUI;
 
         private void Awake()
@@ -22,28 +21,27 @@ namespace Assets.Window
             conversationUI = FindObjectOfType<WindowConversationUI>();
             jsonContent = jsonFile.ToString();
             conversation = new Conversation(JsonHelper.FromJson<Statement>(jsonContent));
-            //centerGO = new GameObject("AudioSource");
-            //centerGO.transform.parent = transform;
         }
 
-        public void ContinueInteraction(Collider other)
+        override
+        public void UpdateInteraction()
         {
-            if (interaction_ongoing && !statement_ongoing && !conversation_done)
-            {
-                StartCoroutine(ContinueInteraction());
-            }
-            else if (!interaction_ongoing && !conversation_done)
+            if (!interaction_ongoing && !conversation_done)
             {
                 StartInteraction();
             }
+            if (interaction_ongoing && !statement_ongoing && !conversation_done)
+            {
+                StartCoroutine(ContinueInteraction());
+            } 
         }
 
         override
         protected IEnumerator ContinueInteraction()
         {
             string statement_text = conversation.statements[conversation_counter].text;
-            Debug.Log(statement_text);
             statement_ongoing = true;
+            Debug.Log(statement_text);
             // Text output GUI
             conversationUI.SetText(statement_text, transform.position);
             string soundGroup = conversation.statements[conversation_counter].participant + "_" + conversation.statements[conversation_counter].length;
@@ -55,8 +53,7 @@ namespace Assets.Window
             statement_ongoing = false;
             if (conversation_counter == conversation.statements.Length)
             {
-                conversation_done = true;
-                conversationUI.DisableConversation();
+                TerminateInteraction();
             }
         }
 

@@ -1,19 +1,16 @@
 using Assets.Window;
 using RootMath;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class OnExitWindowZone : MonoBehaviour
 {
-    public ConversationWindow window;
-
+    public Window window;
 
     private void OnTriggerStay(Collider other)
     {
         if (!RMath.IsLayerPlayer(other.gameObject.layer) || !window.IsInteractionOnGoing) return;
 
-        window.ContinueInteraction(other);
+        window.UpdateInteraction();
     }
 
     private void OnTriggerExit(Collider other)

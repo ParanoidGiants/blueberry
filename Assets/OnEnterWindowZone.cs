@@ -1,14 +1,18 @@
 using Assets.Window;
+using RootMath;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WindowEffectZone : MonoBehaviour
+public class OnEnterWindowZone : MonoBehaviour
 {
-    public ConversationWindow window;
+    public Window window;
 
-    private void OnTriggerStay(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
-        window.ContinueInteraction(other);
+
+        if (!RMath.IsLayerPlayer(other.gameObject.layer) || window.IsInteractionOnGoing) return;
+
+        window.UpdateInteraction();
     }
 }

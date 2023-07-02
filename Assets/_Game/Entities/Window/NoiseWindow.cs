@@ -16,17 +16,17 @@ namespace Assets.Window
             jsonContent = jsonFile.ToString();
             noise = JsonUtility.FromJson<Noise>(jsonContent);
         }
-
-        private IEnumerator OnTriggerStay(Collider other)
+        
+        override 
+        public void UpdateInteraction()
         {
             if (!interaction_ongoing)
             {
                 StartInteraction();
-                yield break;
             }
             else
             {
-                yield return StartCoroutine(ContinueInteraction());
+                StartCoroutine(ContinueInteraction());
             }
         }
 

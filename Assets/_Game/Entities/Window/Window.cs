@@ -17,6 +17,7 @@ namespace Assets.Window
             interaction_ongoing = true;
         }
         virtual protected IEnumerator ContinueInteraction() { yield break; }
-        virtual public void TerminateInteraction() { }           
+        virtual public void TerminateInteraction() { }
+        virtual public void UpdateInteraction() { }           
     }
 }
