@@ -55,6 +55,15 @@ namespace Creeper
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Confirm"",
+                    ""type"": ""Button"",
+                    ""id"": ""096d1895-8abc-4c96-a4c0-d25abda5b76a"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -156,6 +165,17 @@ namespace Creeper
                     ""action"": ""ZoomCamera"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""dde4d33c-309d-4442-b99a-0ece5ae9ddd1"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Confirm"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -167,6 +187,7 @@ namespace Creeper
             m_PlayerInput_MoveCreeper = m_PlayerInput.FindAction("MoveCreeper", throwIfNotFound: true);
             m_PlayerInput_Reset = m_PlayerInput.FindAction("Reset", throwIfNotFound: true);
             m_PlayerInput_ZoomCamera = m_PlayerInput.FindAction("ZoomCamera", throwIfNotFound: true);
+            m_PlayerInput_Confirm = m_PlayerInput.FindAction("Confirm", throwIfNotFound: true);
         }
 
         public void Dispose()
@@ -229,6 +250,7 @@ namespace Creeper
         private readonly InputAction m_PlayerInput_MoveCreeper;
         private readonly InputAction m_PlayerInput_Reset;
         private readonly InputAction m_PlayerInput_ZoomCamera;
+        private readonly InputAction m_PlayerInput_Confirm;
         public struct PlayerInputActions
         {
             private @PlayerInputs m_Wrapper;
@@ -236,6 +258,7 @@ namespace Creeper
             public InputAction @MoveCreeper => m_Wrapper.m_PlayerInput_MoveCreeper;
             public InputAction @Reset => m_Wrapper.m_PlayerInput_Reset;
             public InputAction @ZoomCamera => m_Wrapper.m_PlayerInput_ZoomCamera;
+            public InputAction @Confirm => m_Wrapper.m_PlayerInput_Confirm;
             public InputActionMap Get() { return m_Wrapper.m_PlayerInput; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -254,6 +277,9 @@ namespace Creeper
                     @ZoomCamera.started -= m_Wrapper.m_PlayerInputActionsCallbackInterface.OnZoomCamera;
                     @ZoomCamera.performed -= m_Wrapper.m_PlayerInputActionsCallbackInterface.OnZoomCamera;
                     @ZoomCamera.canceled -= m_Wrapper.m_PlayerInputActionsCallbackInterface.OnZoomCamera;
+                    @Confirm.started -= m_Wrapper.m_PlayerInputActionsCallbackInterface.OnConfirm;
+                    @Confirm.performed -= m_Wrapper.m_PlayerInputActionsCallbackInterface.OnConfirm;
+                    @Confirm.canceled -= m_Wrapper.m_PlayerInputActionsCallbackInterface.OnConfirm;
                 }
                 m_Wrapper.m_PlayerInputActionsCallbackInterface = instance;
                 if (instance != null)
@@ -267,6 +293,9 @@ namespace Creeper
                     @ZoomCamera.started += instance.OnZoomCamera;
                     @ZoomCamera.performed += instance.OnZoomCamera;
                     @ZoomCamera.canceled += instance.OnZoomCamera;
+                    @Confirm.started += instance.OnConfirm;
+                    @Confirm.performed += instance.OnConfirm;
+                    @Confirm.canceled += instance.OnConfirm;
                 }
             }
         }
@@ -276,6 +305,7 @@ namespace Creeper
             void OnMoveCreeper(InputAction.CallbackContext context);
             void OnReset(InputAction.CallbackContext context);
             void OnZoomCamera(InputAction.CallbackContext context);
+            void OnConfirm(InputAction.CallbackContext context);
         }
     }
 }

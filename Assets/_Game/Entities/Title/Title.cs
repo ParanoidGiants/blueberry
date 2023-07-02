@@ -8,7 +8,7 @@ namespace Roots
     {
         public Animator[] animators;
         private Coroutine coroutine;
-        public void OnClick()
+        public void OnConfirm()
         {
             if (coroutine != null) return;
             
@@ -23,7 +23,7 @@ namespace Roots
         private IEnumerator LoadLevelAfterAnimation()
         {
             yield return new WaitForSeconds(2.0f);
-            FindObjectOfType<Game>().OnLoadFirstLevel();
+            Game.Instance.OnLoadFirstLevel();
         }
     }
 }
