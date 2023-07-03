@@ -41971,11 +41971,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1225338805}
   m_Mesh: {fileID: 1143250845}
---- !u!1 &1233764700 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1514108666894034132, guid: 907c774c7d7bc59419d691e061ef3528, type: 3}
-  m_PrefabInstance: {fileID: 2044043443}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1238330915
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -53950,7 +53945,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh-66466
+  m_Name: pb_Mesh78964
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -56017,10 +56012,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Creeper
       objectReference: {fileID: 0}
-    - target: {fileID: 8567532191546326454, guid: 907c774c7d7bc59419d691e061ef3528, type: 3}
-      propertyPath: _moveSpeed
-      value: 10
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 907c774c7d7bc59419d691e061ef3528, type: 3}
 --- !u!4 &2044043444 stripped
@@ -56033,20 +56024,12 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1113100603157985202, guid: 907c774c7d7bc59419d691e061ef3528, type: 3}
   m_PrefabInstance: {fileID: 2044043443}
   m_PrefabAsset: {fileID: 0}
---- !u!81 &2044043453
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1233764700}
-  m_Enabled: 1
 --- !u!114 &2044043455 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8567532191546326454, guid: 907c774c7d7bc59419d691e061ef3528, type: 3}
   m_PrefabInstance: {fileID: 2044043443}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1233764700}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: beb269b01bf864f44a7e6fc9f7e99ef0, type: 3}

@@ -1,14 +1,13 @@
 using RootMath;
 using UnityEngine;
 
-public class OnTouchBreakJoint : MonoBehaviour
+public class OnTouchPlaySound : MonoBehaviour
 {
     private void OnCollisionEnter(Collision other)
     {
         if (!RMath.IsLayerPlayerPhysicsCollider(other.gameObject.layer)) return;
         
-        var springJoint = GetComponent<SpringJoint>();
-        springJoint.breakForce = 0;
-        Destroy(this);
+        // TODO: Play sound here
+        Debug.Log("Play sound here");
     }
 }

@@ -16,7 +16,8 @@ namespace Creeper
         public CameraController cameraController;
 
         private FertilizerManager _fertilizerManager;
-        private FertilizerManager fertilizerManager {
+        private FertilizerManager fertilizerManager
+        {
             get
             {
                 if (_fertilizerManager == null)
