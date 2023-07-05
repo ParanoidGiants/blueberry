@@ -4873,7 +4873,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53c02d3e8f692e74e8ed158b636c84fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  camera: {fileID: 625961126}
 --- !u!23 &346399210
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -11100,9 +11099,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99f420d15a237774b84d6c27e3e45f18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Head: {fileID: 2044043447}
-  Branch: {fileID: 1681636876}
-  Camera: {fileID: 2095790893}
+  head: {fileID: 2044043447}
+  vine: {fileID: 1681636876}
+  cameraController: {fileID: 2095790893}
 --- !u!4 &497094058
 Transform:
   m_ObjectHideFlags: 0
