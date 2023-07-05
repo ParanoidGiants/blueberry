@@ -8859,6 +8859,7 @@ GameObject:
   - component: {fileID: 7564723868565382382}
   - component: {fileID: 1668354981420271247}
   - component: {fileID: 739225188134699132}
+  - component: {fileID: 660157980968814872}
   m_Layer: 0
   m_Name: bell
   m_TagString: Untagged
@@ -8942,6 +8943,18 @@ MeshCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 4
-  m_Convex: 0
+  m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: -2766163965107156079, guid: 40ee246858182b348ac2fed67c9f607b, type: 3}
+--- !u!114 &660157980968814872
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9137343180218004257}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 617736d443b46d843b199b5b8fedb4cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

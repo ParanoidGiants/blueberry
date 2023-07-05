@@ -102,16 +102,5 @@ namespace RootMath
             var result = colliderLayer & LayerMask.GetMask("PlayerPhysicsCollider");
             return result != 0;
         }
-        
-        
-        // public static Vector3 WorldToCanvasPosition(Canvas canvas, Vector3 worldPosition, Camera camera)
-        // {
-        //     if (camera == null)
-        //     {
-        //         camera = Camera.main;
-        //     }
-        //     var viewportPosition = camera.WorldToViewportPoint(worldPosition);
-        //     return canvas.ViewportToCanvasPosition(viewportPosition);
-        // }
     }
 }

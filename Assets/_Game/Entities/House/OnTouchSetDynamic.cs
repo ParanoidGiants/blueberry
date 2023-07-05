@@ -16,10 +16,9 @@ public class OnTouchSetDynamic : MonoBehaviour
 
        private void OnCollisionEnter(Collision other)
        {
-              if (RMath.IsLayerPlayerPhysicsCollider(other.gameObject.layer))
-              {
-                     targetRigidbody = GetComponent<Rigidbody>();
-                     targetRigidbody.isKinematic = false;
-              }
+              if (!RMath.IsLayerPlayerPhysicsCollider(other.gameObject.layer)) return;
+              
+              targetRigidbody = GetComponent<Rigidbody>();
+              targetRigidbody.isKinematic = false;
        }
 }

@@ -255,9 +255,9 @@ Rigidbody:
   m_Drag: 0
   m_AngularDrag: 0.05
   m_UseGravity: 1
-  m_IsKinematic: 1
+  m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 126
   m_CollisionDetection: 0
 --- !u!1 &1075274475
 GameObject:
@@ -305,6 +305,7 @@ GameObject:
   - component: {fileID: 8596026562885247701}
   - component: {fileID: 8567532191546326454}
   - component: {fileID: 5114505143686013325}
+  - component: {fileID: 2044043453}
   m_Layer: 7
   m_Name: Head
   m_TagString: Player
@@ -422,7 +423,7 @@ MonoBehaviour:
   branchController: {fileID: 6665412065068568266}
   _raycastLengthEpsilon: 0.2
   _drawTime: 1
-  _moveSpeed: 5
+  _moveSpeed: 4
   _isGrounded: 0
   _inputDirection: {x: 0, y: 0, z: 0}
   _lastPosition: {x: 0, y: 0, z: 0}
@@ -446,6 +447,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   vine: {fileID: 6665412065068568266}
+--- !u!81 &2044043453
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1514108666894034132}
+  m_Enabled: 1
 --- !u!1 &6665412063840737773
 GameObject:
   m_ObjectHideFlags: 0
