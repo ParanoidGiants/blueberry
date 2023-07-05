@@ -11,11 +11,13 @@ namespace Assets.Window
         protected string jsonContent;
 
         protected bool interaction_ongoing = false;
+        public bool IsInteractionOnGoing => interaction_ongoing;
 
         protected void StartInteraction() {
             interaction_ongoing = true;
         }
         virtual protected IEnumerator ContinueInteraction() { yield break; }
-        virtual protected void TerminateInteraction() { }           
+        virtual public void TerminateInteraction() { }
+        virtual public void UpdateInteraction() { }           
     }
 }

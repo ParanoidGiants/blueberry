@@ -14,7 +14,6 @@ namespace Assets.Window
         private bool conversation_done = false;
         private int conversation_counter = 0;
 
-        private GameObject centerGO;
         private WindowConversationUI conversationUI;
 
         private void Awake()
@@ -22,46 +21,31 @@ namespace Assets.Window
             conversationUI = FindObjectOfType<WindowConversationUI>();
             jsonContent = jsonFile.ToString();
             conversation = new Conversation(JsonHelper.FromJson<Statement>(jsonContent));
-            centerGO = new GameObject("AudioSource");
-            centerGO.transform.parent = transform;
-            BoxCollider[] boxes = GetComponents<BoxCollider>();
-            foreach (BoxCollider box in boxes)
-            {
-                if (box.CompareTag("WindowCollider"))
-                {
-                    centerGO.transform.localPosition = box.center;
-                }
-            }
         }
 
-        private IEnumerator OnTriggerStay(Collider other)
+        override
+        public void UpdateInteraction()
         {
-            if (interaction_ongoing && !statement_ongoing && !conversation_done)
-            {
-                yield return StartCoroutine(ContinueInteraction());                
-            }
-            else if (!interaction_ongoing && !conversation_done)
+            if (!interaction_ongoing && !conversation_done)
             {
                 StartInteraction();
-                yield break;
             }
-        }
-
-        private void OnTriggerExit(Collider other)
-        {
-            TerminateInteraction();
+            if (interaction_ongoing && !statement_ongoing && !conversation_done)
+            {
+                StartCoroutine(ContinueInteraction());
+            } 
         }
 
         override
         protected IEnumerator ContinueInteraction()
         {
-            statement_ongoing = true;
             string statement_text = conversation.statements[conversation_counter].text;
-            // Text output GUI
-            conversationUI.SetText(statement_text, centerGO.transform.position);
+            statement_ongoing = true;
             Debug.Log(statement_text);
+            // Text output GUI
+            conversationUI.SetText(statement_text, transform.position);
             string soundGroup = conversation.statements[conversation_counter].participant + "_" + conversation.statements[conversation_counter].length;
-            yield return StartCoroutine(MasterAudio.PlaySound3DAtTransformAndWaitUntilFinished(soundGroup, centerGO.transform)); ;
+            yield return StartCoroutine(MasterAudio.PlaySound3DAtTransformAndWaitUntilFinished(soundGroup, transform)); ;
             if (conversation_counter < conversation.statements.Length)
             {
                 conversation_counter++;
@@ -69,13 +53,12 @@ namespace Assets.Window
             statement_ongoing = false;
             if (conversation_counter == conversation.statements.Length)
             {
-                conversation_done = true;
-                conversationUI.DisableConversation();
+                TerminateInteraction();
             }
         }
 
         override
-        protected void TerminateInteraction()
+        public void TerminateInteraction()
         {
             interaction_ongoing = false;
             conversation_done = false;

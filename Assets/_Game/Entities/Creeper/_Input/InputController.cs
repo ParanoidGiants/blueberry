@@ -1,3 +1,4 @@
+using Roots;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -6,45 +7,66 @@ namespace Creeper
 {
     public class InputController : MonoBehaviour
     {
-        #region PlayerInputBinding
-        private PlayerInputs input = null;
-        private bool IsReloadingScene = false;
+        private PlayerInputs _input;
+        private bool _isReloadingScene;
         private bool _areInputsFrozen;
+
+        public HeadController head;
+        public VineController vine;
+        public CameraController cameraController;
+
+        private FertilizerManager _fertilizerManager;
+        private FertilizerManager fertilizerManager {
+            get
+            {
+                if (_fertilizerManager == null)
+                {
+                    _fertilizerManager = FindObjectOfType<FertilizerManager>();
+                }
+                return _fertilizerManager;
+            }
+        }
 
         private void Awake()
         {
-            IsReloadingScene = false;
-            input = new PlayerInputs();
+            _isReloadingScene = false;
+            _input = new PlayerInputs();
         }
 
         private void OnEnable()
         {
-            input.Enable();
-            input.PlayerInput.MoveCreeper.performed += OnMove;
-            input.PlayerInput.ZoomCamera.performed += OnZoom;
-            input.PlayerInput.Reset.performed += OnReset;
+            _input.Enable();
+            _input.PlayerInput.MoveCreeper.performed += OnMove;
+            _input.PlayerInput.ZoomCamera.performed += OnZoom;
+            _input.PlayerInput.Reset.performed += OnReset;
+            _input.PlayerInput.Confirm.performed += OnConfirm;
 
-            input.PlayerInput.MoveCreeper.canceled += OnCancelMove;
-            input.PlayerInput.ZoomCamera.canceled += OnCancelZoom;
+            _input.PlayerInput.MoveCreeper.canceled += OnCancelMove;
+            _input.PlayerInput.ZoomCamera.canceled += OnCancelZoom;
         }
 
         private void OnDisable()
         {
-            input.Disable();
-            input.PlayerInput.MoveCreeper.performed -= OnMove;
-            input.PlayerInput.ZoomCamera.performed -= OnZoom;
-            input.PlayerInput.Reset.performed -= OnReset;
+            _input.Disable();
+            _input.PlayerInput.MoveCreeper.performed -= OnMove;
+            _input.PlayerInput.ZoomCamera.performed -= OnZoom;
+            _input.PlayerInput.Reset.performed -= OnReset;
+            _input.PlayerInput.Confirm.performed -= OnConfirm;
 
-            input.PlayerInput.MoveCreeper.canceled -= OnCancelMove;
-            input.PlayerInput.ZoomCamera.canceled -= OnCancelZoom;
+            _input.PlayerInput.MoveCreeper.canceled -= OnCancelMove;
+            _input.PlayerInput.ZoomCamera.canceled -= OnCancelZoom;
         }
-        #endregion PlayerInputBinding
 
-        #region PlayerInputReferences
-        public HeadController Head;
-        public VineController Branch;
-        public CameraController Camera;
-        #endregion PlayerInputReferences
+        private void OnConfirm(InputAction.CallbackContext obj)
+        {
+            if (fertilizerManager == null) return;
+            
+            if (fertilizerManager.IsDelivered)
+            {
+                Game.Instance.OnLoadFirstLevel();
+            }
+                
+        }
 
         public void OnMove(InputAction.CallbackContext _directionCallback)
         {
@@ -55,23 +77,23 @@ namespace Creeper
             {
                 direction.Normalize();
             }
-            Head.InputDirection = direction;
-            Branch.InputDirection = direction;
+            head.InputDirection = direction;
+            vine.InputDirection = direction;
         }
 
         public void OnCancelMove(InputAction.CallbackContext _directionCallback)
         {
             if (_areInputsFrozen) return;
 
-            Head.InputDirection = Vector3.zero;
-            Branch.InputDirection = Vector3.zero;
+            head.InputDirection = Vector3.zero;
+            vine.InputDirection = Vector3.zero;
         }
         public void OnZoom(InputAction.CallbackContext _directionCallback)
         {
             if (_areInputsFrozen) return;
 
             var direction = _directionCallback.ReadValue<float>();
-            Camera.SetZoomDirection(direction);
+            cameraController.SetZoomDirection(direction);
         }
 
         public void OnCancelZoom(InputAction.CallbackContext _directionCallback)
@@ -79,14 +101,14 @@ namespace Creeper
             if (_areInputsFrozen) return;
 
             var direction = _directionCallback.ReadValue<float>();
-            Camera.SetZoomDirection(direction);
+            cameraController.SetZoomDirection(direction);
         }
 
         public void OnReset(InputAction.CallbackContext _directionCallback)
         {
-            if (IsReloadingScene) return;
+            if (_isReloadingScene) return;
 
-            IsReloadingScene = true;
+            _isReloadingScene = true;
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
 
