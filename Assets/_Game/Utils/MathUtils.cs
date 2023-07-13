@@ -102,5 +102,39 @@ namespace RootMath
             var result = colliderLayer & LayerMask.GetMask("PlayerPhysicsCollider");
             return result != 0;
         }
+
+        public static void SetVertex(
+            VineNode vineNode,
+            Vector3 offset,
+            int i,
+            int v,
+            float radius,
+            int meshFaceCount,
+            float vStep,
+            ref Vector3[] vertices,
+            ref Vector3[] normals,
+            ref Vector2[] uv,
+            float uvValueY = 0f
+        ) {
+            var vertexIndex = i * meshFaceCount + v;
+            var position = vineNode.position;
+            position += vineNode.rotation * Vector3.up * (radius * Mathf.Sin(v * vStep));
+            position += vineNode.rotation * Vector3.right * (radius * Mathf.Cos(v * vStep));
+            vertices[vertexIndex] = position + offset;
+            var diff = position - vineNode.position;
+            normals[vertexIndex] = diff / diff.magnitude;
+            uv[vertexIndex] = new Vector2(0, uvValueY);
+        }
+    
+        public static void SetTriangles(int i, int v, int meshFaceCount, ref int[] triangles)
+        {
+            var baseTriangleIndex = i * meshFaceCount * 6 + v * 6;
+            triangles[baseTriangleIndex] = ((v + 1) % meshFaceCount) + i * meshFaceCount;
+            triangles[baseTriangleIndex + 1] = triangles[baseTriangleIndex + 4] = v + i * meshFaceCount;
+            triangles[baseTriangleIndex + 2] = triangles[baseTriangleIndex + 3]
+                = ((v + 1) % meshFaceCount + meshFaceCount) + i * meshFaceCount;
+            triangles[baseTriangleIndex + 5] = (meshFaceCount + v % meshFaceCount) + i * meshFaceCount;
+        }
+
     }
 }

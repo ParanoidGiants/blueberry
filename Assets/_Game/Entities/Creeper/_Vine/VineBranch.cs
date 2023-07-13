@@ -7,7 +7,6 @@ using Random = UnityEngine.Random;
 public class VineBranch : MonoBehaviour
 {
     private const int meshFaces = 8;
-    private static int branchCount = 0;
     public List<VineNode> nodes;
     public Vine vine;
     
@@ -18,10 +17,9 @@ public class VineBranch : MonoBehaviour
 
     public float currentDistance = 0;
     public bool isDone;
-    [SerializeField] private int node0;
-    [SerializeField] private int node1;
+    private int _currentNodeIndex;
 
-    public void CreateBranch(Vector3 position, Quaternion orientation, float radius, float segmentLength)
+    public void CreateBranch(Vector3 position, Quaternion orientation, float radius)
     {
         this.segmentLength = radius;
         defaultRadius = radius;
@@ -50,73 +48,37 @@ public class VineBranch : MonoBehaviour
         
         var percentage = currentDistance;
         var midNodePercentage = percentage * (nodes.Count - 1);
-        node0 = (int) Mathf.Floor(midNodePercentage);
-        node1 = (int) Mathf.Ceil(midNodePercentage);
-        midNodePercentage %= 1;
+        _currentNodeIndex = (int) Mathf.Floor(midNodePercentage);
         
         for (int i = 0; i < nodes.Count; i++)
         {
-            var index = Mathf.Min(i, node0);
-            var factor = node0 == 0 ? 0f : (1f - (float) index / node0);
+            var index = Mathf.Min(i, _currentNodeIndex);
+            var factor = _currentNodeIndex == 0 ? 0f : (1f - (float) index / _currentNodeIndex);
             var radius = defaultRadius * percentage * factor;
             float vStep = (2f * Mathf.PI) / meshFaces;
-
-            var orientation = nodes[index].rotation;
-            var forward = orientation * Vector3.forward;
-            var offset = orientation * Vector3.up * (radius - defaultRadius);
-            Vector3 xAxis = Vector3.up;
-            Vector3 yAxis = Vector3.right;
-            Vector3 startPosition = index == 0 
-                ? nodes[index].position
-                : nodes[index - 1].position + forward * (segmentLength * midNodePercentage);
-            startPosition += offset;
+            var offset = nodes[index].rotation * Vector3.up * (radius - defaultRadius);
             
             for (int v = 0; v < meshFaces; v++)
             {
-                var vertexIndex = i * meshFaces + v;
-                var pos = startPosition;
-                pos += orientation * xAxis * (radius * Mathf.Sin(v * vStep));
-                pos += orientation * yAxis * (radius * Mathf.Cos(v * vStep));
-
-                vertices[vertexIndex] = pos;
-
-                var diff = pos - nodes[index].position;
-                normals[vertexIndex] = diff / diff.magnitude;
-                uv[vertexIndex] = new Vector2(0, 0);
+                RMath.SetVertex(
+                    nodes[index],
+                    offset,
+                    i,
+                    v,
+                    radius,
+                    meshFaces,
+                    vStep,
+                    ref vertices,
+                    ref normals,
+                    ref uv
+                );
             }
 
-            if (i + 1 < nodes.Count)
+            if (i + 1 >= nodes.Count) continue;
+            
+            for (int v = 0; v < meshFaces; v++)
             {
-                if (i > index)
-                {
-                    for (int v = 0; v < meshFaces; v++)
-                    {
-                        var triangleIndex = i * meshFaces * 6 + v * 6;
-                        triangles[triangleIndex] = ((v + 1) % meshFaces) + index * meshFaces;
-                        triangles[triangleIndex + 1]
-                            = triangles[triangleIndex + 4]
-                            = v + index * meshFaces;
-                        triangles[triangleIndex + 2]
-                            = triangles[triangleIndex + 3]
-                            = ((v + 1) % meshFaces + meshFaces) + index * meshFaces;
-                        triangles[triangleIndex + 5] = (meshFaces + v % meshFaces) + index * meshFaces;
-                    }
-                }
-                else
-                {
-                    for (int v = 0; v < meshFaces; v++)
-                    {
-                        var triangleIndex = i * meshFaces * 6 + v * 6;
-                        triangles[triangleIndex] = ((v + 1) % meshFaces) + index * meshFaces;
-                        triangles[triangleIndex + 1]
-                            = triangles[triangleIndex + 4]
-                            = v + index * meshFaces;
-                        triangles[triangleIndex + 2]
-                            = triangles[triangleIndex + 3]
-                            = ((v + 1) % meshFaces + meshFaces) + index * meshFaces;
-                        triangles[triangleIndex + 5] = (meshFaces + v % meshFaces) + index * meshFaces;
-                    }
-                }
+                RMath.SetTriangles(i, v, meshFaces, ref triangles);
             }
         }
         
@@ -170,7 +132,6 @@ public class VineBranch : MonoBehaviour
         Vector3 p1 = pos + forward * segmentLength;
         if (Physics.Raycast(ray, out hit, rayLength, RMath.WHAT_IS_CLIMBABLE))
         {
-            // Debug.DrawLine(ray.origin, hit.point, Color.black, 3f);
             p1 = hit.point - forward * defaultRadius;
             newOrientation = Quaternion.LookRotation(up, -forward);
             var middleOrientation = Quaternion.Lerp(orientation, newOrientation, 0.5f);
@@ -185,14 +146,9 @@ public class VineBranch : MonoBehaviour
         rayLength = 2f * defaultRadius;
         if (Physics.Raycast(ray, out hit, rayLength, RMath.WHAT_IS_CLIMBABLE))
         {
-            // Debug.DrawLine(ray.origin, hit.point, Color.gray, 3f);
             p2 = hit.point + up * defaultRadius;
             var p2Node = new VineNode(p2, newOrientation);
             return new List<VineNode> { p2Node }.join(CreateBranchNodes(count - 1, p2, newOrientation));
-        }
-        else
-        {
-            // Debug.DrawRay(ray.origin, ray.direction * rayLength, Color.gray, 3f);
         }
         
         Vector3 p3;
@@ -208,7 +164,6 @@ public class VineBranch : MonoBehaviour
         rayLength = segmentLength;
         if (Physics.Raycast(ray, out hit, rayLength, RMath.WHAT_IS_CLIMBABLE))
         {
-            // Debug.DrawLine(ray.origin, hit.point, Color.yellow, 3f);
             p3 = hit.point + forward * defaultRadius;
             newOrientation = Quaternion.LookRotation(-up, forward);
             VineNode p3Node = new VineNode(p3, newOrientation);
@@ -226,7 +181,6 @@ public class VineBranch : MonoBehaviour
             m1Node = new VineNode(m1, middleOrientation);
             return new List<VineNode> { m0Node, m1Node, p3Node }.join(CreateBranchNodes(count - 3, p3, newOrientation));
         }
-        // Debug.DrawRay(ray.origin, ray.direction * rayLength, Color.magenta, 3f);
         return null;
     }
 
