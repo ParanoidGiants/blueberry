@@ -56196,14 +56196,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Creeper
       objectReference: {fileID: 0}
-    - target: {fileID: 7383108707870003917, guid: 907c774c7d7bc59419d691e061ef3528, type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8567532191546326454, guid: 907c774c7d7bc59419d691e061ef3528, type: 3}
-      propertyPath: _moveSpeed
-      value: 5
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 907c774c7d7bc59419d691e061ef3528, type: 3}
 --- !u!4 &2044043444 stripped
