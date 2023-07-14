@@ -11,12 +11,12 @@ public class StartLevel : MonoBehaviour
         _inputController = FindObjectOfType<InputController>();
         _inputController.FreezeInputs();
         FindObjectOfType<HeadController>().transform.position = transform.position;
-        FindObjectOfType<CameraController>().SetCameraActive(false);
+        // FindObjectOfType<CameraController>().SetCameraActive(false);
     }
 
     public void OnStartLevel()
     {
         _inputController.UnfreezeInputs();
-        FindObjectOfType<CameraController>().SetCameraActive(true);
+        // FindObjectOfType<CameraController>().SetCameraActive(true);
     }
 }
