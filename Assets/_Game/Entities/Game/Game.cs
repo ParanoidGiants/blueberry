@@ -7,13 +7,8 @@ namespace Roots
     {
         private static Game _instance;
         public static Game Instance => _instance;
-        public bool IsOnTitle { get; private set; }
-        public bool IsLevelDone => _fertilizerManager != null && _fertilizerManager.IsDelivered;
-        
-        public UI ui;
-        private FertilizerManager _fertilizerManager;
-        
-        
+        public GameUI.UI ui;
+
         private void Awake()
         {
             if (_instance != null && _instance != this)
@@ -31,12 +26,10 @@ namespace Roots
         public void OnLoadTitle()
         {
             SceneManager.LoadSceneAsync(1);
-            IsOnTitle = true;
         }
 
         public void OnLoadFirstLevel()
         {
-            IsOnTitle = false;
             StartCoroutine(
                 ui.FadeOut(
                     () => SceneManager.LoadSceneAsync(2)
@@ -57,7 +50,6 @@ namespace Roots
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
             StartCoroutine(ui.FadeIn(null));
-            _fertilizerManager = FindObjectOfType<FertilizerManager>();
         }
     }
 }

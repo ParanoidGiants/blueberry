@@ -1,53 +1,57 @@
 using Creeper;
-using RootMath;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class WindowConversationUI : MonoBehaviour
+namespace GameUI
 {
-    private TextMeshProUGUI _textMesh;
-    private Image _background;
-    private RectTransform _rectTransform;
-    private bool _isConversationActive;
-    private Vector3 _currentTargetPosition;
-    private Camera _camera;
-    private Transform _player;
-    public float _minDistance = 2f;
-    public float _maxDistance = 10f;
-    public float _minScale = 0.5f;
-    public float _maxScale = 1f;
-
-    private void Start()
+    public class WindowConversationUI : MonoBehaviour
     {
-        _textMesh = GetComponentInChildren<TextMeshProUGUI>();
-        _rectTransform = GetComponent<RectTransform>();
-        _background = GetComponent<Image>();
-        DisableConversation();
-        _camera = Camera.main;
-        _player = FindObjectOfType<HeadController>().transform;
-    }
+        private TextMeshProUGUI _textMesh;
+        private Image _background;
+        private RectTransform _rectTransform;
+        private bool _isConversationActive;
+        private Vector3 _currentTargetPosition;
+        private Camera _camera;
+        private Transform _player;
+        
+        [Header("Settings")]
+        [SerializeField] private float _minDistance = 2f;
+        [SerializeField] private float _maxDistance = 10f;
+        [SerializeField] private float _minScale = 0.5f;
+        [SerializeField] private float _maxScale = 1f;
 
-    private void Update()
-    {
-        _rectTransform.position = (Vector2) _camera.WorldToScreenPoint(_currentTargetPosition);
+        private void Start()
+        {
+            _textMesh = GetComponentInChildren<TextMeshProUGUI>();
+            _rectTransform = GetComponent<RectTransform>();
+            _background = GetComponent<Image>();
+            DisableConversation();
+            _camera = Camera.main;
+            _player = FindObjectOfType<HeadController>().transform;
+        }
 
-        var distanceToPlayer = Mathf.Clamp((_currentTargetPosition - _player.position).magnitude, _minDistance, _maxDistance);
-        var newScale = RMath.Remap(distanceToPlayer, _minDistance, _maxDistance, _maxScale, _minScale);
-        _rectTransform.localScale = newScale * Vector3.one;
-    }
+        private void Update()
+        {
+            _rectTransform.position = (Vector2) _camera.WorldToScreenPoint(_currentTargetPosition);
 
-    public void SetText(string conversationSnippet, Vector3 windowCenter)
-    {
-        _background.enabled = true;
-        _textMesh.enabled = true;
-        _currentTargetPosition = windowCenter;
-        _textMesh.text = conversationSnippet;
-    }
+            var distanceToPlayer = Mathf.Clamp((_currentTargetPosition - _player.position).magnitude, _minDistance, _maxDistance);
+            var newScale = Utils.Helper.Remap(distanceToPlayer, _minDistance, _maxDistance, _maxScale, _minScale);
+            _rectTransform.localScale = newScale * Vector3.one;
+        }
 
-    public void DisableConversation()
-    {
-        _background.enabled = false;
-        _textMesh.enabled = false;
+        public void SetText(string conversationSnippet, Vector3 windowCenter)
+        {
+            _background.enabled = true;
+            _textMesh.enabled = true;
+            _currentTargetPosition = windowCenter;
+            _textMesh.text = conversationSnippet;
+        }
+
+        public void DisableConversation()
+        {
+            _background.enabled = false;
+            _textMesh.enabled = false;
+        }
     }
 }

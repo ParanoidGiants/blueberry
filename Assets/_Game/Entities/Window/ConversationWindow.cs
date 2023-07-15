@@ -14,11 +14,11 @@ namespace Assets.Window
         private bool conversation_done = false;
         private int conversation_counter = 0;
 
-        private WindowConversationUI conversationUI;
+        private GameUI.WindowConversationUI conversationUI;
 
         private void Awake()
         {
-            conversationUI = FindObjectOfType<WindowConversationUI>();
+            conversationUI = FindObjectOfType<GameUI.WindowConversationUI>();
             jsonContent = jsonFile.ToString();
             conversation = new Conversation(JsonHelper.FromJson<Statement>(jsonContent));
         }

@@ -1,45 +1,42 @@
-using System.Collections;
 using System.Collections.Generic;
+using Cinemachine;
 using UnityEngine;
+using UnityEngine.Playables;
 
-namespace Creeper
+namespace GameCamera
 {
     public class CameraController : MonoBehaviour
     {
-        private HeadController _head;
-        public Transform Target;
-        public Transform _cameraTransform;
-        
-        [Space(10)]
-        [Header("Move")]
-        [SerializeField] private float MoveSpeed = 0.1f;
-        
-        [Space(10)]
-        [Header("Zoom")]
-        [SerializeField] private float ZoomSpeed = 0.1f;
+        private Creeper.HeadController _head;
         private float _zoomDirection;
-        public List<CameraZone> _cameraZones;
-        public bool isDangling;
-        
-        private bool _isAnimating;
-        private bool _isFlowerFocused;
-        public bool IsFlowerFocused => _isFlowerFocused;
-        
+        private List<CameraZone> _cameraZones;
+        private bool _isDangling;
+        private Transform _headTransform;
+        private Transform _mainVCamTransform;
 
-        private void Start()
+        [Space(10)]
+        [Header("Settings")]
+        [SerializeField] private float _moveSpeed = 1f;
+        [SerializeField] private float _zoomSpeed = 10f;
+
+        [SerializeField] private PlayableDirector _endDirector;
+        public PlayableDirector EndDirector => _endDirector;
+
+        private void Awake()
         {
             Application.targetFrameRate = 60;
-            _head = FindObjectOfType<HeadController>();
+            Time.timeScale = 4f;
+            
             _cameraZones = new List<CameraZone>();
+            
+            _head = FindObjectOfType<Creeper.HeadController>();
+            _headTransform = _head.transform;
+            _mainVCamTransform = GetComponentInChildren<CinemachineVirtualCamera>().transform;
+            
         }
 
         private void LateUpdate()
         {
-            if (_isAnimating)
-            {
-                return;
-            }
-            
             if (_cameraZones.Count < 1) return;
 
             FollowTarget();
@@ -49,40 +46,23 @@ namespace Creeper
 
         private void Zoom()
         {
-            var currentLocalPosition = _cameraTransform.localPosition;
-            var nextLocalPosition = currentLocalPosition + Vector3.forward * (_zoomDirection * Time.deltaTime);
-            // RaycastHit hit;
-            // if (Physics.Raycast(
-            //         transform.position,
-            //         _cameraTransform.position - transform.position,
-            //         out hit,
-            //         _cameraZones[^1].maximumZoom,
-            //         HeadController.WHAT_IS_CLIMBABLE
-            //     )
-            // ) {
-            //     nextLocalPosition.z = Mathf.Max(hit.distance, nextLocalPosition.z);
-            // }
-            nextLocalPosition.z = Mathf.Clamp(
-                nextLocalPosition.z, 
-                -_cameraZones[^1].maximumZoom, 
-                -_cameraZones[^1].minimumZoom
-            );
-            _cameraTransform.localPosition = Vector3.Lerp(
-                currentLocalPosition, 
-                nextLocalPosition,
-                Time.deltaTime * ZoomSpeed
+            var currentLocalPosition = _mainVCamTransform.localPosition;
+            _mainVCamTransform.localPosition = Vector3.Lerp(
+                currentLocalPosition,
+                -_cameraZones[^1].Zoom * Vector3.forward,
+                Time.deltaTime * _zoomSpeed
             );
         }
 
         private void FollowTarget()
         {
-            var targetPosition = Target.position;
+            var targetPosition = _headTransform.position;
             if (_cameraZones.Count != 0)
             {
                 var activeCameraZone = _cameraZones[^1];
                 targetPosition = activeCameraZone.Bounds.ClosestPoint(targetPosition);
             }
-            transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * MoveSpeed);
+            transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * _moveSpeed);
         }
 
         private void Rotate()
@@ -90,7 +70,7 @@ namespace Creeper
             if (_cameraZones.Count != 0)
             {
                 var activeCameraZone = _cameraZones[^1];
-                transform.rotation = Quaternion.Lerp(transform.rotation, activeCameraZone.rotation, Time.deltaTime * MoveSpeed);
+                transform.rotation = Quaternion.Lerp(transform.rotation, activeCameraZone.Rotation, Time.deltaTime * _moveSpeed);
                 _head.UpdateMovementAxis();
                 return;
             }
@@ -100,15 +80,15 @@ namespace Creeper
         
         public void SetZoomDirection(float direction)
         {
-            _zoomDirection = ZoomSpeed * direction;
+            _zoomDirection = _zoomSpeed * direction;
         }
         
         public void AddCameraZone(CameraZone cameraZone)
         {
-            if (isDangling)
+            if (_isDangling)
             {
                 _cameraZones.Clear();
-                isDangling = false;                
+                _isDangling = false;                
             }
             _cameraZones.Add(cameraZone);
         }
@@ -117,60 +97,12 @@ namespace Creeper
         {
             if (_cameraZones.Count == 1)
             {
-                isDangling = true;
+                _isDangling = true;
             }
             else
             {
                 _cameraZones.Remove(cameraZone);
             }
-        }
-
-        public void PlayEndAnimation()
-        {
-            
-        }
-        
-
-        public void PlayStartAnimation()
-        {
-            
-        }
-
-        public IEnumerator MoveCameraToFlower(Vector3 targetPosition)
-        {
-            _isAnimating = true;
-            var startRotation = transform.rotation;
-            var targetRotation = Quaternion.Euler(20f, startRotation.eulerAngles.y, 0f);
-            var startPosition = transform.position;
-            
-            var startZoom = _cameraTransform.localPosition.z;
-            var targetZoom = -20f;
-            
-            var positionTime = 0f;
-            while (positionTime <= 1f)
-            {
-                transform.position = Vector3.Lerp(startPosition, targetPosition, positionTime);
-                transform.rotation = Quaternion.Lerp(startRotation, targetRotation, positionTime);
-                _cameraTransform.localPosition = new Vector3(0f, 0f, Mathf.Lerp(startZoom, targetZoom, positionTime));
-                
-                positionTime += Time.deltaTime;
-                yield return null;
-            }
-            _isFlowerFocused = true;
-
-            var rotationTime = 0f;
-            while (_isAnimating)
-            {
-                transform.rotation = Quaternion.Euler(20f, rotationTime, 0f);
-                rotationTime += Time.deltaTime * 20f;
-                rotationTime %= 360f;
-                yield return null;
-            }
-        }
-
-        public void SetCameraActive(bool isActive)
-        {
-            _cameraTransform.gameObject.SetActive(isActive);
         }
     }
 }

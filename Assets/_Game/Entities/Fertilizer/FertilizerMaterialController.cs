@@ -1,15 +1,18 @@
 using UnityEngine;
 
-public class FertilizerMaterialController : MonoBehaviour
+namespace CollectableFetrilizer
 {
-    private Fertilizer[] _collectables;
-    void Start()
+    public class FertilizerMaterialController : MonoBehaviour
     {
-        _collectables = GetComponentsInChildren<Fertilizer>();
-        foreach (var collectable in _collectables)
+        private Fertilizer[] _collectables;
+        void Start()
         {
-            var random = Random.Range(0f, 10f);
-            collectable.GetComponentInChildren<Renderer>().material.SetFloat("_Offset", random);
+            _collectables = GetComponentsInChildren<Fertilizer>();
+            foreach (var collectable in _collectables)
+            {
+                var random = Random.Range(0f, 10f);
+                collectable.GetComponentInChildren<Renderer>().material.SetFloat("_Offset", random);
+            }
         }
     }
 }

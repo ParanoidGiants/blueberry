@@ -1,14 +1,14 @@
 using UnityEngine;
-using RootMath;
 
 namespace Creeper
 {
     public class HeadController : MonoBehaviour
     {
-        [Header("References")]
-        public VineController branchController;
         private Rigidbody _rigidbody;
         private Transform _cameraTransform;
+        
+        [Header("References")]
+        public MeshGenerator branchController;
         
         [Header("Settings")]
         [SerializeField] private float _raycastLengthEpsilon;
@@ -24,36 +24,40 @@ namespace Creeper
         [SerializeField] private Vector3 _behindDirection;
         
         [Space(10)]
-        [SerializeField] private Axis projectedAxis;
+        [SerializeField] private Utils.Axis projectedAxis;
         [SerializeField] private ContactObjectManager contactObjectManager;
         
         
         public Vector3 InputDirection { set { _inputDirection = value; } }
-        public Vector3 CalculateMovementDirection()
-        { 
-            return projectedAxis == null 
-                ? Vector3.zero
-                : Vector3.Normalize(projectedAxis.right * _inputDirection.x + projectedAxis.up * _inputDirection.y);
-        }
-        
-        public Vector3 GetGroundPosition()
-        {
-            return transform.position + 0.5f * transform.localScale.z * _groundDirection;
-        }
-        
-#region LifeCycle
-        private void Start()
+
+        private void Awake()
         {
             _rigidbody = GetComponent<Rigidbody>();
             _cameraTransform = Camera.main.transform;
+
+            var startLevel = FindObjectOfType<Level.Start>();
+            if (startLevel != null)
+            {
+                transform.position = startLevel.transform.position;
+            }
+
             contactObjectManager = new ContactObjectManager();
             _lastPosition = transform.position;
             _groundDirection = -transform.up;
         }
-        
+
+        private void FixedUpdate()
+        {
+            _rigidbody.velocity = Vector3.zero;
+            
+            _isGrounded = contactObjectManager.HasContactObjects();
+            if (_isGrounded) UpdateMovement();
+            else FindGround();
+        }
+
         private void OnCollisionEnter(Collision collision)
         {
-            if (!RMath.IsLayerClimbable(collision.gameObject.layer)) return;
+            if (!Utils.Helper.IsLayerClimbable(collision.gameObject.layer)) return;
             
             if (contactObjectManager.TryAddNormals(collision))
             {
@@ -64,7 +68,7 @@ namespace Creeper
         
         private void OnCollisionStay(Collision collision)
         {
-            if (!RMath.IsLayerClimbable(collision.gameObject.layer)) return;
+            if (!Utils.Helper.IsLayerClimbable(collision.gameObject.layer)) return;
             
             if (contactObjectManager.TryAddNormals(collision))
             {
@@ -75,21 +79,11 @@ namespace Creeper
         
         private void OnCollisionExit(Collision collision)
         {
-            if (!RMath.IsLayerClimbable(collision.gameObject.layer)) return;
+            if (!Utils.Helper.IsLayerClimbable(collision.gameObject.layer)) return;
             
             contactObjectManager.RemoveContactObjects(collision.gameObject.GetInstanceID());
             UpdateGround();
         }
-        
-        private void FixedUpdate()
-        {
-            _rigidbody.velocity = Vector3.zero;
-            
-            _isGrounded = contactObjectManager.contactObjects.Count > 0;
-            if (_isGrounded) UpdateMovement();
-            else FindGround();
-        }
-#endregion LifeCycle
         
         private void UpdateMovement()
         {
@@ -139,7 +133,7 @@ namespace Creeper
         private bool ShootRay(Vector3 rayOrigin, Vector3 rayDirection, float raycastLength, out RaycastHit hit, Color color)
         {
             Debug.DrawRay(rayOrigin, rayDirection * raycastLength, color, _drawTime);
-            return Physics.Raycast(rayOrigin, rayDirection, out hit, raycastLength, RMath.WHAT_IS_CLIMBABLE);
+            return Physics.Raycast(rayOrigin, rayDirection, out hit, raycastLength, Utils.Helper.WHAT_IS_CLIMBABLE);
         }
         
         private void SetPosition(Vector3 position, Vector3 normal)
@@ -151,37 +145,28 @@ namespace Creeper
         private void UpdateGround()
         {
             contactObjectManager.UpdateGround();
-            if (contactObjectManager.normal.magnitude == 0)
-            {
-                _isGrounded = false;
-                return;
-            }
+            
+            _isGrounded = contactObjectManager.AverageNormal.magnitude != 0; 
+            if (!_isGrounded) return;
+            
             _isGrounded = true;
-            _groundDirection = -contactObjectManager.normal;
+            _groundDirection = -contactObjectManager.AverageNormal;
             UpdateMovementAxis();
             var transform1 = transform;
             transform1.up = -_groundDirection;
             Debug.DrawRay(transform1.position, transform1.up, Color.green, 1f);
-            
         }
 
         public void UpdateMovementAxis()
         {
-            projectedAxis = CreateMovementAxis();
+            projectedAxis = Utils.Helper.CreateMovementAxis(transform, _cameraTransform, _groundDirection);
         }
         
-        private Axis CreateMovementAxis()
-        {
-            var wallDirection = _groundDirection;
-            var position = transform.position;
-            var cameraPosition = _cameraTransform.position;
-            return new Axis(
-                position,
-                cameraPosition,
-                _cameraTransform.right,
-                _cameraTransform.up,
-                wallDirection
-            );
+        public Vector3 CalculateMovementDirection()
+        { 
+            return projectedAxis == null 
+                ? Vector3.zero
+                : Vector3.Normalize(projectedAxis.right * _inputDirection.x + projectedAxis.up * _inputDirection.y);
         }
     }
 }

@@ -1,21 +1,23 @@
-using System;
 using TMPro;
 using UnityEngine;
 
-public class FertilizerText : MonoBehaviour
+namespace GameUI
 {
-    private TextMeshProUGUI _text;
-    private Animator _animator;
-
-    private void Awake()
+    public class FertilizerText : MonoBehaviour
     {
-        _text = GetComponent<TextMeshProUGUI>();
-        _animator = GetComponent<Animator>();
-    }
+        private TextMeshProUGUI _text;
+        private Animator _animator;
 
-    public void UpdateText(int currentCount, int totalCount)
-    {
-        _text.text = $"{currentCount.ToString()} / {totalCount.ToString()}";
-        _animator.SetTrigger("Pulse");
+        private void Awake()
+        {
+            _text = GetComponent<TextMeshProUGUI>();
+            _animator = GetComponent<Animator>();
+        }
+
+        public void UpdateText(int currentCount, int totalCount)
+        {
+            _text.text = $"{currentCount.ToString()} / {totalCount.ToString()}";
+            _animator.SetTrigger("Pulse");
+        }
     }
 }

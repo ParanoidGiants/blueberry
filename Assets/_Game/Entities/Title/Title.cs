@@ -1,9 +1,8 @@
 using System.Collections;
 using UnityEngine;
 
-namespace Roots
+namespace GameUI
 {
-    
     public class Title : MonoBehaviour
     {
         public Animator[] animators;
@@ -23,7 +22,7 @@ namespace Roots
         private IEnumerator LoadLevelAfterAnimation()
         {
             yield return new WaitForSeconds(2.0f);
-            Game.Instance.OnLoadFirstLevel();
+            Roots.Game.Instance.OnLoadFirstLevel();
         }
     }
 }

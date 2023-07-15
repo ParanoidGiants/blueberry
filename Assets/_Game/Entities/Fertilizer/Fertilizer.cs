@@ -1,89 +1,92 @@
 using UnityEngine;
 using DG.Tweening;
 
-public class Fertilizer : MonoBehaviour
+namespace CollectableFetrilizer
 {
-    private Renderer _renderer;
-    private Collider _collider;
-    private bool _isCollected;
-    private bool _isCollecting;
-    private bool _isDelivered;
-    public bool IsCollected => _isCollected;
-    public bool IsDelivered => _isDelivered;
-
-    private VineController _vine;
-    [SerializeField] private float _animateTimer = 1f;
-    private Vector3 _originalScale;
-
-    private void Start()
+    public class Fertilizer : MonoBehaviour
     {
-        _renderer = GetComponentInChildren<Renderer>();
-        _collider = GetComponent<Collider>();
-        _vine = FindObjectOfType<VineController>();
-        _originalScale = transform.localScale;
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        FertilizerManager manager = other.GetComponent<FertilizerManager>();
-        if (manager == null) return;
+        private const float ANIMATE_TIMER = 1f;
+        private readonly int _fresnelPower = Shader.PropertyToID("_FresnelPower");
         
-        _isCollected = true;
-        _collider.enabled = false;
-        manager.OnCollectFertilizer(this);
-        AnimateCollect();
-    }
-
-    private float time;
-    private Vector3 startPosition;
-    private static readonly int FresnelPower = Shader.PropertyToID("_FresnelPower");
-
-    private void Update()
-    {
-        if (!_isCollecting) return;
-
-        time += Time.deltaTime;
-        transform.position = Vector3.Lerp(startPosition, _vine.GetTipPosition(), time /_animateTimer);
+        private Renderer _renderer;
+        private Collider _collider;
+        private Creeper.MeshGenerator _meshGenerator;
+        private Vector3 _originalScale;
+        private float _time;
+        private Vector3 _startPosition;
         
-        float value = Mathf.Lerp(-5f, 5f, time / _animateTimer);
-        _renderer.material.SetFloat(FresnelPower, value);
-            
-            
-        if (time >= _animateTimer)
+        private bool _isCollected;
+        private bool _isCollecting;
+        private bool _isDelivered;
+        public bool IsCollected => _isCollected;
+        public bool IsDelivered => _isDelivered;
+
+        private void Start()
         {
-            _isCollecting = false;
-            _isCollected = true;
-            transform.position = _vine.GetTipPosition();
-            _renderer.material.SetFloat(FresnelPower, 5f);
-            _vine.AddFlower();
+            _renderer = GetComponentInChildren<Renderer>();
+            _collider = GetComponent<Collider>();
+            _meshGenerator = FindObjectOfType<Creeper.MeshGenerator>();
+            _originalScale = transform.localScale;
         }
-    }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            var manager = other.GetComponent<FertilizerManager>();
+            if (manager == null) return;
+            
+            _isCollected = true;
+            _collider.enabled = false;
+            manager.OnCollectFertilizer(this);
+            AnimateCollect();
+        }
+
+        private void Update()
+        {
+            if (!_isCollecting) return;
+
+            _time += Time.deltaTime;
+            transform.position = Vector3.Lerp(_startPosition, _meshGenerator.GetTipPosition(), _time /ANIMATE_TIMER);
+            
+            float value = Mathf.Lerp(-5f, 5f, _time / ANIMATE_TIMER);
+            _renderer.material.SetFloat(_fresnelPower, value);
+                
+                
+            if (_time >= ANIMATE_TIMER)
+            {
+                _isCollecting = false;
+                _isCollected = true;
+                transform.position = _meshGenerator.GetTipPosition();
+                _renderer.material.SetFloat(_fresnelPower, 5f);
+                _meshGenerator.AddFlower();
+            }
+        }
 
 
-    private void AnimateCollect()
-    {
-        startPosition = transform.position;
-        time = 0f;
-        _isCollecting = true;
-        var sequence = DOTween.Sequence();
-        sequence.Append(transform.DOScale(transform.localScale * 2f, 0.01f).SetEase(Ease.InCirc));
-        sequence.Append(transform.DOScale(Vector3.zero, _animateTimer - 0.01f).SetEase(Ease.OutCirc));
-    }
+        private void AnimateCollect()
+        {
+            _startPosition = transform.position;
+            _time = 0f;
+            _isCollecting = true;
+            var sequence = DOTween.Sequence();
+            sequence.Append(transform.DOScale(transform.localScale * 2f, 0.01f).SetEase(Ease.InCirc));
+            sequence.Append(transform.DOScale(Vector3.zero, ANIMATE_TIMER - 0.01f).SetEase(Ease.OutCirc));
+        }
 
-    public void OnDeliver(Vector3 deliveryPosition)
-    {
-        if (_isDelivered) return;
-        AnimateDelivery(deliveryPosition);
-    }
-    
+        public void OnDeliver(Vector3 deliveryPosition)
+        {
+            if (_isDelivered) return;
+            AnimateDelivery(deliveryPosition);
+        }
+        
 
-    public void AnimateDelivery(Vector3 endPosition)
-    {
-        transform.position = _vine.GetTipPosition();
-        var sequence = DOTween.Sequence();
-        sequence.Append(transform.DOScale(_originalScale, _animateTimer)); // Scale to original size over 1 second
-        sequence.Append(transform.DOMove(endPosition, _animateTimer)); // Move to end position over 1 second
-        sequence.Append(transform.DOScale(0, _animateTimer)); // Scale back to zero over 1 second
-        sequence.OnComplete(() => _isDelivered = true);
+        public void AnimateDelivery(Vector3 endPosition)
+        {
+            transform.position = _meshGenerator.GetTipPosition();
+            var sequence = DOTween.Sequence();
+            sequence.Append(transform.DOScale(_originalScale, ANIMATE_TIMER)); // Scale to original size over 1 second
+            sequence.Append(transform.DOMove(endPosition, ANIMATE_TIMER)); // Move to end position over 1 second
+            sequence.Append(transform.DOScale(0, ANIMATE_TIMER)); // Scale back to zero over 1 second
+            sequence.OnComplete(() => _isDelivered = true);
+        }
     }
 }

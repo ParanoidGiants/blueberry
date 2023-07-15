@@ -1,13 +1,15 @@
-using RootMath;
 using UnityEngine;
 
-public class OnTouchPlaySound : MonoBehaviour
+namespace Interactables
 {
-    private void OnCollisionEnter(Collision other)
+    public class OnTouchPlaySound : MonoBehaviour
     {
-        if (!RMath.IsLayerPlayerPhysicsCollider(other.gameObject.layer)) return;
-        
-        // TODO: Play sound here
-        Debug.Log("Play sound here");
+        private void OnCollisionEnter(Collision other)
+        {
+            if (!Utils.Helper.IsLayerPlayerPhysicsCollider(other.gameObject.layer)) return;
+            
+            // TODO: Play sound here
+            Debug.Log("Play sound here");
+        }
     }
 }

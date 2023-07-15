@@ -1,14 +1,16 @@
-using RootMath;
 using UnityEngine;
 
-public class OnTouchBreakJoint : MonoBehaviour
+namespace Interactables
 {
-    private void OnCollisionEnter(Collision other)
+    public class OnTouchBreakJoint : MonoBehaviour
     {
-        if (!RMath.IsLayerPlayerPhysicsCollider(other.gameObject.layer)) return;
-        
-        var springJoint = GetComponent<SpringJoint>();
-        springJoint.breakForce = 0;
-        Destroy(this);
+        private void OnCollisionEnter(Collision other)
+        {
+            if (!Utils.Helper.IsLayerPlayerPhysicsCollider(other.gameObject.layer)) return;
+            
+            var springJoint = GetComponent<SpringJoint>();
+            springJoint.breakForce = 0;
+            Destroy(this);
+        }
     }
 }

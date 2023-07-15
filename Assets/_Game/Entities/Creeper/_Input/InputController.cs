@@ -11,18 +11,18 @@ namespace Creeper
         private bool _isReloadingScene;
         private bool _areInputsFrozen;
 
-        public HeadController head;
-        public VineController vine;
-        public CameraController cameraController;
+        private HeadController _head;
+        private MeshGenerator _meshGenerator;
+        private GameCamera.CameraController _cameraController;
 
-        private FertilizerManager _fertilizerManager;
-        private FertilizerManager fertilizerManager
+        private CollectableFetrilizer.FertilizerManager _fertilizerManager;
+        private CollectableFetrilizer.FertilizerManager FertilizerManager
         {
             get
             {
                 if (_fertilizerManager == null)
                 {
-                    _fertilizerManager = FindObjectOfType<FertilizerManager>();
+                    _fertilizerManager = FindObjectOfType<CollectableFetrilizer.FertilizerManager>();
                 }
                 return _fertilizerManager;
             }
@@ -30,6 +30,9 @@ namespace Creeper
 
         private void Awake()
         {
+            _head = FindObjectOfType<HeadController>();
+            _meshGenerator = FindObjectOfType<MeshGenerator>();
+            _cameraController = FindObjectOfType<GameCamera.CameraController>();
             _isReloadingScene = false;
             _input = new PlayerInputs();
         }
@@ -60,9 +63,9 @@ namespace Creeper
 
         private void OnConfirm(InputAction.CallbackContext obj)
         {
-            if (fertilizerManager == null) return;
+            if (FertilizerManager == null) return;
             
-            if (fertilizerManager.IsDelivered)
+            if (FertilizerManager.IsDelivered)
             {
                 Game.Instance.OnLoadFirstLevel();
             }
@@ -78,23 +81,23 @@ namespace Creeper
             {
                 direction.Normalize();
             }
-            head.InputDirection = direction;
-            vine.InputDirection = direction;
+            _head.InputDirection = direction;
+            _meshGenerator.InputDirection = direction;
         }
 
         public void OnCancelMove(InputAction.CallbackContext _directionCallback)
         {
             if (_areInputsFrozen) return;
 
-            head.InputDirection = Vector3.zero;
-            vine.InputDirection = Vector3.zero;
+            _head.InputDirection = Vector3.zero;
+            _meshGenerator.InputDirection = Vector3.zero;
         }
         public void OnZoom(InputAction.CallbackContext _directionCallback)
         {
             if (_areInputsFrozen) return;
 
             var direction = _directionCallback.ReadValue<float>();
-            cameraController.SetZoomDirection(direction);
+            _cameraController.SetZoomDirection(direction);
         }
 
         public void OnCancelZoom(InputAction.CallbackContext _directionCallback)
@@ -102,7 +105,7 @@ namespace Creeper
             if (_areInputsFrozen) return;
 
             var direction = _directionCallback.ReadValue<float>();
-            cameraController.SetZoomDirection(direction);
+            _cameraController.SetZoomDirection(direction);
         }
 
         public void OnReset(InputAction.CallbackContext _directionCallback)

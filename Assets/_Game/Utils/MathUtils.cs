@@ -1,9 +1,10 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
-using UnityEngine.UI;
 
 
-namespace RootMath
+namespace Utils
 {
     [Serializable]
     public class Axis
@@ -16,22 +17,35 @@ namespace RootMath
             this.up = up;
             this.right = right;
         }
-        
-        public Axis(Vector3 position, Vector3 cameraPosition, Vector3 cameraRight, Vector3 cameraUp, Vector3 wallDirection)
-        {
-            right = ChatGPT.IntersectingLine(position, cameraRight, cameraPosition, wallDirection);
-            up = ChatGPT.IntersectingLine(position, cameraUp, cameraPosition, wallDirection);
-        }
     }
 
-    public static class ChatGPT
+    public static class Helper
     {
-        public static Vector3 IntersectingLine(
+        
+        private static int _MESH_FACE_COUNT = 8;
+        public static int MESH_FACE_COUNT => _MESH_FACE_COUNT;
+        
+        private static float _V_STEP = (2f * Mathf.PI) / _MESH_FACE_COUNT;
+        public static float V_STEP => _V_STEP;
+        
+        public static bool AreDirectionsConsideredEqual(Vector3 direction1, Vector3 direction2)
+        {
+            return Vector3.Dot(direction1, direction2) > 0.99f;
+        }
+
+        public static float Remap(float input, float oldLow, float oldHigh, float newLow, float newHigh)
+        {
+            float t = Mathf.InverseLerp(oldLow, oldHigh, input);
+            return Mathf.Lerp(newLow, newHigh, t);
+        }
+        
+        // This method was generated with ChatGPT
+        private static Vector3 IntersectingLine(
             Vector3 playerPosition,
             Vector3 cameraOffset,
             Vector3 cameraPosition,
             Vector3 collisionNormal
-            )
+        )
         {
             var cameraWithOffset = cameraPosition + cameraOffset;
             var v = cameraWithOffset - playerPosition;
@@ -51,24 +65,6 @@ namespace RootMath
 
             return direction;
         }
-    }
-
-    public static class RMath
-    {
-        public static bool AreDirectionsConsideredEqual(Vector3 _direction1, Vector3 _directions)
-        {
-            return Vector3.Dot(_direction1, _directions) > 0.99f;
-        }
-        
-        
-    
-        public static float Remap(float input, float oldLow, float oldHigh, float newLow, float newHigh)
-        {
-            float t = Mathf.InverseLerp(oldLow, oldHigh, input);
-            return Mathf.Lerp(newLow, newHigh, t);
-        }
-        
-        
 
         public static T[] ExtendArray<T>(T[] array, int newSize)
         {
@@ -103,6 +99,7 @@ namespace RootMath
             return result != 0;
         }
 
+        // this method is derived from https://github.com/ToughNutToCrack/ProceduralIvy
         public static void SetVertex(
             VineNode vineNode,
             Vector3 offset,
@@ -126,6 +123,7 @@ namespace RootMath
             uv[vertexIndex] = new Vector2(0, uvValueY);
         }
     
+        // this method is derived from https://github.com/ToughNutToCrack/ProceduralIvy
         public static void SetTriangles(int i, int v, int meshFaceCount, ref int[] triangles)
         {
             var baseTriangleIndex = i * meshFaceCount * 6 + v * 6;
@@ -135,6 +133,27 @@ namespace RootMath
                 = ((v + 1) % meshFaceCount + meshFaceCount) + i * meshFaceCount;
             triangles[baseTriangleIndex + 5] = (meshFaceCount + v % meshFaceCount) + i * meshFaceCount;
         }
-
+        
+        // this method is copied from https://github.com/ToughNutToCrack/ProceduralIvy
+        public static List<T> Join<T>(this List<T> first, List<T> second) {
+            if (first == null) {
+                return second;
+            }
+            if (second == null) {
+                return first;
+            }
+            return first.Concat(second).ToList();
+        }
+        
+        public static Axis CreateMovementAxis(Transform head, Transform camera, Vector3 groundDirection)
+        {
+            var wallDirection = groundDirection;
+            var position = head.position;
+            var cameraPosition = camera.position;
+            
+            var up = IntersectingLine(position, camera.up, cameraPosition, wallDirection);
+            var right = IntersectingLine(position, camera.right, cameraPosition, wallDirection);
+            return new Axis(up, right);
+        }
     }
 }

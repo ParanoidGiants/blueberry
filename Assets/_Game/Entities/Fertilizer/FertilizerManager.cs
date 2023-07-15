@@ -3,75 +3,78 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class FertilizerManager : MonoBehaviour
+namespace CollectableFetrilizer
 {
-    public VineController vine;
-    private List<Fertilizer> _fertilizers;
-    private int _totalAmount = 0;
-    private int _count = 0;
-    private FertilizerText _fertilizerText;
-    private FertilizerDestination _destination;
-    private bool _isDelivering = false;
-    public bool IsDelivering => _isDelivering;
-    private bool _isDelivered = false;
-    public bool IsDelivered => _isDelivered;
-    public int Count => _count;
-
-    private void Awake()
+    public class FertilizerManager : MonoBehaviour
     {
-        _fertilizers = FindObjectsOfType<Fertilizer>().ToList();
-        _fertilizerText = FindObjectOfType<FertilizerText>();
-        _destination = FindObjectOfType<FertilizerDestination>();
-        _totalAmount = _fertilizers.Count;
-    }
-
-    private void Start()
-    {
-        UpdateUI();
-    }
-
-    public void OnCollectFertilizer(Fertilizer fertilizer)
-    {
-        _count++;
-        UpdateUI();
-    }
-
-    public void InitDeliverFertilizer()
-    {
-        if (_isDelivering) return;
-        StartCoroutine(DeliverFertilizer());
-    }
-
-    private IEnumerator DeliverFertilizer()
-    {
-        _isDelivering = true;
-        var collectedFertilizers = _fertilizers.Where(x => x.IsCollected && !x.IsDelivered).ToList();
-
-        foreach (var collectedFertilizer in collectedFertilizers)
-        {
-            collectedFertilizer.OnDeliver(_destination.transform.position);
-            _count--;
-            _totalAmount--;
-            UpdateUI();
-            yield return new WaitForSeconds(0.2f);
-        }
-        yield return new WaitUntil(() => AreAllFertilizersDelivered(collectedFertilizers));
+        private GameUI.FertilizerText _fertilizerText;
+        private Transform _destination;
+        private Fertilizer[] _fertilizers;
         
-        _isDelivered = _totalAmount == 0;
-        _isDelivering = false;
-    }
+        private int _totalAmount;
+        private int _count;
+        private bool _isDelivering;
+        private bool _isDelivered;
+        public bool IsDelivering => _isDelivering;
+        public bool IsDelivered => _isDelivered;
 
-    private bool AreAllFertilizersDelivered(List<Fertilizer> collected)
-    {
-        foreach (var fertilizer in collected)
+        private void Awake()
         {
-            if (!fertilizer.IsDelivered) return false;
+            _fertilizers = FindObjectsOfType<Fertilizer>();
+            _fertilizerText = FindObjectOfType<GameUI.FertilizerText>();
+            _destination = FindObjectOfType<Level.End>().transform;
+            _totalAmount = _fertilizers.Length;
         }
-        return true;
-    }
 
-    private void UpdateUI()
-    {
-        _fertilizerText.UpdateText(_count, _totalAmount);
+        private void Start()
+        {
+            UpdateUI();
+        }
+
+        public void OnCollectFertilizer(Fertilizer fertilizer)
+        {
+            _count++;
+            UpdateUI();
+        }
+
+        public void InitDeliverFertilizer()
+        {
+            if (_isDelivering) return;
+            StartCoroutine(DeliverFertilizer());
+        }
+
+        private IEnumerator DeliverFertilizer()
+        {
+            _isDelivering = true;
+            var collectedFertilizers = _fertilizers.Where(x => x.IsCollected && !x.IsDelivered).ToList();
+            if (collectedFertilizers.Count == 0) yield break;
+
+            foreach (var collectedFertilizer in collectedFertilizers)
+            {
+                collectedFertilizer.OnDeliver(_destination.position);
+                _count--;
+                _totalAmount--;
+                UpdateUI();
+                yield return new WaitForSeconds(0.2f);
+            }
+            yield return new WaitUntil(() => AreAllFertilizersDelivered(collectedFertilizers));
+            
+            _isDelivered = _totalAmount == 0;
+            _isDelivering = false;
+        }
+
+        private bool AreAllFertilizersDelivered(List<Fertilizer> collected)
+        {
+            foreach (var fertilizer in collected)
+            {
+                if (!fertilizer.IsDelivered) return false;
+            }
+            return true;
+        }
+
+        private void UpdateUI()
+        {
+            _fertilizerText.UpdateText(_count, _totalAmount);
+        }
     }
 }
