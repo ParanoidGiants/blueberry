@@ -6,8 +6,7 @@ namespace Creeper
     public class MeshGenerator : MonoBehaviour
     {
         private const int MAX_DEAD_NODE_COUNT = 200;
-        private const float CREATE_BRANCH_AFTER_SECONDS = 1f;
-        private const float CREATE_BRANCH_IN_SECONDS = 0.2f;
+        private const float CREATE_BRANCH_IN_SECONDS = 0.8f;
         
         [Header("References")]
         [SerializeField] private Transform _head;
@@ -167,19 +166,18 @@ namespace Creeper
 
         private void TryCreateBranch()
         {
-            if (_currentBranch == null || _currentBranch.isDone && _createBranchTime >= CREATE_BRANCH_AFTER_SECONDS)
-            {
-                _createBranchTime = 0f;
-                _currentBranch = Instantiate(_branchPrefab, _branchesParent.transform).GetComponent<VineBranch>();
-                var position = _livingVineNodes[0].position;
-                var up = _livingVineNodes[0].rotation * Vector3.up;
-                var rotation = Random.Range(0f, 1f) > 0.5f
-                    ? Quaternion.AngleAxis(Random.Range(270f, 340f), up)
-                    : Quaternion.AngleAxis(Random.Range(20f, 90.0f), up);
-                rotation *= _livingVineNodes[0].rotation;
-                var forward = rotation * Vector3.forward;
-                _currentBranch.CreateBranch(position, Quaternion.LookRotation(forward, up), _defaultRadius);
-            }
+            if (_currentBranch != null && !_currentBranch.isDone) return;
+
+            _createBranchTime = 0f;
+            _currentBranch = Instantiate(_branchPrefab, _branchesParent.transform).GetComponent<VineBranch>();
+            var position = _livingVineNodes[0].position;
+            var up = _livingVineNodes[0].rotation * Vector3.up;
+            var rotation = Random.Range(0f, 1f) > 0.5f
+                ? Quaternion.AngleAxis(Random.Range(270f, 340f), up)
+                : Quaternion.AngleAxis(Random.Range(20f, 90.0f), up);
+            rotation *= _livingVineNodes[0].rotation;
+            var forward = rotation * Vector3.forward;
+            _currentBranch.CreateBranch(position, Quaternion.LookRotation(forward, up), _defaultRadius);
         }
 
         private void InitNewDeadVineMesh()

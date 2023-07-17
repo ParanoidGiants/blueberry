@@ -24,7 +24,7 @@ namespace GameCamera
         private void Awake()
         {
             Application.targetFrameRate = 60;
-            Time.timeScale = 4f;
+            Time.timeScale = 1f;
             
             _cameraZones = new List<CameraZone>();
             

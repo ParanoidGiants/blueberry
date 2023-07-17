@@ -423,7 +423,7 @@ MonoBehaviour:
   branchController: {fileID: 6665412065068568266}
   _raycastLengthEpsilon: 0.2
   _drawTime: 1
-  _moveSpeed: 4
+  _moveSpeed: 5
   _isGrounded: 0
   _inputDirection: {x: 0, y: 0, z: 0}
   _lastPosition: {x: 0, y: 0, z: 0}
@@ -544,3 +544,5 @@ MonoBehaviour:
   _maxLivingNodeCount: 30
   _vineLength: 0.1
   _defaultRadius: 0.25
+  _currentNodeCount: 0
+  _deadNodeCount: 0
