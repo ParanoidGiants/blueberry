@@ -8,7 +8,6 @@ namespace GameCamera
     public class CameraController : MonoBehaviour
     {
         private Creeper.HeadController _head;
-        private float _zoomDirection;
         private List<CameraZone> _cameraZones;
         private bool _isDangling;
         private Transform _headTransform;
@@ -76,11 +75,6 @@ namespace GameCamera
             }
             
             _head.UpdateMovementAxis();
-        }
-        
-        public void SetZoomDirection(float direction)
-        {
-            _zoomDirection = _zoomSpeed * direction;
         }
         
         public void AddCameraZone(CameraZone cameraZone)

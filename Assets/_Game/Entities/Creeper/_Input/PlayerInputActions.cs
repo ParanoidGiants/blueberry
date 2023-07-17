@@ -48,15 +48,6 @@ namespace Creeper
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""ZoomCamera"",
-                    ""type"": ""Value"",
-                    ""id"": ""50395116-f20c-4a33-a393-b6c769203bfe"",
-                    ""expectedControlType"": ""Axis"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": true
-                },
-                {
                     ""name"": ""Confirm"",
                     ""type"": ""Button"",
                     ""id"": ""096d1895-8abc-4c96-a4c0-d25abda5b76a"",
@@ -134,39 +125,6 @@ namespace Creeper
                     ""isPartOfComposite"": false
                 },
                 {
-                    ""name"": ""1D Axis"",
-                    ""id"": ""b9d546ee-65db-4416-92b0-951084c96d9a"",
-                    ""path"": ""1DAxis"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""ZoomCamera"",
-                    ""isComposite"": true,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": ""negative"",
-                    ""id"": ""9c117142-8b47-4eb9-9e7d-547f4d3cc5df"",
-                    ""path"": ""<Keyboard>/k"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""ZoomCamera"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""positive"",
-                    ""id"": ""39e8d5b0-d1f8-4546-87a3-ec5d792c4ab4"",
-                    ""path"": ""<Keyboard>/l"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""ZoomCamera"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
                     ""name"": """",
                     ""id"": ""dde4d33c-309d-4442-b99a-0ece5ae9ddd1"",
                     ""path"": ""<Keyboard>/space"",
@@ -186,7 +144,6 @@ namespace Creeper
             m_PlayerInput = asset.FindActionMap("PlayerInput", throwIfNotFound: true);
             m_PlayerInput_MoveCreeper = m_PlayerInput.FindAction("MoveCreeper", throwIfNotFound: true);
             m_PlayerInput_Reset = m_PlayerInput.FindAction("Reset", throwIfNotFound: true);
-            m_PlayerInput_ZoomCamera = m_PlayerInput.FindAction("ZoomCamera", throwIfNotFound: true);
             m_PlayerInput_Confirm = m_PlayerInput.FindAction("Confirm", throwIfNotFound: true);
         }
 
@@ -249,7 +206,6 @@ namespace Creeper
         private IPlayerInputActions m_PlayerInputActionsCallbackInterface;
         private readonly InputAction m_PlayerInput_MoveCreeper;
         private readonly InputAction m_PlayerInput_Reset;
-        private readonly InputAction m_PlayerInput_ZoomCamera;
         private readonly InputAction m_PlayerInput_Confirm;
         public struct PlayerInputActions
         {
@@ -257,7 +213,6 @@ namespace Creeper
             public PlayerInputActions(@PlayerInputs wrapper) { m_Wrapper = wrapper; }
             public InputAction @MoveCreeper => m_Wrapper.m_PlayerInput_MoveCreeper;
             public InputAction @Reset => m_Wrapper.m_PlayerInput_Reset;
-            public InputAction @ZoomCamera => m_Wrapper.m_PlayerInput_ZoomCamera;
             public InputAction @Confirm => m_Wrapper.m_PlayerInput_Confirm;
             public InputActionMap Get() { return m_Wrapper.m_PlayerInput; }
             public void Enable() { Get().Enable(); }
@@ -274,9 +229,6 @@ namespace Creeper
                     @Reset.started -= m_Wrapper.m_PlayerInputActionsCallbackInterface.OnReset;
                     @Reset.performed -= m_Wrapper.m_PlayerInputActionsCallbackInterface.OnReset;
                     @Reset.canceled -= m_Wrapper.m_PlayerInputActionsCallbackInterface.OnReset;
-                    @ZoomCamera.started -= m_Wrapper.m_PlayerInputActionsCallbackInterface.OnZoomCamera;
-                    @ZoomCamera.performed -= m_Wrapper.m_PlayerInputActionsCallbackInterface.OnZoomCamera;
-                    @ZoomCamera.canceled -= m_Wrapper.m_PlayerInputActionsCallbackInterface.OnZoomCamera;
                     @Confirm.started -= m_Wrapper.m_PlayerInputActionsCallbackInterface.OnConfirm;
                     @Confirm.performed -= m_Wrapper.m_PlayerInputActionsCallbackInterface.OnConfirm;
                     @Confirm.canceled -= m_Wrapper.m_PlayerInputActionsCallbackInterface.OnConfirm;
@@ -290,9 +242,6 @@ namespace Creeper
                     @Reset.started += instance.OnReset;
                     @Reset.performed += instance.OnReset;
                     @Reset.canceled += instance.OnReset;
-                    @ZoomCamera.started += instance.OnZoomCamera;
-                    @ZoomCamera.performed += instance.OnZoomCamera;
-                    @ZoomCamera.canceled += instance.OnZoomCamera;
                     @Confirm.started += instance.OnConfirm;
                     @Confirm.performed += instance.OnConfirm;
                     @Confirm.canceled += instance.OnConfirm;
@@ -304,7 +253,6 @@ namespace Creeper
         {
             void OnMoveCreeper(InputAction.CallbackContext context);
             void OnReset(InputAction.CallbackContext context);
-            void OnZoomCamera(InputAction.CallbackContext context);
             void OnConfirm(InputAction.CallbackContext context);
         }
     }
