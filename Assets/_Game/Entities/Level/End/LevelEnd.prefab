@@ -867,7 +867,7 @@ GameObject:
   - component: {fileID: 1561283850}
   - component: {fileID: 8371821150353320462}
   m_Layer: 6
-  m_Name: FertilizerDestination
+  m_Name: LevelEnd
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
