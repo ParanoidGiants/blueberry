@@ -1,3 +1,4 @@
+using CollectableFetrilizer;
 using UnityEngine;
 
 namespace Creeper
@@ -9,15 +10,17 @@ namespace Creeper
         
         [Header("References")]
         public MeshGenerator branchController;
+        public FertilizerManager fertilizerManager;
         
         [Header("Settings")]
         [SerializeField] private float _raycastLengthEpsilon;
         [SerializeField] private float _drawTime;
-        [SerializeField] private float _moveSpeed;
+        [SerializeField] private float _baseSpeed;
         
         [Space(10)]
         [Header("Watchers")]
         [SerializeField] private bool _isGrounded = false;
+        [SerializeField] private float _currentSpeed;
         [SerializeField] private Vector3 _inputDirection;
         [SerializeField] private Vector3 _lastPosition;
         [SerializeField] private Vector3 _groundDirection;
@@ -26,7 +29,6 @@ namespace Creeper
         [Space(10)]
         [SerializeField] private Utils.Axis projectedAxis;
         [SerializeField] private ContactObjectManager contactObjectManager;
-        
         
         public Vector3 InputDirection { set { _inputDirection = value; } }
 
@@ -90,8 +92,9 @@ namespace Creeper
             var moveDirection = CalculateMovementDirection();
             _behindDirection = -moveDirection;
             _lastPosition = transform.position;
-            
-            _rigidbody.MovePosition(transform.position + Time.deltaTime * _moveSpeed * moveDirection);
+
+            _currentSpeed = _baseSpeed * (1f + 0.2f * fertilizerManager.GetFertilizerPercentage());
+            _rigidbody.MovePosition(transform.position + Time.deltaTime * _currentSpeed * moveDirection);
             if (_inputDirection.magnitude > 0.1f)
             {
                 transform.rotation = Quaternion.LookRotation(moveDirection, -_groundDirection);
