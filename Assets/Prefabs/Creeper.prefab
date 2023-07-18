@@ -421,10 +421,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   branchController: {fileID: 6665412065068568266}
+  fertilizerManager: {fileID: 5114505143686013325}
   _raycastLengthEpsilon: 0.2
   _drawTime: 1
-  _moveSpeed: 5
+  _baseSpeed: 4
   _isGrounded: 0
+  _currentSpeed: 0
   _inputDirection: {x: 0, y: 0, z: 0}
   _lastPosition: {x: 0, y: 0, z: 0}
   _groundDirection: {x: 0, y: 0, z: 0}
