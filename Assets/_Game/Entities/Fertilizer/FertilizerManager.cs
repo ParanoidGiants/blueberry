@@ -1,9 +1,8 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
+using DG.Tweening;
 
 namespace CollectableFetrilizer
 {
@@ -16,10 +15,8 @@ namespace CollectableFetrilizer
         private int _totalAmount;
         private int _count;
         [SerializeField] private bool _isDelivering;
-        [SerializeField] private bool _isDelivered;
-        [SerializeField] private bool _isAllDelivered;
         public bool IsDelivering => _isDelivering;
-        public bool IsDelivered => _isDelivered;
+        [SerializeField] private bool _isAllDelivered;
         public bool IsAllDelivered => _isAllDelivered;
 
         private void Awake()
@@ -43,28 +40,20 @@ namespace CollectableFetrilizer
 
         public IEnumerator DeliverFertilizer()
         {
-            Debug.Log("DeliverFertilizer");
-            if (_isDelivering || _isAllDelivered) yield break;
             _isDelivering = true;
             
-            var deliveryfertilizers = _fertilizers.Where(x => x.IsCollected && !x.IsDelivered).ToList();
-            if (deliveryfertilizers.Count == 0) yield break;
-
-            foreach (var deliveryFertilizer in deliveryfertilizers)
+            var collectedToDeliver = _fertilizers.Where(x => x.IsCollected && !x.IsDelivered).ToList();
+            foreach (var deliveryItem in collectedToDeliver)
             {
-                deliveryFertilizer.OnDeliver(_destination.position);
+                StartCoroutine(deliveryItem.OnAnimateDelivery(_destination.position));
                 _count--;
                 _totalAmount--;
                 UpdateUI();
                 yield return new WaitForSeconds(0.2f);
             }
 
-            var isCollectedDelivered = false;
-            while (!isCollectedDelivered)
-            {
-                isCollectedDelivered = deliveryfertilizers.All(x => x.IsDelivered);
-                yield return null;
-            }
+            var waitUntil = new WaitUntil(() => collectedToDeliver.All(x => x.IsDelivered));
+            yield return waitUntil;
 
             _isAllDelivered = _fertilizers.All(x => x.IsDelivered);
             _isDelivering = false;
@@ -73,6 +62,11 @@ namespace CollectableFetrilizer
         private void UpdateUI(bool pulse = true)
         {
             _fertilizerText.UpdateText(_count, _totalAmount, pulse);
+        }
+
+        public bool HasNewFertilizer()
+        {
+            return !_isDelivering && _fertilizers.Any(x => x.IsCollected && !x.IsDelivered);
         }
     }
 }

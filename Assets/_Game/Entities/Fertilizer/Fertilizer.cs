@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using DG.Tweening;
 
@@ -16,9 +17,10 @@ namespace CollectableFetrilizer
         private Vector3 _startPosition;
         
         private bool _isCollected;
-        private bool _isCollecting;
-        private bool _isDelivered;
         public bool IsCollected => _isCollected;
+        private bool _isCollecting;
+
+        private bool _isDelivered;
         public bool IsDelivered => _isDelivered;
 
         private void Start()
@@ -71,21 +73,34 @@ namespace CollectableFetrilizer
             sequence.Append(transform.DOScale(Vector3.zero, ANIMATE_TIMER - 0.01f).SetEase(Ease.OutCirc));
         }
 
-        public void OnDeliver(Vector3 deliveryPosition)
-        {
-            if (_isDelivered) return;
-            AnimateDelivery(deliveryPosition);
-        }
-        
-
-        public void AnimateDelivery(Vector3 endPosition)
+        public IEnumerator OnAnimateDelivery(Vector3 deliveryPosition)
         {
             transform.position = _meshGenerator.GetTipPosition();
-            var sequence = DOTween.Sequence();
-            sequence.Append(transform.DOScale(_originalScale, ANIMATE_TIMER)); // Scale to original size over 1 second
-            sequence.Append(transform.DOMove(endPosition, ANIMATE_TIMER)); // Move to end position over 1 second
-            sequence.Append(transform.DOScale(0, ANIMATE_TIMER)); // Scale back to zero over 1 second
-            sequence.OnComplete(() => _isDelivered = true);
+            var animateTime = 0f;
+
+            while (animateTime < ANIMATE_TIMER)
+            {
+                animateTime += Time.deltaTime;
+                transform.localScale = Vector3.Lerp(Vector3.zero, _originalScale, animateTime / ANIMATE_TIMER);
+                yield return null;
+            } 
+
+            animateTime = 0f;
+            while (animateTime < ANIMATE_TIMER)
+            {
+                animateTime += Time.deltaTime;
+                transform.position = Vector3.Lerp(_meshGenerator.GetTipPosition(), deliveryPosition, animateTime / ANIMATE_TIMER);
+                yield return null;
+            }
+            
+            animateTime = 0f;
+            while (animateTime < ANIMATE_TIMER)
+            {
+                animateTime += Time.deltaTime;
+                transform.localScale = Vector3.Lerp(_originalScale, Vector3.zero, animateTime / ANIMATE_TIMER);
+                yield return null;
+            }
+            _isDelivered = true;
         }
     }
 }
