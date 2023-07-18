@@ -51,14 +51,13 @@ namespace CollectableFetrilizer
             _renderer.material.SetFloat(_fresnelPower, value);
                 
                 
-            if (_time >= ANIMATE_TIMER)
-            {
-                _isCollecting = false;
-                _isCollected = true;
-                transform.position = _meshGenerator.GetTipPosition();
-                _renderer.material.SetFloat(_fresnelPower, 5f);
-                _meshGenerator.AddFlower();
-            }
+            if (_time < ANIMATE_TIMER) return;
+            
+            _isCollecting = false;
+            _isCollected = true;
+            transform.position = _meshGenerator.GetTipPosition();
+            _renderer.material.SetFloat(_fresnelPower, 5f);
+            _meshGenerator.AddFlower();
         }
 
 

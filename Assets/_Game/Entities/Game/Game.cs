@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -7,6 +8,9 @@ namespace Roots
     {
         private static Game _instance;
         public static Game Instance => _instance;
+        public Creeper.InputController inputController;
+        public bool isFirstRound = true;
+
         public GameUI.UI ui;
 
         private void Awake()
@@ -14,12 +18,14 @@ namespace Roots
             if (_instance != null && _instance != this)
             {
                 Destroy(gameObject);
+                return;
             }
-            else
-            {
-                _instance = this;
-                DontDestroyOnLoad(gameObject);
-            }
+            
+            _instance = this;
+            DontDestroyOnLoad(gameObject);
+            
+            if (!isFirstRound) return;
+            
             OnLoadTitle();
         }
 
@@ -30,11 +36,7 @@ namespace Roots
 
         public void OnLoadFirstLevel()
         {
-            StartCoroutine(
-                ui.FadeOut(
-                    () => SceneManager.LoadSceneAsync(2)
-                )
-            );
+            StartCoroutine(ui.FadeOut(() => SceneManager.LoadSceneAsync(2)));
         }
         
         private void OnEnable()
@@ -50,6 +52,7 @@ namespace Roots
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
             StartCoroutine(ui.FadeIn(null));
+            inputController.OnSceneLoaded();
         }
     }
 }

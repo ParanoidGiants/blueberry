@@ -1,36 +1,30 @@
 using System.Collections;
+using CollectableFetrilizer;
 using UnityEngine;
 using UnityEngine.Playables;
 
 namespace Level
 {
-    public class End : MonoBehaviour
+    public class EndLevel : MonoBehaviour
     {
         private PlayableDirector _endDirector;
+        private FertilizerManager _manager;
         private Animator _animator;
-        private bool _isAllDelivered;
 
         private void Awake()
         {
             _endDirector = FindObjectOfType<GameCamera.CameraController>().EndDirector;
+            _manager = FindObjectOfType<FertilizerManager>();
             _animator = GetComponent<Animator>();
             _animator.enabled = false;
-            _isAllDelivered = false;
         }
 
         private IEnumerator OnTriggerEnter(Collider other)
         {
-            if (_isAllDelivered) yield break;
+            if (_manager.IsAllDelivered || _manager.IsDelivering) yield break;
             
-            var manager = other.GetComponent<CollectableFetrilizer.FertilizerManager>();
-            if (manager == null) yield break;
-
-            manager.InitDeliverFertilizer();
-            yield return new WaitUntil(() => !manager.IsDelivering);
+            yield return StartCoroutine(_manager.DeliverFertilizer());
             
-            if (!manager.IsDelivered) yield break;
-            
-            _isAllDelivered = true;
             _endDirector.Play();
             _animator.enabled = true;
         }

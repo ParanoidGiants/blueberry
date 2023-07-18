@@ -35,7 +35,7 @@ namespace Creeper
             _rigidbody = GetComponent<Rigidbody>();
             _cameraTransform = Camera.main.transform;
 
-            var startLevel = FindObjectOfType<Level.Start>();
+            var startLevel = FindObjectOfType<Level.StartLevel>();
             if (startLevel != null)
             {
                 transform.position = startLevel.transform.position;

@@ -9,11 +9,10 @@ namespace Creeper
     {
         private PlayerInputs _input;
         private bool _isReloadingScene;
-        private bool _areInputsFrozen;
+        private bool _isInputFrozen;
 
         private HeadController _head;
         private MeshGenerator _meshGenerator;
-        private GameCamera.CameraController _cameraController;
 
         private CollectableFetrilizer.FertilizerManager _fertilizerManager;
         private CollectableFetrilizer.FertilizerManager FertilizerManager
@@ -27,14 +26,17 @@ namespace Creeper
                 return _fertilizerManager;
             }
         }
-
+        
         private void Awake()
+        {
+            _input = new PlayerInputs();
+        }
+        
+        public void OnSceneLoaded()
         {
             _head = FindObjectOfType<HeadController>();
             _meshGenerator = FindObjectOfType<MeshGenerator>();
-            _cameraController = FindObjectOfType<GameCamera.CameraController>();
             _isReloadingScene = false;
-            _input = new PlayerInputs();
         }
 
         private void OnEnable()
@@ -70,7 +72,7 @@ namespace Creeper
 
         public void OnMove(InputAction.CallbackContext _directionCallback)
         {
-            if (_areInputsFrozen) return;
+            if (_isInputFrozen) return;
             
             var direction = _directionCallback.ReadValue<Vector2>();
             if (direction.magnitude > 1f)
@@ -83,7 +85,7 @@ namespace Creeper
 
         public void OnCancelMove(InputAction.CallbackContext _directionCallback)
         {
-            if (_areInputsFrozen) return;
+            if (_isInputFrozen) return;
 
             _head.InputDirection = Vector3.zero;
             _meshGenerator.InputDirection = Vector3.zero;
@@ -91,20 +93,20 @@ namespace Creeper
 
         public void OnReset(InputAction.CallbackContext _directionCallback)
         {
-            if (_isReloadingScene) return;
+            if (_isReloadingScene || _isInputFrozen) return;
 
             _isReloadingScene = true;
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            Game.Instance.OnLoadFirstLevel();
         }
 
         public void FreezeInputs()
         {
-            _areInputsFrozen = true;
+            _isInputFrozen = true;
         }
 
         public void UnfreezeInputs()
         {
-            _areInputsFrozen = false;
+            _isInputFrozen = false;
         }
     }
 }

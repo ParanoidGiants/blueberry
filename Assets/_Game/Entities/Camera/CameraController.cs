@@ -31,7 +31,7 @@ namespace GameCamera
             _head = FindObjectOfType<Creeper.HeadController>();
             _headTransform = _head.transform;
             _mainVCamTransform = GetComponentInChildren<CinemachineVirtualCamera>().transform;
-            
+            transform.position = _headTransform.position;
         }
 
         private void LateUpdate()

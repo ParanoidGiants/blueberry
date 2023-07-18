@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace GameUI
@@ -9,7 +10,7 @@ namespace GameUI
     {
         private const float ANIMATE_FOR_SECONDS = 2f; 
         [SerializeField] private Image _background;
-        
+
         public IEnumerator FadeOut(Action callback)
         {
             var time = 0f;

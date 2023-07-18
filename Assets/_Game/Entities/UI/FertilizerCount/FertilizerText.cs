@@ -7,6 +7,7 @@ namespace GameUI
     {
         private TextMeshProUGUI _text;
         private Animator _animator;
+        private static readonly int Pulse = Animator.StringToHash("Pulse");
 
         private void Awake()
         {
@@ -14,10 +15,13 @@ namespace GameUI
             _animator = GetComponent<Animator>();
         }
 
-        public void UpdateText(int currentCount, int totalCount)
+        public void UpdateText(int currentCount, int totalCount, bool pulse)
         {
+            if (pulse)
+            {
+                _animator.SetTrigger(Pulse);
+            }
             _text.text = $"{currentCount.ToString()} / {totalCount.ToString()}";
-            _animator.SetTrigger("Pulse");
         }
     }
 }
