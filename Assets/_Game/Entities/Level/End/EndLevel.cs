@@ -7,7 +7,7 @@ namespace Level
 {
     public class EndLevel : MonoBehaviour
     {
-        private PlayableDirector _endDirector;
+        [SerializeField] private PlayableDirector _endDirector;
         private FertilizerManager _manager;
         private Animator _animator;
 
@@ -23,6 +23,7 @@ namespace Level
 
         private IEnumerator OnTriggerEnter(Collider other)
         {
+            Debug.Log("OnTriggerEnter");
             if (_isDelivering || _manager.IsAllDelivered) yield break;
             _isDelivering = true;
             

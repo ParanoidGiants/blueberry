@@ -43,6 +43,7 @@ namespace CollectableFetrilizer
 
         public IEnumerator DeliverFertilizer()
         {
+            Debug.Log("DeliverFertilizer");
             if (_isDelivering || _isAllDelivered) yield break;
             _isDelivering = true;
             
@@ -56,6 +57,13 @@ namespace CollectableFetrilizer
                 _totalAmount--;
                 UpdateUI();
                 yield return new WaitForSeconds(0.2f);
+            }
+
+            var isCollectedDelivered = false;
+            while (!isCollectedDelivered)
+            {
+                isCollectedDelivered = deliveryfertilizers.All(x => x.IsDelivered);
+                yield return null;
             }
 
             _isAllDelivered = _fertilizers.All(x => x.IsDelivered);
