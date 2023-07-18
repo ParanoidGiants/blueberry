@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem.UI;
 using UnityEngine.UI;
 
 namespace GameUI
@@ -10,6 +11,15 @@ namespace GameUI
     {
         private const float ANIMATE_FOR_SECONDS = 2f; 
         [SerializeField] private Image _background;
+        public GameObject eventSystemPrefab;
+
+        private void Awake()
+        {
+            if (FindObjectOfType<EventSystem>() == null)
+            {
+                Instantiate(eventSystemPrefab, transform);
+            }
+        }
 
         public IEnumerator FadeOut(Action callback)
         {
