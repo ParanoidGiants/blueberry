@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 4918171457588811432}
   - component: {fileID: 3540235998032521683}
   m_Layer: 5
-  m_Name: Canvas
+  m_Name: Fader
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -60,7 +60,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_TargetDisplay: 0
 --- !u!114 &7144982968130271831
 MonoBehaviour:
@@ -163,8 +163,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inputController: {fileID: 8348913611322478645}
-  isFirstRound: 1
-  ui: {fileID: 3540235998032521683}
+  fader: {fileID: 3540235998032521683}
+  initialSceneIsEntryScene: 1
 --- !u!1 &2828874263682582940
 GameObject:
   m_ObjectHideFlags: 0

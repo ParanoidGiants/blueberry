@@ -12,10 +12,10 @@ namespace Level
 
         private void Start()
         {
-            if (!Game.Instance.isFirstRound) return;
-            Game.Instance.isFirstRound = false;
+            if (!GameLoader.Instance.ShowIntro) return;
+            GameLoader.Instance.WatchIntro();
             
-            _inputController = Game.Instance.inputController;
+            _inputController = GameLoader.Instance.inputController;
             _inputController.FreezeInputs();
             _startLevelDirector.Play();
         }

@@ -5,24 +5,21 @@ namespace GameUI
 {
     public class Title : MonoBehaviour
     {
-        public Animator[] animators;
-        private Coroutine coroutine;
+        public Animator animator;
+        private bool _isAnimating; 
+        private static readonly int StartGame = Animator.StringToHash("StartGame");
+
         public void OnConfirm()
         {
-            if (coroutine != null) return;
+            if (_isAnimating) return;
+            _isAnimating = true;
             
-            foreach (var animator in animators)
-            {
-                animator.enabled = true;
-            }
-
-            coroutine = StartCoroutine(LoadLevelAfterAnimation());
+            animator.SetTrigger("StartGame");
         }
         
-        private IEnumerator LoadLevelAfterAnimation()
+        public void OnLoadLevelAnimationEvent()
         {
-            yield return new WaitForSeconds(2.0f);
-            Roots.Game.Instance.OnLoadFirstLevel();
+            Roots.GameLoader.Instance.OnLoadFirstLevel();
         }
     }
 }

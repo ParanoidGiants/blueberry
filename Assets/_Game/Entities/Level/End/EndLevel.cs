@@ -23,17 +23,15 @@ namespace Level
 
         private IEnumerator OnTriggerEnter(Collider other)
         {
-            Debug.Log("OnTriggerEnter");
-            if (_isDelivering || _manager.IsAllDelivered) yield break;
-            _isDelivering = true;
+            if (_manager.IsDelivering || !_manager.HasNewFertilizer()) yield break;
             
-            yield return _manager.DeliverFertilizer();
-            
-            _isDelivering = false;
-            if (!_manager.IsAllDelivered) yield break;
-            
-            _endDirector.Play();
-            _animator.enabled = true;
+            yield return StartCoroutine(_manager.DeliverFertilizer());
+
+            if (_manager.IsAllDelivered)
+            {
+                _endDirector.Play();
+                _animator.enabled = true;
+            }
         }
     }
 }

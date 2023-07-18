@@ -1,17 +1,33 @@
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace Roots
 {
-    public class Game : MonoBehaviour
+    public class GameLoader : MonoBehaviour
     {
-        private static Game _instance;
-        public static Game Instance => _instance;
+        private static GameLoader _instance;
+        public static GameLoader Instance => _instance;
+        
+        
+        [Header("References")]
         public Creeper.InputController inputController;
-        public bool isFirstRound = true;
+        public GameUI.Fader fader;
+        
+        private bool _showIntro = true;
+        public bool ShowIntro => _showIntro;
+        public void WatchIntro()
+        {
+            _showIntro = false;
+        }
+        
+        private bool _isOnTitle;
+        public bool IsOnTitle => _isOnTitle;
 
-        public GameUI.UI ui;
+#if UNITY_EDITOR
+        [Space(10)]
+        [Header("SET FALSE WHEN YOU NOT START RUNNING IN ENTRY SCENE")]
+        public bool initialSceneIsEntryScene;
+#endif
 
         private void Awake()
         {
@@ -24,7 +40,9 @@ namespace Roots
             _instance = this;
             DontDestroyOnLoad(gameObject);
             
-            if (!isFirstRound) return;
+#if UNITY_EDITOR
+            if (!initialSceneIsEntryScene) return;
+#endif
             
             OnLoadTitle();
         }
@@ -36,7 +54,7 @@ namespace Roots
 
         public void OnLoadFirstLevel()
         {
-            StartCoroutine(ui.FadeOut(() => SceneManager.LoadSceneAsync(2)));
+            StartCoroutine(fader.FadeOut(() => SceneManager.LoadSceneAsync(2)));
         }
         
         private void OnEnable()
@@ -51,7 +69,8 @@ namespace Roots
  
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            StartCoroutine(ui.FadeIn(null));
+            _isOnTitle = scene.name == "_Title";
+            StartCoroutine(fader.FadeIn(null));
             inputController.OnSceneLoaded();
         }
     }

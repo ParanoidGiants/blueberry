@@ -363,6 +363,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1508344829, guid: 1a8e8153764606e48930c762427ae370, type: 3}
+      propertyPath: initialSceneIsEntryScene
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1196232442888780076, guid: 1a8e8153764606e48930c762427ae370, type: 3}
       propertyPath: m_Name
       value: FadingBackground
