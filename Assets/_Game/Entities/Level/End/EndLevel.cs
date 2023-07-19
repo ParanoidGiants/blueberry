@@ -11,8 +11,6 @@ namespace Level
         private FertilizerManager _manager;
         private Animator _animator;
 
-        private bool _isDelivering = false;
-
         private void Awake()
         {
             _endDirector = FindObjectOfType<GameCamera.CameraController>().EndDirector;
