@@ -109,6 +109,7 @@ jobs:
           BUTLER_GAME_ID: ${{ secrets.BUTLER_GAME_ID }}
           BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
           PROJECT_NAME: ${{ secrets.PROJECT_NAME }}
+          BUTLER_USER_NAME: ${{ secrets.BUTLER_USER_NAME }}
         run: |
           cd ~
           echo ------------------------------------------------------------------------
@@ -121,15 +122,6 @@ jobs:
           unzip butler.zip
           chmod +x butler
           echo ------------------------------------------------------------------------
-          echo Show paths....
-          echo ------------------------------------------------------------------------
-          ls -l work
-          ls -l work/$PROJECT_NAME/
-          ls -l work/$PROJECT_NAME/$PROJECT_NAME/
-          ls -l work/$PROJECT_NAME/$PROJECT_NAME/build/
-          ls -l work/$PROJECT_NAME/$PROJECT_NAME/build/WebGL/
-          ls -l work/$PROJECT_NAME/$PROJECT_NAME/build/WebGL/WebGL
-          echo ------------------------------------------------------------------------
           echo packaging WebGL build into current-build.zip
           echo ------------------------------------------------------------------------
           cd work/$PROJECT_NAME/$PROJECT_NAME/build/WebGL/WebGL
@@ -138,4 +130,4 @@ jobs:
           echo ------------------------------------------------------------------------
           echo Pushing current-build.zip to itch.io 
           echo ------------------------------------------------------------------------
-          ~/butler push ~/current-build.zip frobros/$BUTLER_GAME_ID:html5
+          ~/butler push ~/current-build.zip $BUTLER_USER_NAME/$BUTLER_GAME_ID:html5
