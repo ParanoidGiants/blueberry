@@ -1,7 +1,6 @@
 using Roots;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.SceneManagement;
 
 namespace Creeper
 {
@@ -61,11 +60,16 @@ namespace Creeper
 
         private void OnConfirm(InputAction.CallbackContext obj)
         {
+            if (GameLoader.Instance.IsOnTitle)
+            {
+                FindObjectOfType<GameUI.Title>().OnConfirm();
+            }
+            
             if (FertilizerManager == null) return;
             
-            if (FertilizerManager.IsDelivered)
+            if (FertilizerManager.IsAllDelivered)
             {
-                Game.Instance.OnLoadFirstLevel();
+                GameLoader.Instance.OnLoadFirstLevel();
             }
                 
         }
@@ -96,7 +100,7 @@ namespace Creeper
             if (_isReloadingScene || _isInputFrozen) return;
 
             _isReloadingScene = true;
-            Game.Instance.OnLoadFirstLevel();
+            GameLoader.Instance.OnLoadFirstLevel();
         }
 
         public void FreezeInputs()

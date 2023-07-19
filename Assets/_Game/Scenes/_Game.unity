@@ -363,17 +363,9 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1196232442888780076, guid: 1a8e8153764606e48930c762427ae370, type: 3}
-      propertyPath: m_Name
-      value: FadingBackground
-      objectReference: {fileID: 0}
     - target: {fileID: 2629579773457744030, guid: 1a8e8153764606e48930c762427ae370, type: 3}
       propertyPath: m_Name
       value: Game
-      objectReference: {fileID: 0}
-    - target: {fileID: 2828874263682582940, guid: 1a8e8153764606e48930c762427ae370, type: 3}
-      propertyPath: m_Name
-      value: Image
       objectReference: {fileID: 0}
     - target: {fileID: 5285502011063948208, guid: 1a8e8153764606e48930c762427ae370, type: 3}
       propertyPath: m_RootOrder

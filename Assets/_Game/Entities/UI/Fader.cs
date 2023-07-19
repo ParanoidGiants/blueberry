@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 namespace GameUI
 {
-    public class UI : MonoBehaviour
+    public class Fader : MonoBehaviour
     {
         private const float ANIMATE_FOR_SECONDS = 2f; 
         [SerializeField] private Image _background;
