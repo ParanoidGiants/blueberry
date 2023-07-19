@@ -138,4 +138,4 @@ jobs:
           echo ------------------------------------------------------------------------
           echo Pushing current-build.zip to itch.io 
           echo ------------------------------------------------------------------------
-          ~/butler push ~/current-build.zip frobros/$BUTLER_GAME_ID:html5
+          ~/butler push ~/current-build.zip $ORGANIZATION_NAME/$BUTLER_GAME_ID:html5
