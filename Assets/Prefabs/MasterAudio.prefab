@@ -6529,7 +6529,7 @@ MonoBehaviour:
   soundPlayedEventActive: 0
   soundPlayedCustomEvent: 
   willCleanUpDelegatesAfterStop: 1
-  frames: 368
+  frames: 443
 --- !u!1 &4896683074250346263
 GameObject:
   m_ObjectHideFlags: 0
@@ -8676,7 +8676,7 @@ MonoBehaviour:
   groupPlayType: 0
   isSelected: 0
   isExpanded: 1
-  groupMasterVolume: 1
+  groupMasterVolume: 0.15848932
   retriggerPercentage: 100
   curVariationMode: 0
   alwaysHighestPriority: 0
@@ -8727,7 +8727,7 @@ MonoBehaviour:
   soundPlayedEventActive: 0
   soundPlayedCustomEvent: 
   willCleanUpDelegatesAfterStop: 1
-  frames: 328
+  frames: 705
 --- !u!1 &5824163985882200244
 GameObject:
   m_ObjectHideFlags: 0

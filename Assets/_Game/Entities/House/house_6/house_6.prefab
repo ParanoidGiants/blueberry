@@ -1701,6 +1701,7 @@ GameObject:
   - component: {fileID: 7403189815363595008}
   - component: {fileID: 1495960874158277030}
   - component: {fileID: 665701819}
+  - component: {fileID: 2087885976}
   m_Layer: 0
   m_Name: pigeon2.001
   m_TagString: Untagged
@@ -1803,6 +1804,18 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &2087885976
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1760441804322951071}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 983b2ba5d645a1c40aef008d4abba152, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1813399271280832370
 GameObject:
   m_ObjectHideFlags: 0
@@ -6713,6 +6726,7 @@ GameObject:
   - component: {fileID: 4132094969045278747}
   - component: {fileID: 8309528383160379983}
   - component: {fileID: 1770564347}
+  - component: {fileID: 2061119106}
   m_Layer: 0
   m_Name: pigeon1.001
   m_TagString: Untagged
@@ -6815,6 +6829,18 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &2061119106
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6700014196083989794}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 983b2ba5d645a1c40aef008d4abba152, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6965230552518663793
 GameObject:
   m_ObjectHideFlags: 0
