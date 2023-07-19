@@ -1,5 +1,6 @@
 using UnityEngine;
 using DG.Tweening;
+using DarkTonic.MasterAudio;
 
 namespace CollectableFetrilizer
 {
@@ -66,6 +67,7 @@ namespace CollectableFetrilizer
             _startPosition = transform.position;
             _time = 0f;
             _isCollecting = true;
+            MasterAudio.PlaySound3DAtTransformAndForget("Collectable", transform);
             var sequence = DOTween.Sequence();
             sequence.Append(transform.DOScale(transform.localScale * 2f, 0.01f).SetEase(Ease.InCirc));
             sequence.Append(transform.DOScale(Vector3.zero, ANIMATE_TIMER - 0.01f).SetEase(Ease.OutCirc));
