@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using DarkTonic.MasterAudio;
 
 namespace CollectableFetrilizer
 {
@@ -42,6 +43,7 @@ namespace CollectableFetrilizer
         private IEnumerator AnimateCollect()
         {
             _startPosition = transform.position;
+            MasterAudio.PlaySound3DAtTransformAndForget("Collectable", transform);
             var animateTime = 0f;
             while (animateTime < ANIMATE_TIMER)
             {

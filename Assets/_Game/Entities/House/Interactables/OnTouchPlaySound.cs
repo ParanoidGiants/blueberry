@@ -4,12 +4,12 @@ namespace Interactables
 {
     public class OnTouchPlaySound : MonoBehaviour
     {
+        public string sfxId;
         private void OnCollisionEnter(Collision other)
         {
             if (!Utils.Helper.IsLayerPlayerPhysicsCollider(other.gameObject.layer)) return;
             
-            // TODO: Play sound here
-            Debug.Log("Play sound here");
+            // TODO: Play sfx here and use sfxId
         }
     }
 }
