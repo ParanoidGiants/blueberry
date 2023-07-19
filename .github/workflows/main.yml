@@ -106,6 +106,7 @@ jobs:
       - name: Install Butler, zip the build and push it to itch.io
         shell: bash
         env:
+          BUTLER_GAME_ID: ${{ secrets.BUTLER_GAME_ID }}
           BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
           PROJECT_NAME: ${{ secrets.PROJECT_NAME }}
         run: |
@@ -137,4 +138,4 @@ jobs:
           echo ------------------------------------------------------------------------
           echo Pushing current-build.zip to itch.io 
           echo ------------------------------------------------------------------------
-          ~/butler push ~/current-build.zip frobros/$PROJECT_NAME:html5
+          ~/butler push ~/current-build.zip frobros/$BUTLER_GAME_ID:html5
