@@ -446,6 +446,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0790d372905531f4c939d41b974f5bce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _meshGenerator: {fileID: 6665412065068568266}
 --- !u!81 &2044043453
 AudioListener:
   m_ObjectHideFlags: 0

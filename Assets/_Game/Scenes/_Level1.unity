@@ -42126,10 +42126,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1224439023}
     m_Modifications:
-    - target: {fileID: 358451829504544112, guid: 27bfc29b542356145986c1af0de114d7, type: 3}
-      propertyPath: m_Convex
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 5183849440965654211, guid: 27bfc29b542356145986c1af0de114d7, type: 3}
       propertyPath: m_Name
       value: House
@@ -48228,10 +48224,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1224439023}
     m_Modifications:
-    - target: {fileID: 5114505143686013325, guid: 907c774c7d7bc59419d691e061ef3528, type: 3}
-      propertyPath: _meshGenerator
-      value: 
-      objectReference: {fileID: 2044043445}
     - target: {fileID: 6665412063840737761, guid: 907c774c7d7bc59419d691e061ef3528, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -48280,10 +48272,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Creeper
       objectReference: {fileID: 0}
-    - target: {fileID: 8567532191546326454, guid: 907c774c7d7bc59419d691e061ef3528, type: 3}
-      propertyPath: _baseSpeed
-      value: 10
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 907c774c7d7bc59419d691e061ef3528, type: 3}
 --- !u!4 &2044043444 stripped
@@ -48291,17 +48279,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6665412063840737761, guid: 907c774c7d7bc59419d691e061ef3528, type: 3}
   m_PrefabInstance: {fileID: 2044043443}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &2044043445 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6665412065068568266, guid: 907c774c7d7bc59419d691e061ef3528, type: 3}
-  m_PrefabInstance: {fileID: 2044043443}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 91cd51cc61adbc545b33e46a09a84eec, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &2058748459
 GameObject:
   m_ObjectHideFlags: 0
@@ -51871,7 +51848,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 216317140701301471, guid: c41077e0c13067f4daedfb8ff95227f0, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 216317140993475484, guid: c41077e0c13067f4daedfb8ff95227f0, type: 3}
       propertyPath: m_LocalRotation.w

@@ -977,6 +977,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b188cd5828c932e4395e3b90cc838eac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sfxId: 
 --- !u!1 &1126525869285032719
 GameObject:
   m_ObjectHideFlags: 0
@@ -2270,7 +2271,7 @@ MeshCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 4
-  m_Convex: 0
+  m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 6332435005410787514, guid: 40ee246858182b348ac2fed67c9f607b, type: 3}
 --- !u!54 &266753195
@@ -2301,6 +2302,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b188cd5828c932e4395e3b90cc838eac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sfxId: 
 --- !u!1 &2051442983550146903
 GameObject:
   m_ObjectHideFlags: 0
@@ -6351,6 +6353,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05914eab6e17de94297803fa9df2ea6b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sfxId: 
 --- !u!1 &6372162892263333831
 GameObject:
   m_ObjectHideFlags: 0
@@ -9078,3 +9081,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 617736d443b46d843b199b5b8fedb4cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sfxId: 
