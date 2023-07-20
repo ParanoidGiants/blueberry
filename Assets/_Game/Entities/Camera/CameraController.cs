@@ -69,7 +69,7 @@ namespace GameCamera
             if (_cameraZones.Count != 0)
             {
                 var activeCameraZone = _cameraZones[^1];
-                transform.rotation = Quaternion.Lerp(transform.rotation, activeCameraZone.Rotation, Time.deltaTime * _moveSpeed);
+                transform.rotation = Quaternion.Slerp(transform.rotation, activeCameraZone.Rotation, Time.deltaTime * _moveSpeed);
                 _head.UpdateMovementAxis();
                 return;
             }
