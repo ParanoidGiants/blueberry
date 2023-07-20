@@ -1,7 +1,9 @@
 name: Test, Build, and Deploy via GameCI and Butler  🎮
 
 on:
-  workflow_dispatch: {}
+  push:
+    branches:
+      - main
 env:
   UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
 
@@ -92,7 +94,9 @@ jobs:
             Library-build-
             Library-
 
-      - uses: webbertakken/unity-builder@v2
+      - uses: game-ci/unity-builder@v2
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
         with:
           targetPlatform: WebGL
 
@@ -104,8 +108,10 @@ jobs:
       - name: Install Butler, zip the build and push it to itch.io
         shell: bash
         env:
+          BUTLER_GAME_ID: ${{ secrets.BUTLER_GAME_ID }}
           BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
           PROJECT_NAME: ${{ secrets.PROJECT_NAME }}
+          BUTLER_USER_NAME: ${{ secrets.BUTLER_USER_NAME }}
         run: |
           cd ~
           echo ------------------------------------------------------------------------
@@ -126,4 +132,4 @@ jobs:
           echo ------------------------------------------------------------------------
           echo Pushing current-build.zip to itch.io 
           echo ------------------------------------------------------------------------
-          ~/butler push ~/current-build.zip frobros/$PROJECT_NAME:html5
+          ~/butler push ~/current-build.zip $BUTLER_USER_NAME/$BUTLER_GAME_ID:html5
