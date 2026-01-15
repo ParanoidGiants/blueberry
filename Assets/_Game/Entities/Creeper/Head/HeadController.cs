@@ -50,7 +50,7 @@ namespace Creeper
 
         private void FixedUpdate()
         {
-            _rigidbody.velocity = Vector3.zero;
+            _rigidbody.linearVelocity = Vector3.zero;
             
             _isGrounded = contactObjectManager.HasContactObjects();
             if (_isGrounded) UpdateMovement();
